@@ -1,0 +1,13 @@
+@import "../base/variables.css";
+@import "../base/utilities.css";
+
+/* shared */
+@import "../shared/buttons.css";
+
+/* components */
+@import "./components/navbar.css";
+@import "./components/footer.css";
+
+/* pages */
+@import "./pages/hrd-dashboard.css";
+@import "./pages/admin-dashboard.css";

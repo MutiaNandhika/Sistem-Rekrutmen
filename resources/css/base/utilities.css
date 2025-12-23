@@ -1,0 +1,18 @@
+/* =========================
+   UTILITIES
+========================= */
+
+/* spacing */
+.mt-6 { margin-top: 3rem; }
+.mb-6 { margin-bottom: 3rem; }
+
+/* text */
+.text-muted { color: #6c757d !important; }
+.text-small { font-size: 0.875rem; }
+
+/* display */
+.flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

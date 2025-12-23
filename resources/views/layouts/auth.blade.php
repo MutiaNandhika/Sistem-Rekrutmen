@@ -2,13 +2,12 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>@yield('title')</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    @vite([
-        'resources/css/app.css',
-        'resources/css/public.css',
-        'resources/css/login.css'
-    ])
+    <title>@yield('title', 'Auth')</title>
+
+    {{-- CSS KHUSUS AUTH --}}
+    @vite(['resources/css/auth/login.css'])
 </head>
 
 <body class="auth-body">
@@ -18,7 +17,9 @@
     </main>
 
     {{-- FOOTER KHUSUS AUTH --}}
-    @include('partials.footer-auth')
-    
+    <footer class="auth-footer">
+        © 2025 MDA Partner. All rights reserved.
+    </footer>
+
 </body>
 </html>

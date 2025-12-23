@@ -44,7 +44,7 @@ Route::get('/redirect-after-login', function (Request $request) {
     return match ($user->role) {
         'admin' => redirect('/admin/dashboard'),
         'hrd'   => redirect('/hrd/dashboard'),
-        default => redirect('/pelamar/dashboard'),
+        default => redirect('/pelamar/profile'),
     };
 
 })->middleware('auth');
@@ -56,11 +56,12 @@ Route::get('/redirect-after-login', function (Request $request) {
 |--------------------------------------------------------------------------
 */
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'role:admin,hrd'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
 
 
 /*

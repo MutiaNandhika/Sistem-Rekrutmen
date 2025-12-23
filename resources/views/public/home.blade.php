@@ -305,6 +305,7 @@
 </section>
 
 {{-- ANEKA JASA --}}
+{{-- ANEKA JASA --}}
 <section class="py-5 bg-light">
     <div class="container">
 
@@ -317,22 +318,33 @@
             </p>
         </div>
 
+        {{-- STATE DI LEVEL GRID --}}
         <div class="row g-4" x-data="{ active: null }">
+
             @foreach ($jasa as $item)
                 <div class="col-md-6 col-lg-4">
-                    <div class="jasa-card shadow-sm">
 
-                        <div class="p-4">
+                    <div class="jasa-card shadow-sm d-flex flex-column"
+                    :class="{ 'is-open': active === '{{ $item['id'] }}' }">
+
+                        {{-- BODY --}}
+                        <div class="p-4 jasa-body flex-grow-1">
                             {{-- ICON --}}
                             <div class="jasa-icon">
                                 <i class="bi {{ $item['icon'] }}"></i>
                             </div>
 
                             {{-- TITLE --}}
-                            <h6 class="jasa-title mb-3">{{ $item['title'] }}</h6>
+                            <h6 class="jasa-title mb-3">
+                                {{ $item['title'] }}
+                            </h6>
 
                             {{-- DETAIL --}}
-                            <div x-show="active === '{{ $item['id'] }}'" x-collapse>
+                            <div
+                                x-show="active === '{{ $item['id'] }}'"
+                                x-collapse
+                                class="jasa-detail"
+                            >
                                 <ul class="jasa-list">
                                     @foreach ($item['items'] as $desc)
                                         <li>{{ $desc }}</li>
@@ -343,24 +355,38 @@
 
                         {{-- BUTTON --}}
                         <button
+                            type="button"
                             class="jasa-btn"
                             :class="{ 'open': active === '{{ $item['id'] }}' }"
-                            @click="active === '{{ $item['id'] }}' ? active = null : active = '{{ $item['id'] }}'">
-
-                            <span x-text="active === '{{ $item['id'] }}' ? 'Tutup' : 'Lihat Layanan'"></span>
+                            @click="
+                                active === '{{ $item['id'] }}'
+                                    ? active = null
+                                    : active = '{{ $item['id'] }}'
+                            "
+                        >
+                            <span
+                                x-text="
+                                    active === '{{ $item['id'] }}'
+                                        ? 'Tutup'
+                                        : 'Lihat Layanan'
+                                "
+                            ></span>
 
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                                 <path d="M6 9L12 15L18 9"
-                                      stroke="white" stroke-width="2"
-                                      stroke-linecap="round" stroke-linejoin="round"/>
+                                      stroke="white"
+                                      stroke-width="2"
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"/>
                             </svg>
                         </button>
 
                     </div>
+
                 </div>
             @endforeach
-        </div>
 
+        </div>
     </div>
 </section>
 

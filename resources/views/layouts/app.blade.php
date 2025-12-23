@@ -18,7 +18,7 @@
 
 <div class="min-h-screen">
     {{-- NAVIGATION --}}
-    @include('layouts.navigation')
+    @include('layouts.public')
 
     {{-- HEADER (OPTIONAL) --}}
     @yield('header')

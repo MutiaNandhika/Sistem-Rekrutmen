@@ -82,23 +82,3 @@
     background-color: #ffffff;
     color: #f04e23;
 }
-
-/* ================= BRAND BUTTON BASE ================= */
-.btn-orange {
-    background-color: #f04e23;
-    color: #fff;
-    border: none;
-    font-weight: 600;
-}
-
-.btn-orange:hover {
-    background-color: #d9441f;
-    color: #fff;
-}
-
-.btn-outline-orange {
-    background: transparent;
-    border: 1.5px solid #f04e23;
-    color: #f04e23;
-    font-weight: 600;
-}
