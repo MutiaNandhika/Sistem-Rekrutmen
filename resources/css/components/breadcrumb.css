@@ -1,0 +1,24 @@
+.breadcrumb-wrapper {
+    background: #f4f6f8;
+    padding: 12px 24px;
+    font-size: 14px;
+}
+
+.breadcrumb-wrapper a {
+    color: #6c757d;
+    text-decoration: none;
+}
+
+.breadcrumb-wrapper a:hover {
+    color: #f04e23;
+    text-decoration: underline;
+}
+
+.breadcrumb-wrapper span {
+    margin: 0 6px;
+}
+
+.breadcrumb-wrapper .active {
+    color: #212529;
+    font-weight: 600;
+}

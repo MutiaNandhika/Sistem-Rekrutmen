@@ -1,0 +1,52 @@
+/* ================= CLIENT BANNER ================= */
+
+.client-banner-inner {
+    background: linear-gradient(135deg, #ff6a2a, #e9541e);
+    border-radius: 48px;
+    padding: 48px 24px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* efek gelombang halus (opsional tapi mirip contoh) */
+.client-banner-inner::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+        circle at bottom right,
+        rgba(255,255,255,0.08),
+        transparent 60%
+    );
+}
+
+/* text helper */
+.text-white-75 {
+    color: rgba(255,255,255,0.75);
+}
+
+/* CARD LOGO */
+.client-logo-dark {
+    background: #4a1d0f;
+    border-radius: 18px;
+    padding: 18px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* LOGO */
+.client-logo-dark img {
+    max-height: 42px;
+    max-width: 100%;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+    opacity: 0.95;
+    transition: 0.3s ease;
+}
+
+.client-logo-dark:hover img {
+    opacity: 1;
+    transform: scale(1.05);
+}

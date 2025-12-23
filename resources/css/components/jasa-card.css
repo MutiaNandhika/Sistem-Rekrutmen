@@ -1,0 +1,79 @@
+/* ================= ANEKA JASA CARD ================= */
+
+.jasa-card {
+    border-radius: 20px;
+    overflow: hidden;
+    background: #fff;
+}
+
+/* Icon bulat */
+.jasa-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #fff1e6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+}
+
+.jasa-icon i {
+    font-size: 22px;
+    color: #f04e23;
+}
+
+/* Judul */
+.jasa-title {
+    color: #ff6a00;
+    font-weight: 700;
+}
+
+/* List checklist */
+.jasa-list {
+    list-style: none;
+    padding-left: 0;
+}
+
+.jasa-list li {
+    position: relative;
+    padding-left: 24px;
+    margin-bottom: 10px;
+    color: #4b5563;
+}
+
+.jasa-list li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: #22c55e;
+    font-weight: 700;
+}
+
+/* Button bawah */
+.jasa-btn {
+    background: #ff6a00;
+    color: #fff;
+    border: none;
+    width: 100%;
+    padding: 14px;
+    font-weight: 600;
+    border-radius: 0 0 20px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.jasa-btn:hover {
+    background: #e85c00;
+    color: #fff;
+}
+
+.jasa-btn svg {
+    transition: transform 0.3s ease;
+}
+
+.jasa-btn.open svg {
+    transform: rotate(180deg);
+}

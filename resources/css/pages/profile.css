@@ -1,0 +1,256 @@
+/* ===============================
+   PROFILE PAGE
+================================ */
+
+.profile-page {
+    position: relative;
+    overflow: visible;
+}
+/* PROFILE CARD */
+.profile-card {
+    background: #f3f4f6;
+    border-radius: 12px;
+    padding: 24px;
+}
+
+.profile-avatar {
+    width: 90px;
+    height: 90px;
+    background: #ffffff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    color: #9ca3af;
+}
+
+/* PROFILE INFO TEXT */
+.profile-card strong {
+    font-size: 12px;
+    color: #6b7280;
+    letter-spacing: 0.04em;
+}
+
+/* CV SECTION */
+.cv-section {
+    position: relative;
+    overflow: visible;
+}
+.cv-section hr {
+    border-top: 1px solid #d1d5db;
+    margin-top: 16px;
+}
+
+.experience-item {
+    position: relative;
+    z-index: 20;
+}
+
+.experience-item .dropdown {
+    position: relative;
+    z-index: 30;
+}
+
+
+.experience-item .dropdown-menu {
+    z-index: 1055;
+}
+
+.timeline-dot {
+    width: 10px;
+    height: 10px;
+    background: #0d6efd;
+    border-radius: 50%;
+    margin-top: 6px;
+    flex-shrink: 0;
+}
+/* ===============================
+   EXPERIENCE ACTION MENU
+================================ */
+
+.experience-actions {
+    position: relative;
+}
+
+.experience-menu {
+    position: absolute;
+    top: 32px;
+    right: 0;
+    background: #fff;
+    border-radius: 8px;
+    padding: 6px 0;
+    min-width: 140px;
+    display: none;
+    z-index: 9999;
+}
+
+.experience-menu button {
+    width: 100%;
+    padding: 8px 14px;
+    border: none;
+    background: transparent;
+    text-align: left;
+    font-size: 14px;
+}
+
+.experience-menu button:hover {
+    background: #f3f4f6;
+}
+
+.education-actions {
+    position: relative;
+}
+
+/* ===============================
+   EDUCATION ACTION MENU
+================================ */
+
+.education-menu {
+    position: absolute;
+    top: 36px;
+    right: 0;
+    background: #fff;
+    border-radius: 6px;
+    padding: 6px 0;
+    display: none;
+    min-width: 120px;
+    z-index: 50;
+}
+
+.education-menu button {
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 8px 12px;
+    text-align: left;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.education-menu button:hover {
+    background: #f3f4f6;
+}
+
+/* ===============================
+   SKILLS ACTION MENU
+================================ */
+.skills-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.skill-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    padding: 6px 14px;
+    border-radius: 20px;
+
+    background: #f3f4f6;
+    color: #111827;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+/* chip di modal (ada tombol X) */
+.skill-chip button {
+    border: none;
+    background: none;
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+    color: #6b7280;
+}
+
+.skill-chip button:hover {
+    color: #ef4444;
+}
+
+/* readonly (di halaman profile) */
+.skill-chip.readonly {
+    cursor: default;
+}
+
+/* ===============================
+   penghargaan ACTION MENU
+================================ */
+
+.award-menu {
+    position: absolute;
+    right: 0;
+    top: 36px;
+    background: #fff;
+    border-radius: 8px;
+    min-width: 140px;
+    display: none;
+    z-index: 9999;
+}
+
+.award-menu button {
+    width: 100%;
+    padding: 8px 12px;
+    background: none;
+    border: none;
+    text-align: left;
+}
+
+.award-menu button:hover {
+    background: #f3f4f6;
+}
+
+/* ===============================
+   sertifikat ACTION MENU
+================================ */
+
+.certificate-menu {
+    position: absolute;
+    right: 0;
+    top: 36px;
+    background: #fff;
+    border-radius: 8px;
+    min-width: 140px;
+    display: none;
+    z-index: 9999;
+}
+
+.certificate-menu button {
+    width: 100%;
+    padding: 8px 12px;
+    background: none;
+    border: none;
+    text-align: left;
+}
+
+.certificate-menu button:hover {
+    background: #f3f4f6;
+}
+
+/* ===============================
+   pengalaman organisasi ACTION MENU
+================================ */
+.org-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 36px;
+    background: #fff;
+    border-radius: 6px;
+    overflow: hidden;
+    z-index: 10;
+}
+
+.org-menu button {
+    display: block;
+    width: 100%;
+    padding: 8px 14px;
+    background: none;
+    border: none;
+    text-align: left;
+}
+
+.org-menu button:hover {
+    background: #f3f4f6;
+}

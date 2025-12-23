@@ -1,0 +1,74 @@
+/* ================= NAVBAR ================= */
+.navbar {
+    min-height: 64px;
+}
+
+.navbar .nav-link {
+    color: #333;
+    font-weight: 500;
+    position: relative;
+}
+
+.navbar .nav-link.active {
+    font-weight: 600;
+}
+
+.navbar .nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: #f04e23;
+}
+
+
+
+/* ================= NAVBAR BUTTON ================= */
+.navbar .btn {
+    border-radius: 999px;
+    padding: 6px 18px;
+    white-space: nowrap;
+}
+
+/* LOGIN */
+.navbar .btn-orange {
+    background-color: #f04e23;
+    color: #fff;
+}
+
+.navbar .btn-orange:hover {
+    background-color: #E37434;
+    color: #fff;
+}
+
+/* REGISTER */
+.navbar .btn-outline-orange {
+    background: transparent;
+    border: 1.5px solid #f04e23;
+    color: #f04e23;
+}
+
+.navbar .btn-outline-orange:hover {
+    background-color: #E37434;
+    color: #fff;
+}
+
+.dropdown-menu {
+    border-radius: 14px;
+    padding: 8px;
+}
+
+.dropdown-item {
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.dropdown-item:hover {
+    background-color: #f8f9fa;
+}
+
+.dropdown-item.text-danger:hover {
+    background-color: #fff1f1;
+}

@@ -1,0 +1,27 @@
+/* ================= FOOTER ================= */
+.footer-section {
+    background: #111;
+    color: #fff;
+}
+
+.footer-section h6 {
+    color: #fff;
+}
+
+.footer-text {
+    color: rgba(255,255,255,0.7);
+}
+
+.footer-link {
+    color: rgba(255,255,255,0.75);
+    text-decoration: none;
+}
+
+.footer-link:hover {
+    color: #fff;
+    text-decoration: underline;
+}
+
+.footer-divider {
+    border-color: rgba(255,255,255,0.15);
+}

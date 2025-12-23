@@ -1,0 +1,86 @@
+/* ===============================
+   ABOUT PAGE
+================================ */
+
+.about-section {
+    background: #ffffff;
+}
+
+/* TITLE */
+.about-title {
+    font-weight: 800;
+    font-size: clamp(32px, 4vw, 42px);
+    color: #0f172a;
+}
+
+/* TEXT */
+.about-text {
+    font-size: 16px;
+    line-height: 1.8;
+    color: #475569;
+    margin-bottom: 18px;
+}
+
+/* LOGO */
+.about-logo {
+    max-width: 360px;
+    width: 100%;
+}
+
+/* ===============================
+   VISION & MISSION
+================================ */
+
+.vision-mission-section {
+    background: #ffffff;
+}
+
+/* TITLE */
+.vm-title {
+    font-weight: 800;
+    font-size: 28px;
+    margin-bottom: 16px;
+    color: #0f172a;
+}
+
+.vm-title span {
+    color: #f04e23;
+}
+
+/* TEXT */
+.vm-text {
+    font-size: 16px;
+    line-height: 1.8;
+    color: #475569;
+}
+
+/* LIST */
+.vm-list {
+    padding-left: 20px;
+}
+
+.vm-list li {
+    font-size: 16px;
+    line-height: 1.8;
+    color: #475569;
+    margin-bottom: 10px;
+}
+
+/* IMAGE WRAPPER */
+.vm-image {
+    width: 260px;
+    height: 320px;
+    margin: 0 auto;
+    border-radius: 40px;
+    background: linear-gradient(180deg, #8c2d0b, #f04e23);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.vm-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}

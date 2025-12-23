@@ -1,0 +1,59 @@
+/* ================= SERVICE CARD ================= */
+
+.service-card {
+    background: #ffffff;
+    border-radius: 28px;
+    padding: 28px;
+    height: 100%;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+    transition: all 0.3s ease;
+}
+
+/* ORANGE STROKE */
+.service-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 28px;
+    border: 2px solid rgba(240, 78, 35, 0.4);
+    pointer-events: none;
+}
+
+/* ICON */
+.service-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #fff1e6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+}
+
+.service-icon i {
+    font-size: 20px;
+    color: #f04e23;
+}
+
+/* TITLE */
+.service-title {
+    font-weight: 700;
+    font-size: 1rem;
+    color: #f04e23;
+    margin-bottom: 10px;
+}
+
+/* DESCRIPTION */
+.service-desc {
+    font-size: 0.9rem;
+    color: #555;
+    line-height: 1.6;
+}
+
+/* HOVER EFFECT */
+.service-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 18px 45px rgba(240, 78, 35, 0.18);
+}
