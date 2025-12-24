@@ -1,0 +1,96 @@
+/* ==================================================
+   GLOBAL NAVBAR (PUBLIC & DASHBOARD)
+================================================== */
+
+.navbar {
+    min-height: 64px;
+    font-family: var(--font-main);
+    background-color: #fff;
+}
+
+/* ================= NAV LINK ================= */
+
+.navbar .nav-link {
+    color: #111827;
+    font-weight: 500;
+    font-size: 15px;
+    position: relative;
+    transition: color .2s ease;
+}
+
+.navbar .nav-link:hover {
+    color: #f04e23;
+}
+
+/* ACTIVE LINK */
+.navbar .nav-link.active {
+    font-weight: 600;
+}
+
+.navbar .nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: #f04e23;
+    border-radius: 2px;
+}
+
+/* ================= BUTTON ================= */
+
+.navbar .btn {
+    border-radius: 999px;
+    padding: 6px 18px;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+/* ORANGE BUTTON */
+.navbar .btn-orange {
+    background-color: #f04e23;
+    color: #fff;
+}
+
+.navbar .btn-orange:hover {
+    background-color: #e0491f;
+    color: #fff;
+}
+
+/* OUTLINE BUTTON */
+.navbar .btn-outline-orange {
+    background: transparent;
+    border: 1.5px solid #f04e23;
+    color: #f04e23;
+}
+
+.navbar .btn-outline-orange:hover {
+    background-color: #f04e23;
+    color: #fff;
+}
+
+/* ================= DROPDOWN ================= */
+
+.navbar .dropdown-toggle {
+    font-weight: 500;
+    font-size: 15px;
+}
+
+.dropdown-menu {
+    border-radius: 14px;
+    padding: 8px;
+}
+
+.dropdown-item {
+    font-size: 14px;
+    border-radius: 8px;
+}
+
+.dropdown-item:hover {
+    background-color: #f8f9fa;
+}
+
+.dropdown-item.text-danger:hover {
+    background-color: #fff1f1;
+}

@@ -1,14 +1,29 @@
 @tailwind base;
-@tailwind components;
-@tailwind utilities;
 
 /* ==================================================
-   GLOBAL FONT (SELURUH WEBSITE)
+   GLOBAL VARIABLE & FONT
 ================================================== */
-@layer base {
-    html {
-        font-family: 'Inter', system-ui, -apple-system,
-                     BlinkMacSystemFont, 'Segoe UI',
-                     Roboto, 'Helvetica Neue', Arial, sans-serif;
-    }
+@import "./base/variables.css";
+
+/* ==================================================
+   GLOBAL STYLE (SELURUH WEBSITE)
+================================================== */
+body {
+    font-family: var(--font-main);
+    color: #111827;
 }
+
+/* ==================================================
+   COMPONENTS
+================================================== */
+@tailwind components;
+
+/* ==================================================
+   DASHBOARD & PUBLIC CUSTOM CSS
+================================================== */
+@import "./dashboard/dashboard.css";
+
+/* ==================================================
+   UTILITIES
+================================================== */
+@tailwind utilities;
