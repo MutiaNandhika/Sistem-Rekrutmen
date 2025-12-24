@@ -1,0 +1,97 @@
+/* ================= LAMARAN TIMELINE ================= */
+
+.lamaran-wrapper {
+    max-width: 900px;
+    margin: 0 auto;        
+}
+
+.lamaran-title {
+    margin-top: 32px;   /* JARAK DARI NAVBAR */
+    margin-bottom: 24px;
+    font-weight: 700;
+}
+.main-content {
+    padding-top: 24px;
+}
+
+/* TIMELINE */
+.lamaran-timeline {
+    position: relative;
+    padding-left: 48px;
+}
+
+.lamaran-timeline::before {
+    content: "";
+    position: absolute;
+    left: 16px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #d1d5db;
+}
+
+/* ITEM */
+.timeline-item {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 36px;
+    position: relative;
+}
+
+/* DOT */
+.timeline-dot {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #e5e7eb;
+    color: #111827;
+    font-size: 14px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    z-index: 1;
+}
+
+.timeline-item.active .timeline-dot {
+    background: #86efac;
+    color: #065f46;
+}
+
+/* CONTENT */
+.timeline-content h6 {
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.timeline-info {
+    background: #e5e7eb;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+
+/* BOX */
+.timeline-box {
+    border: 1px solid #fb923c;
+    background: #fff7ed;
+    padding: 14px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+
+/* ACTIONS */
+.timeline-actions {
+    display: flex;
+    gap: 12px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .lamaran-timeline {
+        padding-left: 36px;
+    }
+}
