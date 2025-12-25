@@ -1,0 +1,135 @@
+/* ================= LOWONGAN HRD ================= */
+
+.lowongan-tabs .nav-link {
+    color: #6b7280;
+    font-weight: 500;
+}
+
+.lowongan-tabs .nav-link.active {
+    color: #0d6efd;
+    border-bottom: 3px solid #0d6efd;
+}
+
+.lowongan-tabs .badge {
+    background: #d1d5db;
+    color: #111827;
+    margin-left: 6px;
+}
+
+/* CARD */
+.lowongan-card {
+    background: #ffffff;
+    border: 1.5px solid #f97316; /* ORANGE STROKE */
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 20px;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+/* OPTIONAL: hover effect biar lebih hidup */
+.lowongan-card:hover {
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+}
+
+/* ACTIVE CARD (tetap putih, tapi lebih tegas) */
+.lowongan-card.active {
+    border-color: #ea580c;
+}
+
+/* HEADER */
+.lowongan-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.lowongan-header h6 {
+    font-weight: 700;
+    margin: 0;
+}
+
+/* STATUS */
+.status {
+    font-size: 13px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 999px;
+}
+
+.status.active {
+    background: #16a34a;
+    color: #fff;
+}
+
+.status.nonaktif {
+    background: #dc2626;
+    color: #fff;
+}
+
+/* META */
+.lowongan-meta {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 12px;
+    font-size: 14px;
+    color: #374151;
+}
+
+.lowongan-meta li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+/* ACTION */
+.lowongan-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-orange {
+    background: #f97316;
+    color: #fff;
+    border: none;
+}
+
+.btn-orange:hover {
+    background: #ea580c;
+    color: #fff;
+}
+
+.btn-delete {
+    margin-left: auto;
+    background: #fecaca;
+    color: #b91c1c;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 10px;
+}
+
+.status-badge {
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    user-select: none;
+}
+
+/* AKTIF */
+.status-badge.aktif {
+    background-color: #16a34a;
+    color: #fff;
+}
+
+/* NONAKTIF */
+.status-badge.nonaktif {
+    background-color: #dc2626;
+    color: #fff;
+}

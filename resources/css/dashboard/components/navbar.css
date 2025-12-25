@@ -6,6 +6,10 @@
     min-height: 64px;
     font-family: var(--font-main);
     background-color: #fff;
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+    background-color: #fff;
 }
 
 /* ================= NAV LINK ================= */

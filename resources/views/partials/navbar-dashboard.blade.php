@@ -27,8 +27,8 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->is('hrd/lowongan*') ? 'active fw-semibold' : '' }}"
-                           href="#">
+                        <a class="nav-link {{ request()->is('hrd/lowongan') ? 'active fw-semibold' : '' }}"
+                           href="{{ url('/hrd/lowongan') }}">
                             Lowongan
                         </a>
                     </li>

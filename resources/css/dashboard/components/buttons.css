@@ -1,0 +1,43 @@
+/* ================= DASHBOARD BUTTONS ================= */
+
+.btn-dashboard {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1;
+    border: none;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+/* ORANGE */
+.btn-dashboard.orange {
+    background-color: #f97316;
+    color: #fff;
+}
+
+.btn-dashboard.orange:hover {
+    background-color: #ea580c;
+    color: #fff;
+}
+
+/* BLUE */
+.btn-dashboard.blue {
+    background-color: #2563eb;
+    color: #fff;
+}
+
+.btn-dashboard.blue:hover {
+    background-color: #1d4ed8;
+    color: #fff;
+}
+
+/* SMALL */
+.btn-dashboard.sm {
+    padding: 6px 14px;
+    font-size: 13px;
+}

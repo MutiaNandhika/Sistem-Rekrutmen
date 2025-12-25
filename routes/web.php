@@ -86,18 +86,75 @@ Route::middleware(['auth', 'role:pelamar'])
         })->name('lamaran');
     });
 
+
 /*
 |--------------------------------------------------------------------------
-| HRD
+| HRD ROUTES (FRONTEND MODE - TANPA DATABASE)
 |--------------------------------------------------------------------------
 */
-
 Route::middleware(['auth', 'role:hrd'])
     ->prefix('hrd')
     ->group(function () {
+
+        /*
+        |-----------------------
+        | DASHBOARD HRD
+        |-----------------------
+        */
         Route::get('/dashboard', function () {
             return view('hrd.dashboard');
-        });
+        })->name('hrd.dashboard');
+
+
+        /*
+        |-----------------------
+        | LOWONGAN (DUMMY DATA)
+        |-----------------------
+        */
+        Route::get('/lowongan', function () {
+
+            // ✅ DUMMY DATA (TANPA DATABASE)
+            $lowongans = collect([
+                (object) [
+                    'id' => 1,
+                    'judul' => 'Business Development - Duluin Gajian',
+                    'perusahaan' => 'PT JNE',
+                    'tipe_pekerjaan' => 'Penuh Waktu · Kerja di kantor',
+                    'lokasi' => 'Jl. Merdeka no. 1945 Soedirman',
+                    'status' => 'aktif',
+                ],
+                (object) [
+                    'id' => 2,
+                    'judul' => 'Marketing Executive',
+                    'perusahaan' => 'PT MDA Partner',
+                    'tipe_pekerjaan' => 'Penuh Waktu · Hybrid',
+                    'lokasi' => 'Jakarta Selatan',
+                    'status' => 'nonaktif',
+                ],
+            ]);
+
+            return view('hrd.lowongan.index', compact('lowongans'));
+
+        })->name('lowongan.index');
+
+
+        /*
+        |-------------------------------------------------
+        | TOGGLE STATUS (FRONTEND ONLY / SIMULASI)
+        |-------------------------------------------------
+        | NOTE:
+        | - Tidak menyimpan ke database
+        | - Hanya untuk simulasi UI
+        */
+        Route::post('/lowongan/{id}/toggle-status', function ($id) {
+
+            // ❗ SIMULASI RESPONSE SAJA
+            return response()->json([
+                'status' => 'aktif', // status dummy (UI yang handle)
+            ]);
+
+        })->name('lowongan.toggle-status');
+
     });
 
 
