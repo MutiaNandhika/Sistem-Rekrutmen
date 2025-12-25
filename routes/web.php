@@ -155,14 +155,10 @@ Route::middleware(['auth', 'role:hrd'])
 
         })->name('lowongan.index');
 
-
         /*
         |-------------------------------------------------
         | TOGGLE STATUS (FRONTEND ONLY / SIMULASI)
         |-------------------------------------------------
-        | NOTE:
-        | - Tidak menyimpan ke database
-        | - UI di-handle oleh JavaScript
         */
         Route::post('/lowongan/{id}/toggle-status', function ($id) {
 
@@ -172,6 +168,28 @@ Route::middleware(['auth', 'role:hrd'])
             ]);
 
         })->name('lowongan.toggle-status');
+
+        /*
+        |-----------------------
+        | LOWONGAN - CREATE (FORM)
+        |-----------------------
+        */
+        Route::get('/lowongan/create', function () {
+            return view('hrd.lowongan.create');
+        })->name('lowongan.create');
+
+
+        /*
+        |-----------------------
+        | LOWONGAN - STORE (DUMMY)
+        |-----------------------
+        */
+        Route::post('/lowongan', function () {
+            // ⛔ belum simpan database
+            return redirect()
+                ->route('lowongan.index')
+                ->with('success', 'Lowongan berhasil ditambahkan (simulasi)');
+        })->name('lowongan.store');
 
     });
 

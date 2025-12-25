@@ -16,10 +16,15 @@
     @stack('styles')
 </head>
 
-<body class="bg-light d-flex flex-column min-vh-100">
+<body class="d-flex flex-column min-vh-100">
 
     {{-- NAVBAR DASHBOARD --}}
     @include('partials.navbar-dashboard')
+    
+{{-- BREADCRUMB (OPTIONAL) --}}
+@hasSection('breadcrumb')
+    @yield('breadcrumb')
+@endif
 
     <main class="container-fluid px-4 py-4 flex-fill">
         @yield('content')

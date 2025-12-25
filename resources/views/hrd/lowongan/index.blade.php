@@ -16,7 +16,8 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h4 class="fw-bold">Daftar Lowongan Kerja</h4>
 
-    <a href="#" class="btn btn-primary d-flex align-items-center gap-2">
+    <a href="{{ route('lowongan.create') }}"
+    class="btn btn-primary d-flex align-items-center gap-2">
         <i class="bi bi-plus-lg"></i>
         Tambah Lowongan Kerja
     </a>

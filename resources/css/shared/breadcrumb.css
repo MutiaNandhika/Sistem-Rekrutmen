@@ -1,7 +1,12 @@
+/* =========================
+   BREADCRUMB (GLOBAL)
+========================= */
+
 .breadcrumb-wrapper {
     background: #f4f6f8;
     padding: 12px 24px;
     font-size: 14px;
+    border-bottom: 1px solid #e5e7eb;
 }
 
 .breadcrumb-wrapper a {
