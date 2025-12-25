@@ -50,6 +50,13 @@
             </li>
 
             <li class="nav-item">
+                <a class="nav-link" href="#" data-filter="arsip">
+                    Arsip
+                    <span class="badge" data-count="arsip">0</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
                 <a class="nav-link" href="#" data-filter="draft">
                     Draft
                     <span class="badge" data-count="draft">{{ $draft }}</span>
@@ -79,7 +86,7 @@
 
 
             {{-- HEADER --}}
-            <div class="lowongan-header">
+            <div class="lowongan-header d-flex justify-content-between align-items-start">
                 <div>
                     <h6>{{ $lowongan->judul }}</h6>
                     <small class="text-muted">
@@ -88,12 +95,11 @@
                     </small>
                 </div>
 
-                <span class="status-badge {{ $lowongan->status }}"
-                    data-status="{{ $lowongan->status }}"
-                    onclick="toggleStatus(this)">
+                <span class="status-badge {{ $lowongan->status }}">
                     {{ ucfirst($lowongan->status) }}
                 </span>
             </div>
+
 
             {{-- META --}}
             <ul class="lowongan-meta">
@@ -111,26 +117,57 @@
                 </li>
             </ul>
 
-            {{-- ACTIONS --}}
             <div class="lowongan-actions">
-                <a href="#"
-                class="btn-dashboard orange sm">
-                    Detail Lowongan
-                </a>
 
-                <a href="#"
-                class="btn-dashboard blue sm">
-                    Kelola Kandidat
-                </a>
+    {{-- LEFT ACTIONS --}}
+    <div class="left-actions">
+        <a href="#" class="btn-dashboard orange sm">
+            Detail Lowongan
+        </a>
 
-                <button
-                    class="btn btn-delete"
-                    onclick="deleteLowongan(this)"
-                >
-                    <i class="bi bi-trash"></i>
-                </button>
+        <a href="#" class="btn-dashboard blue sm">
+            Kelola Kandidat
+        </a>
+    </div>
 
-            </div>
+    {{-- RIGHT ICON ACTIONS --}}
+    <div class="right-actions action-icons">
+
+        {{-- EDIT --}}
+        <a href="#"
+           class="action-btn edit"
+           title="Edit Lowongan">
+            <i class="bi bi-pencil"></i>
+        </a>
+
+        {{-- DELETE --}}
+        <button class="action-btn delete"
+                onclick="deleteLowongan(this)"
+                title="Hapus Lowongan">
+            <i class="bi bi-trash"></i>
+        </button>
+
+        {{-- DROPDOWN --}}
+        <div class="dropdown">
+            <button class="action-btn more"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                    title="Aksi Lainnya">
+                <i class="bi bi-three-dots"></i>
+            </button>
+
+            <ul class="dropdown-menu dropdown-menu-end action-menu">
+                {{-- diisi oleh JS --}}
+            </ul>
+        </div>
+
+    </div>
+
+</div>
+
+
+</div>
+
 
         </div>
     @empty
@@ -147,6 +184,7 @@
 @push('scripts')
 
 <script>
+
 /* ================= FILTER ================= */
 document.querySelectorAll('.lowongan-tabs .nav-link').forEach(tab => {
     tab.addEventListener('click', e => {
@@ -160,10 +198,15 @@ document.querySelectorAll('.lowongan-tabs .nav-link').forEach(tab => {
 
         document.querySelectorAll('.lowongan-card').forEach(card => {
             card.style.display =
-                filter === 'all' || card.dataset.status === filter
+            filter === 'all'
+                ? card.dataset.status !== 'arsip'
+                    ? 'block'
+                    : 'none'
+                : card.dataset.status === filter
                     ? 'block'
                     : 'none';
-        });
+
+                });
     });
 });
 
@@ -192,42 +235,25 @@ document.getElementById('sortButton').addEventListener('click', function () {
 function updateCounters() {
     const cards = document.querySelectorAll('.lowongan-card');
 
-    let total = cards.length;
-    let aktif = 0, nonaktif = 0, draft = 0;
+    let total = 0;
+    let aktif = 0, nonaktif = 0, draft = 0, arsip = 0;
 
     cards.forEach(card => {
         const status = card.dataset.status;
+
+        if (status !== 'arsip') total++;
+
         if (status === 'aktif') aktif++;
         if (status === 'nonaktif') nonaktif++;
         if (status === 'draft') draft++;
+        if (status === 'arsip') arsip++;
     });
 
     document.querySelector('[data-count="total"]').textContent = total;
     document.querySelector('[data-count="aktif"]').textContent = aktif;
     document.querySelector('[data-count="nonaktif"]').textContent = nonaktif;
     document.querySelector('[data-count="draft"]').textContent = draft;
-}
-
-/* ================= TOGGLE ================= */
-function toggleStatus(el) {
-    const current = el.dataset.status;
-    const next = current === 'aktif' ? 'nonaktif' : 'aktif';
-
-    if (!confirm(`Apakah anda yakin ingin ${next === 'aktif' ? 'mengaktifkan' : 'menonaktifkan'} lowongan ini?`)) return;
-
-    el.dataset.status = next;
-    el.textContent = next.charAt(0).toUpperCase() + next.slice(1);
-    el.classList.remove('aktif', 'nonaktif');
-    el.classList.add(next);
-
-    const card = el.closest('.lowongan-card');
-    card.dataset.status = next;
-    card.classList.toggle('active', next === 'aktif');
-
-    updateCounters();
-
-    // reapply active filter
-    document.querySelector('.lowongan-tabs .nav-link.active')?.click();
+    document.querySelector('[data-count="arsip"]').textContent = arsip;
 }
 
 function deleteLowongan(btn) {
@@ -258,5 +284,117 @@ function deleteLowongan(btn) {
 
     }, 200);
 }
+
+function publishLowongan(btn) {
+    if (!confirm('Publish lowongan ini?')) return;
+    updateStatus(btn.closest('.lowongan-card'), 'aktif');
+}
+
+function deactivateLowongan(btn) {
+    if (!confirm('Nonaktifkan lowongan ini?')) return;
+    updateStatus(btn.closest('.lowongan-card'), 'nonaktif');
+}
+
+function activateLowongan(btn) {
+    if (!confirm('Aktifkan kembali lowongan ini?')) return;
+    updateStatus(btn.closest('.lowongan-card'), 'aktif');
+}
+
+function archiveLowongan(btn) {
+    if (!confirm('Arsipkan lowongan ini?')) return;
+
+    updateStatus(btn.closest('.lowongan-card'), 'arsip');
+}
+
+function updateStatus(card, status) {
+    if (!card) return;
+
+    // update status dataset
+    card.dataset.status = status;
+
+    // update class aktif
+    card.classList.toggle('active', status === 'aktif');
+
+    // update badge status (jika ada)
+    const badge = card.querySelector('.status-badge');
+    if (badge) {
+        badge.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+        badge.className = `status-badge ${status}`;
+    }
+
+    // 🔥 render ulang dropdown sesuai status baru
+    renderDropdown(card);
+
+    // update counter
+    updateCounters();
+
+    // re-apply filter aktif
+    document
+        .querySelector('.lowongan-tabs .nav-link.active')
+        ?.click();
+}
+
+    function renderDropdown(card) {
+    const status = card.dataset.status;
+    const menu = card.querySelector('.action-menu');
+
+    if (!menu) return;
+
+    let html = '';
+
+    if (status === 'draft') {
+        html = `
+            <li>
+                <button type="button" class="dropdown-item"
+                        onclick="publishLowongan(this)">
+                    Publish
+                </button>
+            </li>
+        `;
+    }
+
+    if (status === 'aktif') {
+        html = `
+            <li>
+                <button type="button" class="dropdown-item text-warning"
+                        onclick="deactivateLowongan(this)">
+                    Nonaktifkan
+                </button>
+            </li>
+        `;
+    }
+
+    if (status === 'nonaktif') {
+        html = `
+            <li>
+                <button type="button" class="dropdown-item text-success"
+                        onclick="activateLowongan(this)">
+                    Aktifkan
+                </button>
+            </li>
+            <li>
+                <button type="button" class="dropdown-item text-muted"
+                        onclick="archiveLowongan(this)">
+                    Arsip
+                </button>
+            </li>
+        `;
+    }
+
+    if (status === 'arsip') {
+    html = `
+        <li class="dropdown-item text-muted">
+            Tidak ada aksi
+        </li>
+    `;
+}
+
+
+    menu.innerHTML = html;
+}
+document.querySelectorAll('.lowongan-card').forEach(card => {
+    renderDropdown(card);
+});
+
 </script>
 @endpush

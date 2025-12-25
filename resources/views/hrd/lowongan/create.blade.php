@@ -19,6 +19,7 @@
 
 {{-- STEP INDICATOR --}}
 <div class="d-flex justify-content-center align-items-center gap-3 mb-4">
+
     <div class="d-flex align-items-center gap-2">
         <span class="step-circle active">1</span>
         <span class="fw-semibold">Info Loker</span>
@@ -30,7 +31,9 @@
         <span class="step-circle">2</span>
         <span>Deskripsi Pekerjaan</span>
     </div>
+
 </div>
+
 
 <form>
 
@@ -189,10 +192,13 @@
     <a href="{{ route('lowongan.index') }}" class="btn btn-light border">
         Kembali
     </a>
-    <button type="submit" class="btn btn-primary">
+
+    <a href="{{ route('lowongan.create.deskripsi') }}"
+       class="btn btn-primary">
         Selanjutnya
-    </button>
+    </a>
 </div>
+
 
 </form>
 

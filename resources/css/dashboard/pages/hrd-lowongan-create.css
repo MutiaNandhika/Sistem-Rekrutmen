@@ -20,6 +20,12 @@
     color: #fff;
 }
 
+/* step selesai */
+.step-circle.done {
+    background: #16a34a; /* hijau */
+    color: #fff;
+}
+
 .step-line {
     width: 60px;
     height: 2px;
@@ -57,4 +63,82 @@
 .btn {
     border-radius: 8px;
     font-size: 14px;
+}
+
+.status-badge.arsip {
+    background: #e5e7eb;
+    color: #6b7280;
+}
+
+.lowongan-card[data-status="arsip"] {
+    opacity: 0.65;
+}
+
+/* ================= LOWONGAN ACTIONS ================= */
+
+.lowongan-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* kiri vs kanan */
+    margin-top: 12px;
+}
+
+/* kiri */
+.left-actions {
+    display: flex;
+    gap: 8px;
+}
+
+/* kanan */
+.right-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* icon buttons */
+.action-icons .action-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: #f8f9fa;
+    cursor: pointer;
+    transition: all .15s ease;
+}
+
+.action-icons .action-btn i {
+    font-size: 16px;
+}
+
+/* hover umum */
+.action-icons .action-btn:hover {
+    background: #e9ecef;
+}
+
+/* EDIT */
+.action-btn.edit {
+    color: #0d6efd;
+}
+.action-btn.edit:hover {
+    background: rgba(13,110,253,.12);
+}
+
+/* DELETE */
+.action-btn.delete {
+    color: #dc3545;
+}
+.action-btn.delete:hover {
+    background: rgba(220,53,69,.12);
+}
+
+/* MORE */
+.action-btn.more {
+    color: #6c757d;
+}
+.action-btn.more:hover {
+    background: rgba(108,117,125,.15);
 }

@@ -178,6 +178,12 @@ Route::middleware(['auth', 'role:hrd'])
             return view('hrd.lowongan.create');
         })->name('lowongan.create');
 
+        Route::get('/lowongan/create/deskripsi', function () {
+            return view('hrd.lowongan.create-deskripsi');
+        })->name('lowongan.create.deskripsi');  
+
+        Route::get('/lowongan/{id}/edit', fn ($id) => view('hrd.lowongan.edit'))
+            ->name('lowongan.edit');
 
         /*
         |-----------------------
