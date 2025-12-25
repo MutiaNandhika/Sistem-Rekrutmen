@@ -122,6 +122,7 @@ Route::middleware(['auth', 'role:hrd'])
                     'tipe_pekerjaan' => 'Penuh Waktu · Kerja di kantor',
                     'lokasi' => 'Jl. Merdeka no. 1945 Soedirman',
                     'status' => 'aktif',
+                    'updated_at' => now()->subDays(1),
                 ],
                 (object) [
                     'id' => 2,
@@ -130,10 +131,27 @@ Route::middleware(['auth', 'role:hrd'])
                     'tipe_pekerjaan' => 'Penuh Waktu · Hybrid',
                     'lokasi' => 'Jakarta Selatan',
                     'status' => 'nonaktif',
+                    'updated_at' => now()->subDays(5),
                 ],
             ]);
 
-            return view('hrd.lowongan.index', compact('lowongans'));
+            /*
+            |------------------------------------
+            | HITUNG JUMLAH UNTUK TAB BADGE
+            |------------------------------------
+            */
+            $total    = $lowongans->count();
+            $aktif    = $lowongans->where('status', 'aktif')->count();
+            $nonaktif = $lowongans->where('status', 'nonaktif')->count();
+            $draft    = $lowongans->where('status', 'draft')->count();
+
+            return view('hrd.lowongan.index', compact(
+                'lowongans',
+                'total',
+                'aktif',
+                'nonaktif',
+                'draft'
+            ));
 
         })->name('lowongan.index');
 
@@ -144,19 +162,18 @@ Route::middleware(['auth', 'role:hrd'])
         |-------------------------------------------------
         | NOTE:
         | - Tidak menyimpan ke database
-        | - Hanya untuk simulasi UI
+        | - UI di-handle oleh JavaScript
         */
         Route::post('/lowongan/{id}/toggle-status', function ($id) {
 
-            // ❗ SIMULASI RESPONSE SAJA
+            // ❗ HANYA RESPONSE DUMMY
             return response()->json([
-                'status' => 'aktif', // status dummy (UI yang handle)
+                'status' => 'ok'
             ]);
 
         })->name('lowongan.toggle-status');
 
     });
-
 
 /*
 |--------------------------------------------------------------------------

@@ -24,9 +24,12 @@
     padding: 18px 20px;
     margin-bottom: 20px;
     position: relative;
-    transition: all 0.2s ease;
+    transition: opacity .2s ease, transform .2s ease;
 }
-
+.lowongan-card.removing {
+    opacity: 0;
+    transform: scale(.97);
+}
 /* OPTIONAL: hover effect biar lebih hidup */
 .lowongan-card:hover {
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
@@ -132,4 +135,17 @@
 .status-badge.nonaktif {
     background-color: #dc2626;
     color: #fff;
+}
+
+/* TANGGAL UPDATE */
+.lowongan-updated {
+    display: block;
+    margin-top: 4px;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.lowongan-updated i {
+    margin-right: 4px;
+    font-size: 12px;
 }
