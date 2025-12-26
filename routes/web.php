@@ -7,6 +7,7 @@ use App\Http\Controllers\JobController;
 use App\Http\Controllers\KandidatController;
 use App\Http\Controllers\Admin\AkunAdminController;
 use App\Http\Controllers\HRD\AkunHrdController;
+use App\Http\Controllers\AccountSettingsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -295,3 +296,19 @@ Route::middleware(['auth', 'role:admin'])
 */
 
 require __DIR__.'/auth.php';
+
+/*
+|--------------------------------------------------------------------------
+| PENGATURAN AKUN (SEMUA ROLE)
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware(['auth'])->group(function () {
+
+    Route::get('/pengaturan-akun', [AccountSettingsController::class, 'index'])
+        ->name('account.settings');
+
+    Route::post('/pengaturan-akun/password', [AccountSettingsController::class, 'updatePassword'])
+        ->name('account.password.update');
+
+});

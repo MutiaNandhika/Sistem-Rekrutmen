@@ -74,10 +74,10 @@
 
                     <ul class="dropdown-menu dropdown-menu-end shadow-sm">
 
-                        {{-- PROFILE SINGKAT --}}
+                        {{-- PROFILE --}}
                         <li>
                             <a class="dropdown-item"
-                            href="{{ Auth::user()->role === 'pelamar'
+                               href="{{ Auth::user()->role === 'pelamar'
                                     ? route('pelamar.profile')
                                     : route('profile.edit') }}">
                                 <i class="bi bi-person me-2"></i>
@@ -85,7 +85,16 @@
                             </a>
                         </li>
 
-                        {{-- BERANDA (PUBLIC) --}}
+                        {{-- PENGATURAN AKUN --}}
+                        <li>
+                            <a class="dropdown-item"
+                               href="{{ route('account.settings') }}">
+                                <i class="bi bi-gear me-2"></i>
+                                Pengaturan Akun
+                            </a>
+                        </li>
+
+                        {{-- BERANDA PUBLIC --}}
                         <li>
                             <a class="dropdown-item"
                                href="{{ route('public.home') }}">
@@ -99,8 +108,7 @@
                         <li>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
-                                <button type="submit"
-                                        class="dropdown-item text-danger">
+                                <button type="submit" class="dropdown-item text-danger">
                                     <i class="bi bi-box-arrow-right me-2"></i>
                                     Logout
                                 </button>
