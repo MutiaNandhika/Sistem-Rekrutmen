@@ -1,0 +1,97 @@
+/* ===============================
+   GLOBAL RESET
+=============================== */
+
+body,
+main {
+    background-color: #ffffff !important;
+}
+
+/* ===============================
+   STAT CARD (TOP SUMMARY)
+=============================== */
+
+.dashboard-stat-card {
+    background-color: #ffffff;
+    border: 2px solid #f04e23; /* ORANGE MDA */
+    border-radius: 14px;
+    padding: 24px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transition: all 0.2s ease-in-out;
+}
+
+.dashboard-stat-card:hover {
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+.dashboard-stat-card .stat-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #6c757d;
+    margin-bottom: 10px;
+}
+
+.dashboard-stat-card .stat-value {
+    font-size: 36px;
+    font-weight: 700;
+    color: #212529;
+}
+
+/* ===============================
+   DASHBOARD CARD (CHART)
+=============================== */
+
+.dashboard-card {
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    border: 1px solid #dee2e6;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.dashboard-card-header {
+    padding: 14px 18px;
+    font-weight: 600;
+    font-size: 15px;
+    border-bottom: 1px solid #dee2e6;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.dashboard-card-body {
+    padding: 16px;
+}
+
+/* ===============================
+   SELECT (DROPDOWN)
+=============================== */
+
+.dashboard-card-header select,
+form select {
+    font-size: 13px;
+    padding: 4px 10px;
+}
+
+/* ===============================
+   RESPONSIVE
+=============================== */
+
+@media (max-width: 768px) {
+
+    .dashboard-stat-card {
+        padding: 18px;
+    }
+
+    .dashboard-stat-card .stat-value {
+        font-size: 28px;
+    }
+
+    .dashboard-card-header {
+        font-size: 14px;
+    }
+}

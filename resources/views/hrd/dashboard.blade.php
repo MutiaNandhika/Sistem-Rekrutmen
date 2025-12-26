@@ -33,10 +33,12 @@
     {{-- FUNNEL --}}
     <div class="col-lg-4">
         <div class="dashboard-card">
-            <div class="dashboard-card-header d-flex justify-content-between align-items-center">
-                Funnel Rekrutmen
-                <select class="form-select form-select-sm w-auto">
+            <div class="dashboard-card-header">
+                <span>Funnel Rekrutmen</span>
+
+                <select class="dashboard-select">
                     <option>Januari</option>
+                    <option>Februari</option>
                 </select>
             </div>
             <div class="dashboard-card-body">
@@ -48,10 +50,12 @@
     {{-- STATUS OFFER --}}
     <div class="col-lg-4">
         <div class="dashboard-card">
-            <div class="dashboard-card-header d-flex justify-content-between align-items-center">
-                Status Offer
-                <select class="form-select form-select-sm w-auto">
+            <div class="dashboard-card-header">
+                <span>Status Offer</span>
+
+                <select class="dashboard-select">
                     <option>Januari</option>
+                    <option>Februari</option>
                 </select>
             </div>
             <div class="dashboard-card-body">
