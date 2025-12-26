@@ -198,10 +198,59 @@ Route::middleware(['auth', 'role:hrd'])
                 ->with('success', 'Lowongan berhasil ditambahkan (simulasi)');
         })->name('lowongan.store');
 
-        Route::get('/lowongan/{lowongan}/kandidat', function ($lowonganId) {
-        return app(\App\Http\Controllers\Hrd\KandidatController::class)
-            ->index($lowonganId);
-    })->name('lowongan.kandidat');
+    Route::get('/lowongan/{lowongan}/kandidat', function ($lowongan) {
+
+        $kandidats = collect([
+            (object) [
+                'id' => 1,
+                'nama' => 'Joodiva',
+                'status' => 'Diproses',
+                'tanggal' => '2025-12-14',
+                'pendidikan' => 'S1',
+                'pengalaman' => 5,
+                'keahlian' => 3,
+                'skor' => 82,
+                'ranking' => 2,
+            ],
+            (object) [
+                'id' => 2,
+                'nama' => 'Naruto',
+                'status' => 'Diterima',
+                'tanggal' => '2025-12-01',
+                'pendidikan' => 'SMK',
+                'pengalaman' => 2,
+                'keahlian' => 6,
+                'skor' => 90,
+                'ranking' => 1,
+            ],
+        ]);
+
+        return view('hrd.kandidat.index', compact('kandidats', 'lowongan'));
+    })->name('hrd.kandidat.index');
+
+    // =====================
+// DETAIL PELAMAR
+// =====================
+Route::get('/lowongan/{lowongan}/kandidat/{pelamar}', function ($lowongan, $pelamar) {
+
+    // dummy data pelamar
+    $pelamarData = (object) [
+        'id' => $pelamar,
+        'nama' => 'Mutia Nandhika',
+        'whatsapp' => '081234567890',
+        'email' => 'mutianandhika@gmail.com',
+        'lokasi' => 'Jakarta',
+        'usia' => 21,
+        'pendidikan' => 'SMA / SMK',
+        'gender' => 'Perempuan',
+    ];
+
+    return view('hrd.kandidat.detail', [
+        'lowongan' => $lowongan,
+        'pelamar'  => $pelamarData,
+    ]);
+
+})->name('hrd.kandidat.detail');
     });
 
 /*

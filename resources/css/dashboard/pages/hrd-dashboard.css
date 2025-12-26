@@ -28,3 +28,61 @@ body {
 .dashboard-card-body {
     padding: 16px;
 }
+
+.timeline {
+    list-style: none;
+    padding-left: 0;
+    position: relative;
+}
+
+.timeline li {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 28px;
+    position: relative;
+}
+
+.timeline .step {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #dee2e6;
+    color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.timeline li.active .step {
+    background: #28a745;
+    color: #fff;
+}
+
+.timeline li::before {
+    content: '';
+    position: absolute;
+    left: 13px;
+    top: 28px;
+    width: 2px;
+    height: 100%;
+    background: #dee2e6;
+}
+
+.timeline li:last-child::before {
+    display: none;
+}
+
+.modal-content {
+    box-shadow: 0 10px 30px rgba(0,0,0,.15);
+}
+
+.modal .form-control,
+.modal .form-select {
+    border-radius: 10px;
+    padding: 10px 14px;
+}
+
+.modal h5 {
+    font-size: 20px;
+}

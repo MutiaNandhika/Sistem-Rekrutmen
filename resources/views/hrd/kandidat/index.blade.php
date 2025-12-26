@@ -42,37 +42,44 @@
     </thead>
 
     <tbody>
-        @foreach ($kandidats as $k)
-        <tr>
-            <td class="fw-semibold">{{ $k['nama'] }}</td>
+    @foreach ($kandidats as $kandidat)
+    <tr>
+        <td class="fw-semibold">{{ $kandidat->nama }}</td>
 
-            <td>
-                <span class="status-pill {{ strtolower($k['status']) }}">
-                    {{ $k['status'] }}
-                </span>
-            </td>
+        <td>
+            <span class="badge 
+                {{ $kandidat->status === 'Diterima' ? 'bg-success' : 'bg-warning text-dark' }}">
+                {{ $kandidat->status }}
+            </span>
+        </td>
 
-            <td>{{ \Carbon\Carbon::parse($k['tanggal'])->format('d M Y') }}</td>
-            <td>{{ $k['pendidikan'] }}</td>
-            <td>{{ $k['pengalaman'] }} th</td>
-            <td>{{ $k['keahlian'] }}</td>
+        <td>{{ \Carbon\Carbon::parse($kandidat->tanggal)->format('d M Y') }}</td>
+        <td>{{ $kandidat->pendidikan }}</td>
+        <td>{{ $kandidat->pengalaman }} th</td>
+        <td>{{ $kandidat->keahlian }}</td>
 
-            <td>
-                <span class="score-pill">{{ $k['skor'] }}</span>
-            </td>
+        <td>
+            <span class="badge bg-info text-dark">
+                {{ $kandidat->skor }}
+            </span>
+        </td>
 
-            <td>
-                <span class="rank-pill">#{{ $k['ranking'] }}</span>
-            </td>
+        <td>
+            <span class="badge bg-primary">
+                #{{ $kandidat->ranking }}
+            </span>
+        </td>
 
-            <td class="text-center">
-                <a href="#" class="btn btn-sm btn-primary">
-                    Detail
-                </a>
-            </td>
-        </tr>
-        @endforeach
+        <td>
+            <a href="{{ route('hrd.kandidat.detail', [$lowongan, $kandidat->id]) }}"
+            class="btn btn-sm btn-primary">
+                Detail
+            </a>
+        </td>
+    </tr>
+    @endforeach
     </tbody>
+
 </table>
 
     </div>
