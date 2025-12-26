@@ -260,15 +260,24 @@ Route::get('/lowongan/{lowongan}/laporan', function ($lowongan) {
 | ADMIN
 |--------------------------------------------------------------------------
 */
-
 Route::middleware(['auth', 'role:admin'])
     ->prefix('admin')
+    ->name('admin.')
     ->group(function () {
+
         Route::get('/dashboard', function () {
             return view('admin.dashboard');
-        });
-    });
+        })->name('dashboard');
 
+        Route::get('/manajemen-akun', function () {
+            return view('admin.manajemen-akun');
+        })->name('manajemen-akun');
+
+        Route::get('/monitoring', function () {
+            return view('admin.monitoring');
+        })->name('monitoring');
+
+    });
 
 /*
 |--------------------------------------------------------------------------

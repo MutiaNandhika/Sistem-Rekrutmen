@@ -44,15 +44,15 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->is('admin/users*') ? 'active fw-semibold' : '' }}"
-                           href="#">
+                        <a class="nav-link {{ request()->is('admin/manajemen-akun') ? 'active fw-semibold' : '' }}"
+                           href="{{ url('/admin/manajemen-akun') }}">
                             Manajemen Akun
                         </a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->is('admin/monitoring*') ? 'active fw-semibold' : '' }}"
-                           href="#">
+                        <a class="nav-link {{ request()->is('admin/monitoring') ? 'active fw-semibold' : '' }}"
+                           href="{{ url('/admin/monitoring') }}">
                             Monitoring
                         </a>
                     </li>

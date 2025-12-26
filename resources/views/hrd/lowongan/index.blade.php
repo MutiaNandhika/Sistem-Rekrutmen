@@ -125,7 +125,7 @@
             Detail Lowongan
         </a>
 
-        <a href="{{ route('lowongan.kandidat', $lowongan->id) }}"
+        <a href="{{ route('hrd.kandidat.index', $lowongan->id) }}"
         class="btn-dashboard blue sm">
             Kelola Kandidat
         </a>

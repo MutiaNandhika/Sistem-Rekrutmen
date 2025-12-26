@@ -1,0 +1,79 @@
+/* ==============================
+   FORCE WHITE BACKGROUND
+============================== */
+
+body,
+main,
+.container-fluid,
+.admin-dashboard {
+    background-color: #ffffff !important;
+}
+
+/* ==============================
+   ADMIN DASHBOARD LAYOUT
+============================== */
+
+.admin-dashboard {
+    padding-top: 70px;   /* JARAK AMAN DARI NAVBAR */
+    padding-bottom: 50px;
+    background-color: #ffffff;
+}
+
+/* ==============================
+   HEADER SECTION
+============================== */
+.admin-title {
+    font-size: 26px;
+    font-weight: 700;
+    color: #212529;
+    margin: 0;
+}
+
+/* ==============================
+   LOGO
+============================== */
+
+.admin-logo-wrapper {
+    margin-top: 0; /* jangan pakai jarak kecil */
+}
+
+.admin-logo {
+    max-width: 300px;
+    display: block;
+}
+
+/* ==============================
+   DESCRIPTION
+============================== */
+
+.admin-description {
+    font-size: 15px;
+    line-height: 1.85;
+    color: #212529;
+}
+
+.admin-description p {
+    margin-bottom: 18px;
+}
+
+/* ==============================
+   RESPONSIVE
+============================== */
+
+@media (max-width: 768px) {
+    .admin-dashboard {
+        padding-top: 48px;
+    }
+
+    .admin-title {
+        font-size: 22px;
+    }
+
+    .admin-logo {
+        max-width: 240px;
+    }
+
+    .admin-header {
+        margin-bottom: 40px;
+    }
+}
