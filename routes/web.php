@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\JobController;
+use App\Http\Controllers\KandidatController;
 
 /*
 |--------------------------------------------------------------------------
@@ -197,6 +198,10 @@ Route::middleware(['auth', 'role:hrd'])
                 ->with('success', 'Lowongan berhasil ditambahkan (simulasi)');
         })->name('lowongan.store');
 
+        Route::get('/lowongan/{lowongan}/kandidat', function ($lowonganId) {
+        return app(\App\Http\Controllers\Hrd\KandidatController::class)
+            ->index($lowonganId);
+    })->name('lowongan.kandidat');
     });
 
 /*

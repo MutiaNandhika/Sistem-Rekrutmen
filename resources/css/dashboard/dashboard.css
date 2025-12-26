@@ -7,11 +7,10 @@
 
 /* components */
 @import "./components/navbar.css";
-@import "./components/footer.css";
 @import "./components/buttons.css";
 
 /* pages */
 @import "./pages/hrd-dashboard.css";
-@import "./pages/admin-dashboard.css";
 @import "./pages/lowongan.css";
 @import "./pages/hrd-lowongan-create.css";
+@import "./pages/kandidat.css";
