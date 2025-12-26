@@ -5,6 +5,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\KandidatController;
+use App\Http\Controllers\Admin\AkunAdminController;
+use App\Http\Controllers\HRD\AkunHrdController;
 
 /*
 |--------------------------------------------------------------------------
@@ -96,6 +98,10 @@ Route::middleware(['auth', 'role:pelamar'])
 Route::middleware(['auth', 'role:hrd'])
     ->prefix('hrd')
     ->group(function () {
+
+// Detail akun HRD
+        Route::get('/akun/{id}', [AkunHrdController::class, 'show'])
+            ->name('akun.detail');
 
         /*
         |-----------------------
@@ -276,6 +282,9 @@ Route::middleware(['auth', 'role:admin'])
         Route::get('/monitoring', function () {
             return view('admin.monitoring');
         })->name('monitoring');
+
+        Route::get('/akun/{id}', [AkunAdminController::class, 'show'])
+            ->name('akun.detail');
 
     });
 

@@ -1,0 +1,100 @@
+/* ==============================
+   TABLE STYLE – KONSISTEN HRD
+============================== */
+
+.dataTables_wrapper {
+    font-size: 14px;
+}
+
+/* HEADER */
+table.dataTable thead th {
+    background: #0f172a; /* hitam kebiruan */
+    color: #ffffff;
+    font-weight: 600;
+    padding: 12px 14px;
+    border-bottom: none;
+    position: relative;
+}
+
+/* SORT ICON */
+table.dataTable thead th.sorting::after,
+table.dataTable thead th.sorting_asc::after,
+table.dataTable thead th.sorting_desc::after {
+    color: #94a3b8;
+    opacity: 1;
+}
+
+/* BODY */
+table.dataTable tbody td {
+    padding: 12px 14px;
+    vertical-align: middle;
+}
+
+/* ROW BORDER */
+table.dataTable tbody tr {
+    border-bottom: 1px solid #e5e7eb;
+}
+
+/* PAGINATION */
+.dataTables_paginate .paginate_button {
+    border-radius: 6px !important;
+    padding: 4px 10px !important;
+}
+
+.dataTables_paginate .paginate_button.current {
+    background: #2563eb !important;
+    color: #fff !important;
+    border: none !important;
+}
+
+/* INFO */
+.dataTables_info {
+    font-size: 13px;
+    color: #374151;
+}
+
+/* SEARCH */
+.dataTables_filter input {
+    border-radius: 6px;
+    border: 1px solid #d1d5db;
+    padding: 6px 10px;
+}
+
+/* ==============================
+   BADGE
+============================== */
+
+.badge-status {
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-weight: 600;
+}
+
+.badge-proses {
+    background: #facc15;
+    color: #000;
+}
+
+.badge-diterima {
+    background: #22c55e;
+    color: #fff;
+}
+
+.badge-score {
+    background: #06b6d4;
+    color: #fff;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+}
+
+.badge-rank {
+    background: #2563eb;
+    color: #fff;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+}
