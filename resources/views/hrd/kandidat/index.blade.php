@@ -17,9 +17,11 @@
 
     <div class="d-flex gap-2">
         <button class="btn btn-primary">Screening</button>
-        <button class="btn btn-dark">
-            <i class="bi bi-file-earmark-text"></i> Lihat Laporan
-        </button>
+        <a href="{{ route('hrd.laporan.index', $lowongan) }}"
+        class="btn btn-dark d-flex align-items-center gap-2">
+            <i class="bi bi-file-earmark-text"></i>
+            Lihat Laporan
+        </a>
     </div>
 </div>
 

@@ -1,6 +1,6 @@
 @extends('layouts.hrd')
 
-@section('title', 'Detail Pelamar')
+@section('title', 'Detail Kandidat')
 
 {{-- BREADCRUMB --}}
 @section('breadcrumb')
@@ -9,14 +9,14 @@
     <span>/</span>
     <a href="{{ route('hrd.kandidat.index', $lowongan) }}">Kelola Kandidat</a>
     <span>/</span>
-    <span class="active">Detail Pelamar</span>
+    <span class="active">Detail Kandidat</span>
 </nav>
 @endsection
 
 @section('content')
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h4 class="fw-bold mb-0">Detail Pelamar</h4>
+    <h4 class="fw-bold mb-0">Detail Kandidat</h4>
 
     <a href="{{ route('hrd.kandidat.index', $lowongan) }}"
        class="btn btn-light border">

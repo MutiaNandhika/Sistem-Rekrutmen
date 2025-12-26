@@ -252,7 +252,9 @@ Route::get('/lowongan/{lowongan}/kandidat/{pelamar}', function ($lowongan, $pela
 
 })->name('hrd.kandidat.detail');
     });
-
+Route::get('/lowongan/{lowongan}/laporan', function ($lowongan) {
+    return view('hrd.laporan.index', compact('lowongan'));
+})->name('hrd.laporan.index');
 /*
 |--------------------------------------------------------------------------
 | ADMIN
