@@ -74,17 +74,6 @@
 
                     <ul class="dropdown-menu dropdown-menu-end shadow-sm">
 
-                        {{-- PROFILE --}}
-                        <li>
-                            <a class="dropdown-item"
-                               href="{{ Auth::user()->role === 'pelamar'
-                                    ? route('pelamar.profile')
-                                    : route('profile.edit') }}">
-                                <i class="bi bi-person me-2"></i>
-                                Profile
-                            </a>
-                        </li>
-
                         {{-- PENGATURAN AKUN --}}
                         <li>
                             <a class="dropdown-item"
