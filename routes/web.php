@@ -82,12 +82,79 @@ Route::middleware(['auth', 'role:pelamar'])
         Route::get('/profile', [ProfileController::class, 'index'])
             ->name('profile');
 
-        Route::post('/profile/update', [ProfileController::class, 'updateDataDiri'])
-            ->name('profile.update');
-
         Route::get('/lamaran', function () {
             return view('pelamar.lamaran');
         })->name('lamaran');
+ /*
+        |========================
+        | DATA DIRI
+        |========================
+        */
+        // ✅ DATA DIRI (AJAX)
+        Route::post('/profile/data-diri', [ProfileController::class, 'updateDataDiri'])
+            ->name('profile.data-diri');
+
+        // ✅ TENTANG SAYA
+        Route::post('/profile/tentang-saya', [ProfileController::class, 'updateTentangSaya'])
+            ->name('profile.tentang-saya');
+
+        /*
+        |========================
+        | EXPERIENCE
+        |========================
+        */
+        Route::post('/profile/experiences', [ProfileController::class, 'storeExperience']);
+        Route::put('/profile/experiences/{id}', [ProfileController::class, 'updateExperience']);
+        Route::delete('/profile/experiences/{id}', [ProfileController::class, 'deleteExperience']);
+
+        /*
+        |========================
+        | EDUCATION
+        |========================
+        */
+        Route::post('/profile/educations', [ProfileController::class, 'storeEducation']);
+        Route::put('/profile/educations/{id}', [ProfileController::class, 'updateEducation']);
+        Route::delete('/profile/educations/{id}', [ProfileController::class, 'deleteEducation']);
+
+        /*
+        |========================
+        | SKILLS
+        |========================
+        */
+        Route::post('/profile/skills', [ProfileController::class, 'storeSkill']);
+        Route::delete('/profile/skills/{id}', [ProfileController::class, 'deleteSkill']);
+
+        /*
+        |========================
+        | RESUME
+        |========================
+        */
+        Route::post('/profile/resume', [ProfileController::class, 'uploadResume']);
+        Route::delete('/profile/resume', [ProfileController::class, 'deleteResume']);
+
+        /*
+        |========================
+        | CERTIFICATE
+        |========================
+        */
+        Route::post('/profile/certificates', [ProfileController::class, 'storeCertificate']);
+        Route::delete('/profile/certificates/{id}', [ProfileController::class, 'deleteCertificate']);
+
+        /*
+        |========================
+        | ORGANIZATION
+        |========================
+        */
+        Route::post('/profile/organizations', [ProfileController::class, 'storeOrganization']);
+        Route::delete('/profile/organizations/{id}', [ProfileController::class, 'deleteOrganization']);
+
+        /*
+        |========================
+        | ACHIEVEMENT
+        |========================
+        */
+        Route::post('/profile/achievements', [ProfileController::class, 'storeAchievement']);
+        Route::delete('/profile/achievements/{id}', [ProfileController::class, 'deleteAchievement']);
     });
 
 
