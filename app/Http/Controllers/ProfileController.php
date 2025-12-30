@@ -228,24 +228,26 @@ class ProfileController extends Controller
      * =========================
      */
    public function storeEducation(Request $request)
-    {
-        $data = $request->validate([
-            'tingkat' => 'required|string|max:255',
-            'nama_sekolah' => 'required|string|max:255',
-            'bidang_studi' => 'nullable|string|max:255',
-            'mulai_tahun' => 'nullable|integer',
-            'selesai_bulan' => 'nullable|integer|min:1|max:12',
-            'selesai_tahun' => 'nullable|integer',
-            'informasi_tambahan' => 'nullable|string',
-        ]);
+{
+    $data = $request->validate([
+        'tingkat' => 'required',
+        'nama_sekolah' => 'required',
+        'bidang_studi' => 'required',
+        'mulai_bulan' => 'required|integer|min:1|max:12',
+        'mulai_tahun' => 'required|integer',
+        'selesai_bulan' => 'required|integer|min:1|max:12',
+        'selesai_tahun' => 'required|integer',
+        'informasi_tambahan' => 'nullable|string',
+    ]);
 
-        $data['user_id'] = Auth::id();
+    $data['user_id'] = Auth::id();
 
-        PelamarEducation::create($data);
+    PelamarEducation::create($data);
 
-        return back()->with('success', 'Pendidikan berhasil ditambahkan');
-    }
-
+    return response()->json([
+        'message' => 'Pendidikan berhasil ditambahkan'
+    ]);
+}
 
     public function updateEducation(Request $request, $id)
     {
@@ -253,27 +255,40 @@ class ProfileController extends Controller
         $edu = PelamarEducation::where('user_id', $user->id)->where('id', $id)->firstOrFail();
 
         $data = $request->validate([
-            'tingkat' => 'required|string|max:255',
-            'nama_sekolah' => 'required|string|max:255',
-            'bidang_studi' => 'nullable|string|max:255',
-            'mulai_tahun' => 'nullable|integer',
-            'selesai_bulan' => 'nullable|integer|min:1|max:12',
-            'selesai_tahun' => 'nullable|integer',
-            'informasi_tambahan' => 'nullable|string',
-        ]);
+        'tingkat' => 'required',
+        'nama_sekolah' => 'required',
+        'bidang_studi' => 'required',
+        'mulai_bulan' => 'required|integer|min:1|max:12',
+        'mulai_tahun' => 'required|integer',
+        'selesai_bulan' => 'required|integer|min:1|max:12',
+        'selesai_tahun' => 'required|integer',
+        'informasi_tambahan' => 'nullable|string',
+    ]);
 
         $edu->update($data);
 
-        return back()->with('success', 'Pendidikan berhasil diperbarui.');
+        return response()->json([
+            'message' => 'Pendidikan berhasil diperbarui',
+            'data' => $edu,
+        ]);
+
     }
 
     public function deleteEducation($id)
-    {
-        $user = Auth::user();
-        PelamarEducation::where('user_id', $user->id)->where('id', $id)->delete();
+{
+    $user = Auth::user();
 
-        return back()->with('success', 'Pendidikan berhasil dihapus.');
-    }
+    $edu = PelamarEducation::where('user_id', $user->id)
+        ->where('id', $id)
+        ->firstOrFail();
+
+    $edu->delete();
+
+    return response()->json([
+        'message' => 'Pendidikan berhasil dihapus'
+    ]);
+}
+
 
     /**
      * =========================

@@ -12,6 +12,7 @@ class PelamarEducation extends Model
         'tingkat',
         'nama_sekolah',
         'bidang_studi',
+        'mulai_bulan',
         'mulai_tahun',
         'selesai_bulan',
         'selesai_tahun',
