@@ -17,32 +17,65 @@
 
 @if ($user->pelamarExperiences->count())
     @foreach ($user->pelamarExperiences as $exp)
-        <div class="experience-item d-flex gap-3 mb-4">
+<div class="experience-item d-flex gap-3 mb-4" id="experience-{{ $exp->id }}">
 
-            <div class="timeline-dot"></div>
+    <div class="timeline-dot">
+    <i class="bi bi-briefcase-fill"></i>
+</div>
 
-            <div class="flex-grow-1">
-                <h6 class="fw-bold mb-1">
-                    {{ $exp->position }}
-                </h6>
+
+    <div class="flex-grow-1">
+        <div class="d-flex justify-content-between align-items-start">
+            <div>
+                <h6 class="fw-bold mb-1">{{ $exp->posisi }}</h6>
 
                 <div class="text-muted small mb-1">
-                    {{ $exp->company }}
-                    • {{ $exp->start_date }} – {{ $exp->end_date ?? 'Sekarang' }}
+                    {{ $exp->perusahaan }}
+                    • {{ $exp->tanggal_mulai->format('M Y') }}
+                    –
+                    {{ $exp->tanggal_selesai
+                        ? $exp->tanggal_selesai->format('M Y')
+                        : 'Sekarang' }}
                 </div>
 
-                <p class="text-muted small mb-0">
-                    {{ $exp->description }}
-                </p>
+                @if ($exp->deskripsi)
+                    <p class="text-muted small mb-0">{{ $exp->deskripsi }}</p>
+                @endif
             </div>
 
+            <div class="dropdown">
+                <button class="btn btn-sm btn-light" data-bs-toggle="dropdown">
+                    <i class="bi bi-three-dots"></i>
+                </button>
+                <ul class="dropdown-menu">
+                    <li>
+                        <button class="dropdown-item"
+                            onclick="editExperience({{ $exp->id }}, @js($exp))"
+                            data-bs-toggle="modal"
+                            data-bs-target="#modalPengalamanKerja">
+                            Edit
+                        </button>
+                    </li>
+                    <li>
+                        <button class="btn btn-sm text-danger"
+                                onclick="deleteExperience({{ $exp->id }})">
+                            Hapus
+                        </button>
+                    </li>
+                </ul>
+            </div>
         </div>
-    @endforeach
+    </div>
+
+</div>
+@endforeach
+
 @else
     <p class="text-muted small">
         Ceritakan pengalaman kerja yang paling relevan dan bisa menarik perhatian HRD
     </p>
 @endif
+
 
 </div>
 

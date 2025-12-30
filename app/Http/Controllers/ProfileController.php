@@ -143,7 +143,7 @@ class ProfileController extends Controller
             'tentang_saya' => $profile->tentang_saya,
         ]);
     }
-    
+
     /**
      * =========================
      *  EXPERIENCE (CRUD)
@@ -169,41 +169,58 @@ class ProfileController extends Controller
 
         PelamarExperience::create($data);
 
-        return back()->with('success', 'Pengalaman berhasil ditambahkan');
+        return response()->json([
+        'message' => 'Pengalaman berhasil ditambahkan'
+        ]);
     }
 
 
     public function updateExperience(Request $request, $id)
-    {
-        $user = Auth::user();
-        $exp = PelamarExperience::where('user_id', $user->id)->where('id', $id)->firstOrFail();
+{
+    $user = Auth::user();
 
-        $data = $request->validate([
-            'posisi' => 'required|string|max:255',
-            'perusahaan' => 'required|string|max:255',
-            'tanggal_mulai' => 'required|date',
-            'tanggal_selesai' => 'nullable|date',
-            'masih_bekerja' => 'nullable|boolean',
-            'deskripsi' => 'nullable|string',
-        ]);
+    $exp = PelamarExperience::where('user_id', $user->id)
+        ->where('id', $id)
+        ->firstOrFail();
 
-        $data['masih_bekerja'] = (bool)($data['masih_bekerja'] ?? false);
-        if ($data['masih_bekerja']) {
-            $data['tanggal_selesai'] = null;
-        }
+    $data = $request->validate([
+        'posisi' => 'required|string|max:255',
+        'perusahaan' => 'required|string|max:255',
+        'tanggal_mulai' => 'required|date',
+        'tanggal_selesai' => 'nullable|date',
+        'masih_bekerja' => 'nullable|boolean',
+        'deskripsi' => 'nullable|string',
+    ]);
 
-        $exp->update($data);
+    $data['masih_bekerja'] = (bool)($data['masih_bekerja'] ?? false);
 
-        return back()->with('success', 'Pengalaman kerja berhasil diperbarui.');
+    if ($data['masih_bekerja']) {
+        $data['tanggal_selesai'] = null;
     }
+
+    $exp->update($data);
+
+    return response()->json([
+        'message' => 'Pengalaman kerja berhasil diperbarui',
+        'data' => $exp,
+    ]);
+}
 
     public function deleteExperience($id)
-    {
-        $user = Auth::user();
-        PelamarExperience::where('user_id', $user->id)->where('id', $id)->delete();
+{
+    $user = Auth::user();
 
-        return back()->with('success', 'Pengalaman kerja berhasil dihapus.');
-    }
+    $exp = PelamarExperience::where('user_id', $user->id)
+        ->where('id', $id)
+        ->firstOrFail();
+
+    $exp->delete();
+
+    return response()->json([
+        'message' => 'Pengalaman kerja berhasil dihapus'
+    ]);
+}
+
 
     /**
      * =========================

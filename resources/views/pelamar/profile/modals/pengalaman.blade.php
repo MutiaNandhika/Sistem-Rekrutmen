@@ -7,7 +7,9 @@
 
             {{-- HEADER --}}
             <div class="modal-header border-0">
-                <h6 class="modal-title fw-bold">Tambah Pengalaman Kerja</h6>
+                <h6 class="modal-title fw-bold" id="experienceModalTitle">
+                    Tambah Pengalaman Kerja
+                </h6>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
 
@@ -82,3 +84,92 @@
     </div>
 
 </div>
+
+<script>
+function addExperience() {
+    const id = document.getElementById('experienceEditId').value;
+
+    const payload = {
+        posisi: document.getElementById('expPosition').value,
+        perusahaan: document.getElementById('expCompany').value,
+        tanggal_mulai: document.getElementById('expStart').value + '-01',
+        tanggal_selesai: document.getElementById('expEnd').value
+            ? document.getElementById('expEnd').value + '-01'
+            : null,
+        masih_bekerja: document.getElementById('expEnd').value ? 0 : 1,
+        deskripsi: document.getElementById('expDescription').value,
+    };
+
+    const url = id
+        ? `/pelamar/profile/experiences/${id}`
+        : `/pelamar/profile/experiences`;
+
+    const method = id ? 'PUT' : 'POST';
+
+    fetch(url, {
+        method,
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify(payload)
+    })
+    .then(res => {
+        if (!res.ok) throw new Error();
+        location.reload();
+    })
+    .catch(() => alert('Gagal menyimpan pengalaman'));
+}
+
+
+function editExperience(id, exp) {
+    document.getElementById('experienceEditId').value = id;
+    document.getElementById('experienceModalTitle').innerText = 'Edit Pengalaman Kerja';
+
+    document.getElementById('expPosition').value = exp.posisi;
+    document.getElementById('expCompany').value = exp.perusahaan;
+    document.getElementById('expStart').value = exp.tanggal_mulai.slice(0, 7);
+    document.getElementById('expEnd').value = exp.tanggal_selesai
+        ? exp.tanggal_selesai.slice(0, 7)
+        : '';
+    document.getElementById('expDescription').value = exp.deskripsi ?? '';
+}
+
+document.getElementById('modalPengalamanKerja')
+    .addEventListener('hidden.bs.modal', function () {
+
+    document.getElementById('experienceEditId').value = '';
+    document.getElementById('experienceModalTitle').innerText = 'Tambah Pengalaman Kerja';
+
+    document.getElementById('expPosition').value = '';
+    document.getElementById('expCompany').value = '';
+    document.getElementById('expStart').value = '';
+    document.getElementById('expEnd').value = '';
+    document.getElementById('expDescription').value = '';
+});
+
+function deleteExperience(id) {
+    if (!confirm('Yakin ingin menghapus pengalaman ini?')) return;
+
+    fetch(`/pelamar/profile/experiences/${id}`, {
+        method: 'DELETE',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Accept': 'application/json'
+        }
+    })
+    .then(res => {
+        if (!res.ok) throw new Error();
+        return res.json();
+    })
+    .then(() => {
+        document.getElementById(`experience-${id}`).remove();
+    })
+    .catch(() => {
+        alert('Gagal menghapus pengalaman');
+    });
+}
+
+</script>
+
