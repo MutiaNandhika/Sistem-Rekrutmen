@@ -296,27 +296,34 @@ class ProfileController extends Controller
      * =========================
      */
     public function storeSkill(Request $request)
-    {
-        $request->validate([
-            'nama_skill' => 'required|string|max:255',
-        ]);
+{
+    $request->validate([
+        'nama_skill' => 'required|string|max:255',
+    ]);
 
-        PelamarSkill::firstOrCreate([
-            'user_id' => Auth::id(),
-            'nama_skill' => trim($request->nama_skill),
-        ]);
+    $skill = PelamarSkill::firstOrCreate([
+        'user_id' => Auth::id(),
+        'nama_skill' => trim($request->nama_skill),
+    ]);
 
-        return back()->with('success', 'Skill berhasil ditambahkan');
-    }
+    return response()->json([
+        'message' => 'Skill berhasil ditambahkan',
+        'data' => $skill,
+    ]);
+}
 
+public function deleteSkill($id)
+{
+    $user = Auth::user();
 
-    public function deleteSkill($id)
-    {
-        $user = Auth::user();
-        PelamarSkill::where('user_id', $user->id)->where('id', $id)->delete();
+    PelamarSkill::where('user_id', $user->id)
+        ->where('id', $id)
+        ->delete();
 
-        return back()->with('success', 'Skill berhasil dihapus.');
-    }
+    return response()->json([
+        'message' => 'Skill berhasil dihapus'
+    ]);
+}
 
     /**
      * =========================

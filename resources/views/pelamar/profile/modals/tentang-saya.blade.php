@@ -56,37 +56,3 @@
 
 </div>
 
-<script>
-function updateCounter() {
-    const textarea = document.getElementById('tentangSayaInput');
-    const counter = document.getElementById('charCount');
-    counter.innerText = textarea.value.length;
-}
-
-document.addEventListener('DOMContentLoaded', function () {
-    updateCounter();
-});
-
-function saveTentangSaya() {
-    const text = document.getElementById('tentangSayaInput').value;
-
-    fetch("{{ route('pelamar.profile.tentang-saya') }}", {
-        method: 'POST',
-        headers: {
-            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            tentang_saya: text
-        })
-    })
-    .then(res => res.json())
-    .then(data => {
-        document.getElementById('tentangSayaOutput').innerText =
-            data.tentang_saya || 'Jelaskan secara singkat kelebihanmu sehingga perusahaan yakin untuk merekrutmu.';
-    })
-    .catch(() => {
-        alert('Gagal menyimpan Tentang Saya');
-    });
-}
-</script>

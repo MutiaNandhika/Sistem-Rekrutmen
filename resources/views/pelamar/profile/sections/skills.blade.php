@@ -16,7 +16,7 @@
     @if ($user->pelamarSkills->count())
         @foreach ($user->pelamarSkills as $skill)
             <span class="skill-chip readonly">
-                {{ $skill->name }}
+                {{ $skill->nama_skill }}
             </span>
         @endforeach
     @else
@@ -26,7 +26,6 @@
     @endif
 
     </div>
-
 
     <hr>
 </div>

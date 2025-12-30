@@ -92,7 +92,7 @@ Route::middleware(['auth', 'role:pelamar'])
         */
         // ✅ DATA DIRI (AJAX)
         Route::post('/profile/data-diri', [ProfileController::class, 'updateDataDiri'])
-            ->name('profile.data-diri');
+            ->name('pelamar.profile.data-diri');
 
         // ✅ TENTANG SAYA
         Route::post('/profile/tentang-saya', [ProfileController::class, 'updateTentangSaya'])

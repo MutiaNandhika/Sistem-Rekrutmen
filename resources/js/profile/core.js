@@ -1,25 +1,105 @@
-function previewAvatar(event) {
-    const file = event.target.files[0];
-    if (!file) return;
+document.addEventListener('DOMContentLoaded', () => {
 
-    const reader = new FileReader();
+    const form = document.getElementById('formDataDiri');
+    if (!form) return;
 
-    reader.onload = function(e) {
-        document.getElementById('avatarPreview').src = e.target.result;
-        document.getElementById('avatarPreview').classList.remove('d-none');
-        document.getElementById('avatarIcon').classList.add('d-none');
-    };
+    const csrf = document
+        .querySelector('meta[name="csrf-token"]')
+        .getAttribute('content');
 
-    reader.readAsDataURL(file);
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        fetch('/pelamar/profile/data-diri', {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': csrf
+            },
+            body: new FormData(this)
+        })
+        .then(res => {
+            if (!res.ok) throw new Error('Network error');
+            return res.json();
+        })
+        .then(data => {
+            alert(data.message);
+            location.reload();
+        })
+        .catch(err => {
+            console.error(err);
+            alert('Gagal menyimpan data');
+        });
+    });
+
+});
+
+const photoInput   = document.getElementById('photoInput');
+const photoPreview = document.getElementById('photoPreview');
+const btnRemove    = document.getElementById('btnRemovePhoto');
+const removeInput  = document.getElementById('removePhoto');
+
+if (photoInput) {
+    photoInput.addEventListener('change', function () {
+        const file = this.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = e => photoPreview.src = e.target.result;
+        reader.readAsDataURL(file);
+
+        removeInput.value = 0;
+    });
 }
 
+if (btnRemove) {
+    btnRemove.addEventListener('click', () => {
+        if (!confirm('Hapus foto profil?')) return;
+        photoPreview.src = '/images/default-avatar.png';
+        photoInput.value = '';
+        removeInput.value = 1;
+    });
+}
+
+//Tentang Saya
 function updateCounter() {
     const textarea = document.getElementById('tentangSayaInput');
-    document.getElementById('charCount').innerText = textarea.value.length;
+    const counter  = document.getElementById('charCount');
+    if (!textarea || !counter) return;
+    counter.innerText = textarea.value.length;
 }
 
-function saveTentangSaya() {
-    const value = document.getElementById('tentangSayaInput').value;
-    document.getElementById('tentangSayaOutput').innerText =
-        value || 'Belum ada deskripsi.';
-}
+window.saveTentangSaya = function () {
+
+    const text = document.getElementById('tentangSayaInput').value;
+    const output = document.getElementById('tentangSayaOutput');
+
+    const csrf = document
+        .querySelector('meta[name="csrf-token"]')
+        .getAttribute('content');
+
+    fetch('/pelamar/profile/tentang-saya', {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': csrf,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+            tentang_saya: text
+        })
+    })
+    .then(res => {
+        if (!res.ok) throw new Error('Network error');
+        return res.json();
+    })
+    .then(data => {
+        output.innerText = data.tentang_saya
+            || 'Jelaskan secara singkat kelebihanmu sehingga perusahaan yakin untuk merekrutmu.';
+    })
+    .catch(err => {
+        console.error(err);
+        alert('Gagal menyimpan Tentang Saya');
+    });
+};
+
+document.addEventListener('DOMContentLoaded', updateCounter);
