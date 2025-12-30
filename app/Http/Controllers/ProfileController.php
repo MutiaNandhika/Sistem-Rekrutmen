@@ -124,18 +124,26 @@ class ProfileController extends Controller
 
     public function updateTentangSaya(Request $request)
     {
-        $user = Auth::user();
-
-        $data = $request->validate([
-            'tentang_saya' => ['nullable', 'string', 'max:2600'],
+        $request->validate([
+            'tentang_saya' => 'nullable|string|max:2600',
         ]);
 
-        $profile = PelamarProfile::firstOrCreate(['user_id' => $user->id]);
-        $profile->update($data);
+        $user = Auth::user();
 
-        return back()->with('success', 'Tentang saya berhasil disimpan.');
+        $profile = $user->pelamarProfile()->firstOrCreate([
+            'user_id' => $user->id,
+        ]);
+
+        $profile->update([
+            'tentang_saya' => $request->tentang_saya,
+        ]);
+
+        return response()->json([
+            'message' => 'Tentang saya berhasil disimpan',
+            'tentang_saya' => $profile->tentang_saya,
+        ]);
     }
-
+    
     /**
      * =========================
      *  EXPERIENCE (CRUD)

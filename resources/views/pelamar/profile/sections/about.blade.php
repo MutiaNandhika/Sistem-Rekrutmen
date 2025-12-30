@@ -15,7 +15,8 @@
 
         {{-- OUTPUT TEXT --}}
         <p id="tentangSayaOutput" class="text-muted small mb-3">
-            {{ $user->pelamarProfile->about ?? 'Jelaskan secara singkat kelebihanmu sehingga perusahaan yakin untuk merekrutmu.' }}
+            {{ $user->pelamarProfile->tentang_saya
+                ?? 'Jelaskan secara singkat kelebihanmu sehingga perusahaan yakin untuk merekrutmu.' }}
         </p>
 
         <hr>

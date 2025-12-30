@@ -19,12 +19,12 @@
                 </p>
 
                 <textarea
-                    id="tentangSayaInput"
-                    class="form-control"
-                    rows="5"
-                    maxlength="2600"
-                    placeholder="Ceritakan tentang dirimu..."
-                    oninput="updateCounter()"></textarea>
+                id="tentangSayaInput"
+                class="form-control"
+                rows="5"
+                maxlength="2600"
+                placeholder="Ceritakan tentang dirimu..."
+                oninput="updateCounter()">{{ $user->pelamarProfile->tentang_saya }}</textarea>
 
                 <div class="d-flex justify-content-end mt-1">
                     <small class="text-muted">
@@ -55,3 +55,38 @@
     </div>
 
 </div>
+
+<script>
+function updateCounter() {
+    const textarea = document.getElementById('tentangSayaInput');
+    const counter = document.getElementById('charCount');
+    counter.innerText = textarea.value.length;
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    updateCounter();
+});
+
+function saveTentangSaya() {
+    const text = document.getElementById('tentangSayaInput').value;
+
+    fetch("{{ route('pelamar.profile.tentang-saya') }}", {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            tentang_saya: text
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById('tentangSayaOutput').innerText =
+            data.tentang_saya || 'Jelaskan secara singkat kelebihanmu sehingga perusahaan yakin untuk merekrutmu.';
+    })
+    .catch(() => {
+        alert('Gagal menyimpan Tentang Saya');
+    });
+}
+</script>
