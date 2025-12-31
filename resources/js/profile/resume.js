@@ -1,84 +1,73 @@
-let resumeFile = null;
+function csrfToken() {
+    return document.querySelector('meta[name="csrf-token"]').content;
+}
 
-document.addEventListener('DOMContentLoaded', function () {
-    const resumeInput = document.getElementById('resumeInput');
-    if (!resumeInput) return;
+document.addEventListener('DOMContentLoaded', () => {
 
-    resumeInput.addEventListener('change', function () {
-        const file = this.files[0];
+    const input = document.getElementById('resumeInput');
+    if (!input) return;
+
+    input.addEventListener('change', () => {
+        const file = input.files[0];
         if (!file) return;
 
         if (file.type !== 'application/pdf') {
-            alert('Resume harus berupa PDF');
-            this.value = '';
+            alert('Resume harus PDF');
+            input.value = '';
             return;
         }
 
         if (file.size > 5 * 1024 * 1024) {
-            alert('Ukuran maksimal 5 MB');
-            this.value = '';
+            alert('Maksimal 5 MB');
+            input.value = '';
             return;
         }
 
-        const url = URL.createObjectURL(file);
         document.getElementById('resumePreview').style.display = 'block';
-        document.getElementById('resumeFrame').src = url;
+        document.getElementById('resumeFrame').src =
+            URL.createObjectURL(file);
     });
 });
 
-function saveResume() {
+window.saveResume = function () {
+
     const input = document.getElementById('resumeInput');
-
     if (!input.files.length) {
-        alert('Pilih file PDF terlebih dahulu');
+        alert('Pilih file terlebih dahulu');
         return;
     }
 
-    resumeFile = input.files[0];
-    renderResume();
+    const formData = new FormData();
+    formData.append('resume', input.files[0]);
 
-    input.value = '';
-}
+    fetch('/pelamar/profile/resume', {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': csrfToken()
+        },
+        body: formData
+    })
+    .then(res => {
+        if (!res.ok) throw new Error();
+        location.reload();
+    })
+    .catch(() => alert('Gagal upload resume'));
+};
 
-function renderResume() {
-    const output = document.getElementById('resumeOutput');
+window.deleteResume = function () {
 
-    if (!resumeFile) {
-        output.innerHTML = 'Belum ada resume diunggah';
-        output.classList.add('text-muted');
-        return;
-    }
+    if (!confirm('Yakin hapus resume?')) return;
 
-    output.classList.remove('text-muted');
-
-    output.innerHTML = `
-        <div class="d-flex align-items-center justify-content-between">
-            <div class="text-primary">
-                <i class="bi bi-file-earmark-pdf me-1"></i>
-                ${resumeFile.name}
-            </div>
-
-            <div class="d-flex gap-2">
-                <button class="btn btn-sm btn-light"
-                        data-bs-toggle="modal"
-                        data-bs-target="#modalResume">
-                    <i class="bi bi-pencil"></i>
-                </button>
-
-                <button class="btn btn-sm btn-light text-danger"
-                        onclick="deleteResume()">
-                    <i class="bi bi-trash"></i>
-                </button>
-            </div>
-        </div>
-    `;
-}
-
-function deleteResume() {
-    if (!confirm('Yakin ingin menghapus resume?')) return;
-
-    resumeFile = null;
-    document.getElementById('resumePreview').style.display = 'none';
-    document.getElementById('resumeFrame').src = '';
-    renderResume();
-}
+    fetch('/pelamar/profile/resume', {
+        method: 'DELETE',
+        headers: {
+            'X-CSRF-TOKEN': csrfToken(),
+            'Accept': 'application/json'
+        }
+    })
+    .then(res => {
+        if (!res.ok) throw new Error();
+        location.reload();
+    })
+    .catch(() => alert('Gagal hapus resume'));
+};

@@ -30,7 +30,10 @@
     {{-- INFO --}}
     <div>
         <h6 class="fw-bold mb-1">{{ $edu->nama_sekolah }}</h6>
-        <div class="text-muted small">{{ $edu->bidang_studi }}</div>
+        <div class="text-muted small">
+            <span class="fw-semibold">{{ $edu->tingkat }}</span>
+            • {{ $edu->bidang_studi }}
+        </div>
         <div class="text-muted small">
             @if ($edu->mulai_bulan)
                 {{ $bulan[$edu->mulai_bulan] ?? '' }}

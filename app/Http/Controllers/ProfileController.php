@@ -325,54 +325,101 @@ public function deleteSkill($id)
     ]);
 }
 
-    /**
-     * =========================
-     *  RESUME (UPLOAD 1 FILE)
-     * =========================
-     */
-    public function uploadResume(Request $request)
-    {
-        $request->validate([
-            'resume' => 'required|file|mimes:pdf|max:5120',
-        ]);
+/**
+ * =========================
+ *  RESUME (UPLOAD 1 FILE)
+ * =========================
+ */
+public function uploadResume(Request $request)
+{
+    $request->validate([
+        'resume' => 'required|file|mimes:pdf|max:5120',
+    ]);
 
-        $userId = Auth::id();
-        $file = $request->file('resume');
+    $userId = Auth::id();
+    $file   = $request->file('resume');
 
-        $old = PelamarResume::where('user_id', $userId)->first();
-        if ($old && Storage::disk('public')->exists($old->file_path)) {
-            Storage::disk('public')->delete($old->file_path);
+    // ambil resume lama (jika ada)
+    $old = PelamarResume::where('user_id', $userId)->first();
+
+    if ($old && $old->file_path && Storage::disk('public')->exists($old->file_path)) {
+        Storage::disk('public')->delete($old->file_path);
+    }
+
+    // simpan file baru
+    $path = $file->store('resumes', 'public');
+
+    $resume = PelamarResume::updateOrCreate(
+        ['user_id' => $userId],
+        [
+            'file_path'  => $path,
+            'file_name'  => $file->getClientOriginalName(),
+            'file_size'  => $file->getSize(),
+            'uploaded_at'=> now(),
+        ]
+    );
+
+    // 🔑 PENTING: return JSON untuk AJAX
+    return response()->json([
+        'message'   => 'Resume berhasil diupload',
+        'file_name'=> $resume->file_name,
+        'url'       => asset('storage/' . $resume->file_path),
+    ]);
+}
+
+
+/**
+ * =========================
+ *  DELETE RESUME (AJAX)
+ * =========================
+ */
+public function deleteResume()
+{
+    $userId = Auth::id();
+    $resume = PelamarResume::where('user_id', $userId)->first();
+
+    if ($resume) {
+        if ($resume->file_path && Storage::disk('public')->exists($resume->file_path)) {
+            Storage::disk('public')->delete($resume->file_path);
         }
 
-        $path = $file->store('resumes', 'public');
+        $resume->delete();
+    }
 
-        PelamarResume::updateOrCreate(
-            ['user_id' => $userId],
-            [
-                'file_path' => $path,
-                'file_name' => $file->getClientOriginalName(),
-                'file_size' => $file->getSize(),
-                'uploaded_at' => now(),
-            ]
-        );
+    // 🔑 JSON response
+    return response()->json([
+        'message' => 'Resume berhasil dihapus'
+    ]);
+}
 
-        return back()->with('success', 'Resume berhasil diupload');
+    /**
+     * =========================
+     *  ACHIEVEMENT
+     * =========================
+     */
+    public function storeAchievement(Request $request)
+    {
+        $data = $request->validate([
+            'judul' => 'required|string|max:255',
+            'penyelenggara' => 'nullable|string|max:255',
+            'tahun' => 'nullable|integer',
+            'deskripsi' => 'nullable|string',
+        ]);
+
+        $data['user_id'] = Auth::id();
+
+        PelamarAchievement::create($data);
+
+        return back()->with('success', 'Penghargaan berhasil ditambahkan');
     }
 
 
-    public function deleteResume()
+    public function deleteAchievement($id)
     {
         $user = Auth::user();
-        $resume = PelamarResume::where('user_id', $user->id)->first();
+        PelamarAchievement::where('user_id', $user->id)->where('id', $id)->delete();
 
-        if ($resume) {
-            if ($resume->file_path && Storage::disk('public')->exists($resume->file_path)) {
-                Storage::disk('public')->delete($resume->file_path);
-            }
-            $resume->delete();
-        }
-
-        return back()->with('success', 'Resume berhasil dihapus.');
+        return back()->with('success', 'Penghargaan berhasil dihapus.');
     }
 
     /**
@@ -452,36 +499,6 @@ public function deleteSkill($id)
         PelamarOrganization::where('user_id', $user->id)->where('id', $id)->delete();
 
         return back()->with('success', 'Organisasi berhasil dihapus.');
-    }
-
-    /**
-     * =========================
-     *  ACHIEVEMENT
-     * =========================
-     */
-    public function storeAchievement(Request $request)
-    {
-        $data = $request->validate([
-            'judul' => 'required|string|max:255',
-            'penyelenggara' => 'nullable|string|max:255',
-            'tahun' => 'nullable|integer',
-            'deskripsi' => 'nullable|string',
-        ]);
-
-        $data['user_id'] = Auth::id();
-
-        PelamarAchievement::create($data);
-
-        return back()->with('success', 'Penghargaan berhasil ditambahkan');
-    }
-
-
-    public function deleteAchievement($id)
-    {
-        $user = Auth::user();
-        PelamarAchievement::where('user_id', $user->id)->where('id', $id)->delete();
-
-        return back()->with('success', 'Penghargaan berhasil dihapus.');
     }
 
     /**

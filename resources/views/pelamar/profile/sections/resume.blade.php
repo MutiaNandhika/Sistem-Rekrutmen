@@ -16,20 +16,28 @@
     </p>
 
     {{-- OUTPUT FILE --}}
-    <div id="resumeOutput" class="small text-muted">
+<div id="resumeOutput" class="small text-muted">
 
-    @if ($user->pelamarResume)
-        <a href="{{ asset('storage/' . $user->pelamarResume->file) }}"
-        target="_blank"
-        class="text-primary fw-semibold">
+@if ($user->pelamarResume)
+    <div class="d-flex align-items-center justify-content-between">
+        <a href="{{ asset('storage/' . $user->pelamarResume->file_path) }}"
+           target="_blank"
+           class="text-primary fw-semibold"
+           id="resumeLink">
             <i class="bi bi-file-earmark-pdf me-1"></i>
-            Lihat Resume
+            {{ $user->pelamarResume->file_name }}
         </a>
-    @else
-        Belum ada resume diunggah
-    @endif
 
+        <button class="btn btn-sm btn-light text-danger"
+                onclick="deleteResume()">
+            <i class="bi bi-trash"></i>
+        </button>
     </div>
+@else
+    <span id="resumeEmpty">Belum ada resume diunggah</span>
+@endif
+
+</div>
 
     <hr>
 </div>

@@ -91,47 +91,122 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 function csrfToken() {
-    return document
-        .querySelector('meta[name="csrf-token"]')
-        .getAttribute('content');
+    return document.querySelector('meta[name="csrf-token"]').content;
 }
 
-window.deleteSkill = function (id) {
+document.addEventListener('DOMContentLoaded', () => {
 
-    if (!confirm('Hapus skill ini?')) return;
+    const input   = document.getElementById('resumeInput');
+    const preview = document.getElementById('resumePreview');
+    const frame   = document.getElementById('resumeFrame');
 
-    fetch(`/pelamar/profile/skills/${id}`, {
-        method: 'DELETE',
-        headers: {
-            'X-CSRF-TOKEN': csrfToken(),
-            'Accept': 'application/json'
+    if (!input) return;
+
+    input.addEventListener('change', () => {
+        const file = input.files[0];
+        if (!file) return;
+
+        // VALIDASI
+        if (file.type !== 'application/pdf') {
+            alert('Resume harus PDF');
+            resetInput();
+            return;
         }
-    })
-    .then(res => {
-        if (!res.ok) throw new Error();
 
-        // HAPUS CHIP
-        const el = document.getElementById(`skill-${id}`);
-        if (el) el.remove();
-
-        // CEK JIKA SUDAH TIDAK ADA SKILL
-        const skillsList = document.getElementById('skillsList');
-        const remainingSkills = skillsList.querySelectorAll('.skill-chip');
-
-        if (remainingSkills.length === 0) {
-            skillsList.innerHTML = `
-                <span class="skill-chip readonly">
-                    Belum ada skill
-                </span>
-            `;
+        if (file.size > 5 * 1024 * 1024) {
+            alert('Maksimal 5 MB');
+            resetInput();
+            return;
         }
-    })
-    .catch(() => {
-        alert('Gagal menghapus skill');
+
+        // AUTO CLEAR PREVIEW LAMA
+        frame.src = '';
+        preview.style.display = 'block';
+
+        frame.src = URL.createObjectURL(file);
     });
-};
 
+    function resetInput() {
+        input.value = '';
+        preview.style.display = 'none';
+        frame.src = '';
+    }
 
+    window.saveResume = function () {
+
+        if (!input.files.length) {
+            alert('Pilih file terlebih dahulu');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('resume', input.files[0]);
+
+        fetch('/profile/resume', {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': csrfToken(),
+                'Accept': 'application/json'
+            },
+            body: formData
+        })
+        .then(async res => {
+            if (!res.ok) throw new Error();
+
+            const data = await res.json();
+
+            // UPDATE UI TANPA RELOAD
+            renderResume(data);
+
+            resetInput();
+            bootstrap.Modal.getInstance(
+                document.getElementById('modalResume')
+            ).hide();
+        })
+        .catch(() => alert('Gagal upload resume'));
+    };
+
+    window.deleteResume = function () {
+
+        if (!confirm('Yakin hapus resume?')) return;
+
+        fetch('/profile/resume', {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': csrfToken(),
+                'Accept': 'application/json'
+            }
+        })
+        .then(res => {
+            if (!res.ok) throw new Error();
+
+            document.getElementById('resumeOutput').innerHTML =
+                `<span id="resumeEmpty">Belum ada resume diunggah</span>`;
+
+            preview.style.display = 'none';
+            frame.src = '';
+        })
+        .catch(() => alert('Gagal hapus resume'));
+    };
+
+    function renderResume(data) {
+        document.getElementById('resumeOutput').innerHTML = `
+            <div class="d-flex align-items-center justify-content-between">
+                <a href="${data.url}"
+                   target="_blank"
+                   class="text-primary fw-semibold">
+                    <i class="bi bi-file-earmark-pdf me-1"></i>
+                    ${data.file_name}
+                </a>
+
+                <button class="btn btn-sm btn-light text-danger"
+                        onclick="deleteResume()">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </div>
+        `;
+    }
+});
 
 });
 

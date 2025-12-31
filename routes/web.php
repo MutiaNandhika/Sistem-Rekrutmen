@@ -154,6 +154,7 @@ Route::middleware(['auth', 'role:pelamar'])
         |========================
         */
         Route::post('/profile/achievements', [ProfileController::class, 'storeAchievement']);
+        Route::put('/profile/achievements/{id}', [ProfileController::class, 'updateAchievement']);
         Route::delete('/profile/achievements/{id}', [ProfileController::class, 'deleteAchievement']);
     });
 
