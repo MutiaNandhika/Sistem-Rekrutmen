@@ -1,130 +1,84 @@
-let awards = [];
-let awardCounter = 1;
-
-function saveAward() {
-
-    const editId = document.getElementById('awardEditId').value;
-    const title  = document.getElementById('awardTitle').value.trim();
-    const role   = document.getElementById('awardRole').value.trim();
-    const year   = document.getElementById('awardYear').value;
-    const desc   = document.getElementById('awardDesc').value.trim();
-
-    if (!title || !role || !year) {
-        alert('Lengkapi data wajib');
-        return;
-    }
-
-    if (editId) {
-        const item = awards.find(a => a.id == editId);
-        item.title = title;
-        item.role  = role;
-        item.year  = year;
-        item.desc  = desc;
-    } else {
-        awards.push({
-            id: awardCounter++,
-            title, role, year, desc
-        });
-    }
-
-    resetAwardForm();
-    renderAwards();
+function csrfToken() {
+    const meta = document.querySelector('meta[name="csrf-token"]');
+    return meta ? meta.content : '';
 }
 
-function renderAwards() {
+/* ================= TAMBAH / UPDATE ================= */
+window.addAchievement = function () {
 
-    const list = document.getElementById('penghargaanList');
-    list.innerHTML = '';
+    const id = document.getElementById('achievementEditId').value;
 
-    if (!awards.length) {
-        list.innerHTML = `
-            <p class="text-muted small">
-                Beritahu prestasimu dengan menambahkan penghargaan di sini.
-            </p>`;
-        return;
-    }
+    const payload = {
+        judul: document.getElementById('awardJudul').value,
+        penyelenggara: document.getElementById('awardPenyelenggara').value,
+        tahun: document.getElementById('awardTahun').value,
+        deskripsi: document.getElementById('awardDeskripsi').value,
+    };
 
-    awards.forEach(item => {
-        list.innerHTML += `
-            <div class="award-item d-flex justify-content-between align-items-start mb-3">
-                <div>
-                    <div class="fw-semibold">${item.title}</div>
-                    <div class="text-muted small">
-                        ${item.role} • ${item.year}
-                    </div>
-                    ${item.desc
-                        ? `<div class="text-muted small mt-1">${item.desc}</div>`
-                        : ''
-                    }
-                </div>
+    const BASE_URL = '/pelamar/profile/achievements';
+    const url = id ? `${BASE_URL}/${id}` : BASE_URL;
+    const method = id ? 'PUT' : 'POST';
 
-                <div class="award-actions position-relative">
-                    <button class="btn btn-sm btn-light"
-                            onclick="toggleAwardMenu(this)">
-                        <i class="bi bi-three-dots-vertical"></i>
-                    </button>
+    fetch(url, {
+        method,
+        headers: {
+            'X-CSRF-TOKEN': csrfToken(),
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify(payload)
+    })
+    .then(async res => {
+        const data = await res.json();
 
-                    <div class="award-menu shadow">
-                        <button onclick="editAward(${item.id})">
-                            <i class="bi bi-pencil me-2"></i>Edit
-                        </button>
-                        <button class="text-danger"
-                                onclick="deleteAward(${item.id})">
-                            <i class="bi bi-trash me-2"></i>Hapus
-                        </button>
-                    </div>
-                </div>
-            </div>
-        `;
+        if (!res.ok) {
+            alert('Validasi gagal');
+            console.error(data);
+            return;
+        }
+
+        location.reload();
+    })
+    .catch(err => {
+        console.error(err);
+        alert('Request gagal');
     });
-}
+};
 
-function editAward(id) {
+/* ================= EDIT ================= */
+window.editAchievement = function (id, award) {
 
-    const item = awards.find(a => a.id === id);
+    document.getElementById('achievementEditId').value = id;
+    document.getElementById('awardJudul').value = award.judul;
+    document.getElementById('awardPenyelenggara').value = award.penyelenggara;
+    document.getElementById('awardTahun').value = award.tahun;
+    document.getElementById('awardDeskripsi').value = award.deskripsi ?? '';
+};
 
-    document.getElementById('awardEditId').value = item.id;
-    document.getElementById('awardTitle').value  = item.title;
-    document.getElementById('awardRole').value   = item.role;
-    document.getElementById('awardYear').value   = item.year;
-    document.getElementById('awardDesc').value   = item.desc;
+/* ================= DELETE ================= */
+window.deleteAchievement = function (id) {
 
-    new bootstrap.Modal(
-        document.getElementById('modalPenghargaan')
-    ).show();
-}
+    if (!confirm('Yakin ingin menghapus penghargaan ini?')) return;
 
-function deleteAward(id) {
-    if (!confirm('Yakin hapus penghargaan ini?')) return;
+    fetch(`/pelamar/profile/achievements/${id}`, {
+        method: 'DELETE',
+        headers: {
+            'X-CSRF-TOKEN': csrfToken(),
+            'Accept': 'application/json'
+        }
+    })
+    .then(res => {
+        if (!res.ok) throw new Error();
+        document.getElementById(`achievement-${id}`).remove();
+    })
+    .catch(() => alert('Gagal menghapus penghargaan'));
+};
 
-    awards = awards.filter(a => a.id !== id);
-    renderAwards();
-}
-
-function resetAwardForm() {
-    document.getElementById('awardEditId').value = '';
-    document.getElementById('awardTitle').value  = '';
-    document.getElementById('awardRole').value   = '';
-    document.getElementById('awardYear').value   = '';
-    document.getElementById('awardDesc').value   = '';
-}
-
-function toggleAwardMenu(button) {
-    const menu = button.nextElementSibling;
-
-    document.querySelectorAll('.award-menu').forEach(el => {
-        if (el !== menu) el.style.display = 'none';
+/* ================= RESET MODAL ================= */
+document.getElementById('modalPenghargaan')
+    .addEventListener('hidden.bs.modal', () => {
+        document.getElementById('achievementEditId').value = '';
+        document.querySelectorAll(
+            '#modalPenghargaan input, #modalPenghargaan textarea, #modalPenghargaan select'
+        ).forEach(el => el.value = '');
     });
-
-    menu.style.display =
-        menu.style.display === 'block' ? 'none' : 'block';
-}
-
-document.addEventListener('click', function (e) {
-    if (!e.target.closest('.award-actions')) {
-        document.querySelectorAll('.award-menu').forEach(el => {
-            el.style.display = 'none';
-        });
-    }
-});
-

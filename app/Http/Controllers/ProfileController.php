@@ -398,29 +398,60 @@ public function deleteResume()
      * =========================
      */
     public function storeAchievement(Request $request)
-    {
-        $data = $request->validate([
-            'judul' => 'required|string|max:255',
-            'penyelenggara' => 'nullable|string|max:255',
-            'tahun' => 'nullable|integer',
-            'deskripsi' => 'nullable|string',
-        ]);
+{
+    $data = $request->validate([
+        'judul' => 'required|string|max:255',
+        'penyelenggara' => 'required|string|max:255',
+        'tahun' => 'required|integer',
+        'deskripsi' => 'nullable|string',
+    ]);
 
-        $data['user_id'] = Auth::id();
+    $data['user_id'] = Auth::id();
 
-        PelamarAchievement::create($data);
+    PelamarAchievement::create($data);
 
-        return back()->with('success', 'Penghargaan berhasil ditambahkan');
-    }
+    return response()->json([
+        'message' => 'Penghargaan berhasil ditambahkan'
+    ]);
+}
 
+public function updateAchievement(Request $request, $id)
+{
+    $user = Auth::user();
 
-    public function deleteAchievement($id)
-    {
-        $user = Auth::user();
-        PelamarAchievement::where('user_id', $user->id)->where('id', $id)->delete();
+    $award = PelamarAchievement::where('user_id', $user->id)
+        ->where('id', $id)
+        ->firstOrFail();
 
-        return back()->with('success', 'Penghargaan berhasil dihapus.');
-    }
+    $data = $request->validate([
+        'judul' => 'required|string|max:255',
+        'penyelenggara' => 'required|string|max:255',
+        'tahun' => 'required|integer',
+        'deskripsi' => 'nullable|string',
+    ]);
+
+    $award->update($data);
+
+    return response()->json([
+        'message' => 'Penghargaan berhasil diperbarui',
+        'data' => $award,
+    ]);
+}
+
+public function deleteAchievement($id)
+{
+    $user = Auth::user();
+
+    $award = PelamarAchievement::where('user_id', $user->id)
+        ->where('id', $id)
+        ->firstOrFail();
+
+    $award->delete();
+
+    return response()->json([
+        'message' => 'Penghargaan berhasil dihapus'
+    ]);
+}
 
     /**
      * =========================
