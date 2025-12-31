@@ -6,17 +6,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let skills = [];
 
-    /* ================= TAMBAH SKILL ================= */
+    function csrfToken() {
+        const meta = document.querySelector('meta[name="csrf-token"]');
+        return meta ? meta.content : '';
+    }
+
+    /* ================= TAMBAH KE ARRAY ================= */
     function addSkill(value) {
         value = value.trim();
-
         if (!value) return;
         if (skills.includes(value)) return;
         if (skills.length >= 10) {
             alert('Maksimal 10 skill');
             return;
         }
-
         skills.push(value);
         renderPreview();
     }
@@ -30,10 +33,9 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    /* ================= RENDER CHIP DI MODAL ================= */
+    /* ================= RENDER CHIP MODAL ================= */
     function renderPreview() {
         skillPreview.innerHTML = '';
-
         skills.forEach((skill, index) => {
             skillPreview.innerHTML += `
                 <span class="skill-chip">
@@ -44,39 +46,92 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    /* ================= HAPUS ================= */
     window.removeSkill = function (index) {
         skills.splice(index, 1);
         renderPreview();
-    }
+    };
 
-    /* ================= SIMPAN ================= */
-    window.saveSkills = function () {
+    /* ================= SIMPAN KE BACKEND ================= */
+    window.saveSkills = async function () {
 
-        // 👉 JIKA USER KETIK TAPI BELUM ENTER
+        // kalau user belum tekan enter
         if (skillInput.value.trim()) {
             addSkill(skillInput.value);
             skillInput.value = '';
         }
 
-        skillsList.innerHTML = '';
-
         if (!skills.length) {
-            skillsList.innerHTML = `
-                <span class="skill-chip readonly">Belum ada skill</span>
-            `;
+            alert('Tambahkan minimal 1 skill');
             return;
         }
 
-        skills.forEach(skill => {
-            skillsList.innerHTML += `
-                <span class="skill-chip readonly">${skill}</span>
-            `;
-        });
+        for (const skill of skills) {
+            await fetch('/pelamar/profile/skills', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken(),
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    nama_skill: skill
+                })
+            });
+        }
+
+        // refresh agar sinkron DB
+        location.reload();
     };
 
-    /* ================= BUKA MODAL ================= */
+    /* ================= RESET MODAL ================= */
     const modalSkills = document.getElementById('modalSkills');
-    modalSkills.addEventListener('show.bs.modal', renderPreview);
+    modalSkills.addEventListener('show.bs.modal', () => {
+        skills = [];
+        renderPreview();
+    });
+
+function csrfToken() {
+    return document
+        .querySelector('meta[name="csrf-token"]')
+        .getAttribute('content');
+}
+
+window.deleteSkill = function (id) {
+
+    if (!confirm('Hapus skill ini?')) return;
+
+    fetch(`/pelamar/profile/skills/${id}`, {
+        method: 'DELETE',
+        headers: {
+            'X-CSRF-TOKEN': csrfToken(),
+            'Accept': 'application/json'
+        }
+    })
+    .then(res => {
+        if (!res.ok) throw new Error();
+
+        // HAPUS CHIP
+        const el = document.getElementById(`skill-${id}`);
+        if (el) el.remove();
+
+        // CEK JIKA SUDAH TIDAK ADA SKILL
+        const skillsList = document.getElementById('skillsList');
+        const remainingSkills = skillsList.querySelectorAll('.skill-chip');
+
+        if (remainingSkills.length === 0) {
+            skillsList.innerHTML = `
+                <span class="skill-chip readonly">
+                    Belum ada skill
+                </span>
+            `;
+        }
+    })
+    .catch(() => {
+        alert('Gagal menghapus skill');
+    });
+};
+
+
 
 });
+

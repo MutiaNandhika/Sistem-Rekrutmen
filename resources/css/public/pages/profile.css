@@ -181,6 +181,18 @@
     cursor: default;
 }
 
+.skill-remove {
+    border: none;
+    background: none;
+    font-size: 14px;
+    cursor: pointer;
+    color: #888;
+}
+
+.skill-remove:hover {
+    color: red;
+}
+
 /* =========================================================
    RESUME
 ========================================================= */
