@@ -47,19 +47,13 @@
                         <div class="col-6">
                             <select id="certIssueMonth" class="form-select">
                                 <option value="">Bulan</option>
-                                <option>Januari</option>
-                                <option>Februari</option>
-                                <option>Maret</option>
-                                <option>April</option>
-                                <option>Mei</option>
-                                <option>Juni</option>
-                                <option>Juli</option>
-                                <option>Agustus</option>
-                                <option>September</option>
-                                <option>Oktober</option>
-                                <option>November</option>
-                                <option>Desember</option>
+                                @for ($i = 1; $i <= 12; $i++)
+                                    <option value="{{ $i }}">
+                                        {{ DateTime::createFromFormat('!m', $i)->format('F') }}
+                                    </option>
+                                @endfor
                             </select>
+
                         </div>
 
                         <div class="col-6">
@@ -83,19 +77,13 @@
                         <div class="col-6">
                             <select id="certExpireMonth" class="form-select">
                                 <option value="">Bulan</option>
-                                <option>Januari</option>
-                                <option>Februari</option>
-                                <option>Maret</option>
-                                <option>April</option>
-                                <option>Mei</option>
-                                <option>Juni</option>
-                                <option>Juli</option>
-                                <option>Agustus</option>
-                                <option>September</option>
-                                <option>Oktober</option>
-                                <option>November</option>
-                                <option>Desember</option>
+                                @for ($i = 1; $i <= 12; $i++)
+                                    <option value="{{ $i }}">
+                                        {{ DateTime::createFromFormat('!m', $i)->format('F') }}
+                                    </option>
+                                @endfor
                             </select>
+
                         </div>
 
                         <div class="col-6">
@@ -140,10 +128,11 @@
                 </button>
 
                 <button class="btn btn-primary"
-                        onclick="saveCertificate()"
+                        onclick="addCertificate()"
                         data-bs-dismiss="modal">
                     Simpan
                 </button>
+
             </div>
 
         </div>

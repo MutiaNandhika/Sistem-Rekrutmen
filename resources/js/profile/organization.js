@@ -1,169 +1,92 @@
-let orgs = [];
-let orgCounter = 1;
+function csrfToken() {
+    return document.querySelector('meta[name="csrf-token"]').content;
+}
 
-/* ================= SIMPAN / UPDATE ================= */
-function saveOrg() {
+window.saveOrg = function () {
 
-    const editId = document.getElementById('orgEditId').value;
-    const name   = document.getElementById('orgName').value.trim();
-    const role   = document.getElementById('orgRole').value.trim();
+    const id = document.getElementById('orgEditId').value;
 
-    const sm = document.getElementById('orgStartMonth').value;
-    const sy = document.getElementById('orgStartYear').value;
-    const em = document.getElementById('orgEndMonth').value;
-    const ey = document.getElementById('orgEndYear').value;
+    const payload = {
+        nama_organisasi: document.getElementById('orgName').value.trim(),
+        posisi: document.getElementById('orgRole').value.trim(),
+        mulai_bulan: document.getElementById('orgStartMonth').value,
+        mulai_tahun: document.getElementById('orgStartYear').value,
+        selesai_bulan: document.getElementById('orgEndMonth').value,
+        selesai_tahun: document.getElementById('orgEndYear').value,
+        masih_aktif: document.getElementById('orgOngoing').checked,
+        informasi_tambahan: document.getElementById('orgDesc').value.trim(),
+    };
 
-    const ongoing = document.getElementById('orgOngoing').checked;
-    const desc    = document.getElementById('orgDesc').value.trim();
-
-    if (!name || !role || !sm || !sy) {
+    if (!payload.nama_organisasi || !payload.posisi || !payload.mulai_bulan || !payload.mulai_tahun) {
         alert('Lengkapi data wajib');
         return;
     }
 
-    let period = `${sm} ${sy} – `;
-    period += ongoing ? 'Sekarang' : `${em} ${ey}`;
+    const BASE_URL = '/pelamar/profile/organizations';
+    const url = id ? `${BASE_URL}/${id}` : BASE_URL;
+    const method = id ? 'PUT' : 'POST';
 
-    if (editId) {
-        const item = orgs.find(o => o.id == editId);
-        item.name   = name;
-        item.role   = role;
-        item.period = period;
-        item.desc   = desc;
+    fetch(url, {
+        method,
+        headers: {
+            'X-CSRF-TOKEN': csrfToken(),
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify(payload)
+    })
+    .then(res => res.json())
+    .then(() => location.reload())
+    .catch(() => alert('Request gagal'));
+};
+
+window.editOrganization = function (id, org) {
+
+    // set ID edit
+    document.getElementById('orgEditId').value = id;
+
+    // isi field utama
+    document.getElementById('orgName').value = org.nama_organisasi;
+    document.getElementById('orgRole').value = org.posisi;
+    document.getElementById('orgDesc').value = org.informasi_tambahan ?? '';
+
+    // isi tanggal mulai
+    document.getElementById('orgStartMonth').value = org.mulai_bulan;
+    document.getElementById('orgStartYear').value  = org.mulai_tahun;
+
+    // checkbox masih aktif
+    document.getElementById('orgOngoing').checked = !!org.masih_aktif;
+
+    // isi tanggal selesai (kalau tidak masih aktif)
+    if (!org.masih_aktif) {
+        document.getElementById('orgEndMonth').value = org.selesai_bulan;
+        document.getElementById('orgEndYear').value  = org.selesai_tahun;
     } else {
-        orgs.push({
-            id: orgCounter++,
-            name,
-            role,
-            period,
-            desc
-        });
+        document.getElementById('orgEndMonth').value = '';
+        document.getElementById('orgEndYear').value  = '';
     }
 
-    resetOrgForm();
-    renderOrgs();
-}
-
-/* ================= RENDER LIST ================= */
-function renderOrgs() {
-
-    const list = document.getElementById('organisasiList');
-    list.innerHTML = '';
-
-    if (!orgs.length) {
-        list.innerHTML = `
-            <p class="text-muted small">
-                Adakah kegiatan ekstrakurikuler atau relawan yang ingin kamu tampilkan?
-            </p>`;
-        return;
-    }
-
-    orgs.forEach(item => {
-        list.innerHTML += `
-            <div class="org-item d-flex justify-content-between mb-3">
-
-                <div>
-                    <div class="fw-semibold">${item.name}</div>
-                    <div class="text-muted small">
-                        ${item.role} • ${item.period}
-                    </div>
-                    ${item.desc
-                        ? `<div class="text-muted small mt-1">${item.desc}</div>`
-                        : ''
-                    }
-                </div>
-
-                <div class="org-actions position-relative">
-                    <button class="btn btn-sm btn-light"
-                            onclick="toggleOrgMenu(this)">
-                        <i class="bi bi-three-dots-vertical"></i>
-                    </button>
-
-                    <div class="org-menu shadow">
-                        <button onclick="editOrg(${item.id})">
-                            <i class="bi bi-pencil me-2"></i>Edit
-                        </button>
-                        <button class="text-danger"
-                                onclick="deleteOrg(${item.id})">
-                            <i class="bi bi-trash me-2"></i>Hapus
-                        </button>
-                    </div>
-                </div>
-
-            </div>
-        `;
-    });
-}
-
-/* ================= TOGGLE MENU ================= */
-function toggleOrgMenu(button) {
-
-    const menu = button.nextElementSibling;
-
-    // tutup menu lain
-    document.querySelectorAll('.org-menu').forEach(el => {
-        if (el !== menu) el.style.display = 'none';
-    });
-
-    menu.style.display =
-        menu.style.display === 'block' ? 'none' : 'block';
-}
-
-/* ================= KLIK DI LUAR ================= */
-document.addEventListener('click', function (e) {
-    if (!e.target.closest('.org-actions')) {
-        document.querySelectorAll('.org-menu').forEach(el => {
-            el.style.display = 'none';
-        });
-    }
-});
-
-/* ================= EDIT ================= */
-function editOrg(id) {
-
-    const item = orgs.find(o => o.id === id);
-
-    document.getElementById('orgEditId').value = item.id;
-    document.getElementById('orgName').value   = item.name;
-    document.getElementById('orgRole').value   = item.role;
-    document.getElementById('orgDesc').value   = item.desc;
-
-    const period = item.period.split(' – ');
-    const start  = period[0].split(' ');
-    document.getElementById('orgStartMonth').value = start[0];
-    document.getElementById('orgStartYear').value  = start[1];
-
-    if (period[1] === 'Sekarang') {
-        document.getElementById('orgOngoing').checked = true;
-    } else {
-        const end = period[1].split(' ');
-        document.getElementById('orgEndMonth').value = end[0];
-        document.getElementById('orgEndYear').value  = end[1];
-        document.getElementById('orgOngoing').checked = false;
-    }
-
+    // buka modal
     new bootstrap.Modal(
         document.getElementById('modalOrganisasi')
     ).show();
-}
+};
 
-/* ================= HAPUS ================= */
-function deleteOrg(id) {
-    if (!confirm('Yakin hapus pengalaman ini?')) return;
 
-    orgs = orgs.filter(o => o.id !== id);
-    renderOrgs();
-}
+window.deleteOrganization = function (id) {
 
-/* ================= RESET FORM ================= */
-function resetOrgForm() {
-    document.getElementById('orgEditId').value = '';
-    document.getElementById('orgName').value = '';
-    document.getElementById('orgRole').value = '';
-    document.getElementById('orgStartMonth').value = '';
-    document.getElementById('orgStartYear').value = '';
-    document.getElementById('orgEndMonth').value = '';
-    document.getElementById('orgEndYear').value = '';
-    document.getElementById('orgOngoing').checked = false;
-    document.getElementById('orgDesc').value = '';
-}
+    if (!confirm('Yakin ingin menghapus data ini?')) return;
+
+    fetch(`/pelamar/profile/organizations/${id}`, {
+        method: 'DELETE',
+        headers: {
+            'X-CSRF-TOKEN': csrfToken(),
+            'Accept': 'application/json'
+        }
+    })
+    .then(res => res.json())
+    .then(() => {
+        document.getElementById(`organization-${id}`)?.remove();
+    })
+    .catch(() => alert('Gagal menghapus data'));
+};

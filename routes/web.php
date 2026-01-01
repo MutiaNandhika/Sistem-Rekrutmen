@@ -138,6 +138,7 @@ Route::middleware(['auth', 'role:pelamar'])
         |========================
         */
         Route::post('/profile/certificates', [ProfileController::class, 'storeCertificate']);
+        Route::put('/profile/certificates/{id}', [ProfileController::class, 'updateCertificate']);
         Route::delete('/profile/certificates/{id}', [ProfileController::class, 'deleteCertificate']);
 
         /*
@@ -146,6 +147,7 @@ Route::middleware(['auth', 'role:pelamar'])
         |========================
         */
         Route::post('/profile/organizations', [ProfileController::class, 'storeOrganization']);
+        Route::put('/profile/organizations/{id}', [ProfileController::class, 'updateOrganization']);
         Route::delete('/profile/organizations/{id}', [ProfileController::class, 'deleteOrganization']);
 
         /*

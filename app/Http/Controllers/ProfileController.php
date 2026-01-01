@@ -454,83 +454,167 @@ public function deleteAchievement($id)
 }
 
     /**
-     * =========================
-     *  CERTIFICATE
-     * =========================
-     */
-    public function storeCertificate(Request $request)
-    {
-        $data = $request->validate([
-            'nama_sertifikat' => 'required|string|max:255',
-            'organisasi_penerbit' => 'required|string|max:255',
-            'bulan_terbit' => 'nullable|integer|min:1|max:12',
-            'tahun_terbit' => 'nullable|integer',
-            'tanpa_expired' => 'nullable|boolean',
-            'bulan_expired' => 'nullable|integer|min:1|max:12',
-            'tahun_expired' => 'nullable|integer',
-            'informasi_tambahan' => 'nullable|string',
-        ]);
+ * =========================
+ *  CERTIFICATE (CRUD)
+ * =========================
+ */
+public function storeCertificate(Request $request)
+{
+    $data = $request->validate([
+        'nama_sertifikat' => 'required|string|max:255',
+        'organisasi_penerbit' => 'required|string|max:255',
+        'bulan_terbit' => 'required|integer|min:1|max:12',
+        'tahun_terbit' => 'required|integer',
+        'tanpa_expired' => 'nullable|boolean',
+        'bulan_expired' => 'nullable|integer|min:1|max:12',
+        'tahun_expired' => 'nullable|integer',
+        'informasi_tambahan' => 'nullable|string',
+    ]);
 
-        $data['user_id'] = Auth::id();
-        $data['tanpa_expired'] = $request->boolean('tanpa_expired');
+    $data['user_id'] = Auth::id();
+    $data['tanpa_expired'] = $request->boolean('tanpa_expired');
 
-        if ($data['tanpa_expired']) {
-            $data['bulan_expired'] = null;
-            $data['tahun_expired'] = null;
-        }
-
-        PelamarCertificate::create($data);
-
-        return back()->with('success', 'Sertifikat berhasil ditambahkan');
+    if ($data['tanpa_expired']) {
+        $data['bulan_expired'] = null;
+        $data['tahun_expired'] = null;
     }
 
-    public function deleteCertificate($id)
-    {
-        $user = Auth::user();
-        PelamarCertificate::where('user_id', $user->id)->where('id', $id)->delete();
+    PelamarCertificate::create($data);
 
-        return back()->with('success', 'Sertifikat berhasil dihapus.');
+    return response()->json([
+        'message' => 'Sertifikat berhasil ditambahkan'
+    ]);
+}
+
+public function updateCertificate(Request $request, $id)
+{
+    $user = Auth::user();
+
+    $cert = PelamarCertificate::where('user_id', $user->id)
+        ->where('id', $id)
+        ->firstOrFail();
+
+    $data = $request->validate([
+        'nama_sertifikat' => 'required|string|max:255',
+        'organisasi_penerbit' => 'required|string|max:255',
+        'bulan_terbit' => 'required|integer|min:1|max:12',
+        'tahun_terbit' => 'required|integer',
+        'tanpa_expired' => 'nullable|boolean',
+        'bulan_expired' => 'nullable|integer|min:1|max:12',
+        'tahun_expired' => 'nullable|integer',
+        'informasi_tambahan' => 'nullable|string',
+    ]);
+
+    $data['tanpa_expired'] = $request->boolean('tanpa_expired');
+
+    if ($data['tanpa_expired']) {
+        $data['bulan_expired'] = null;
+        $data['tahun_expired'] = null;
     }
 
-    /**
-     * =========================
-     *  ORGANIZATION
-     * =========================
-     */
-    public function storeOrganization(Request $request)
-    {
-        $data = $request->validate([
-            'nama_organisasi' => 'required|string|max:255',
-            'posisi' => 'required|string|max:255',
-            'mulai_bulan' => 'nullable|integer|min:1|max:12',
-            'mulai_tahun' => 'nullable|integer',
-            'masih_aktif' => 'nullable|boolean',
-            'selesai_bulan' => 'nullable|integer|min:1|max:12',
-            'selesai_tahun' => 'nullable|integer',
-            'informasi_tambahan' => 'nullable|string',
-        ]);
+    $cert->update($data);
 
-        $data['user_id'] = Auth::id();
-        $data['masih_aktif'] = $request->boolean('masih_aktif');
+    return response()->json([
+        'message' => 'Sertifikat berhasil diperbarui',
+        'data' => $cert,
+    ]);
+}
 
-        if ($data['masih_aktif']) {
-            $data['selesai_bulan'] = null;
-            $data['selesai_tahun'] = null;
-        }
 
-        PelamarOrganization::create($data);
+public function deleteCertificate($id)
+{
+    $user = Auth::user();
 
-        return back()->with('success', 'Organisasi berhasil ditambahkan');
+    $cert = PelamarCertificate::where('user_id', $user->id)
+        ->where('id', $id)
+        ->firstOrFail();
+
+    $cert->delete();
+
+    return response()->json([
+        'message' => 'Sertifikat berhasil dihapus'
+    ]);
+}
+
+
+/**
+ * =========================
+ * ORGANIZATION (CRUD)
+ * =========================
+ */
+public function storeOrganization(Request $request)
+{
+    $data = $request->validate([
+        'nama_organisasi' => 'required|string|max:255',
+        'posisi' => 'required|string|max:255',
+        'mulai_bulan' => 'required|integer|min:1|max:12',
+        'mulai_tahun' => 'required|integer',
+        'masih_aktif' => 'nullable|boolean',
+        'selesai_bulan' => 'nullable|integer|min:1|max:12',
+        'selesai_tahun' => 'nullable|integer',
+        'informasi_tambahan' => 'nullable|string',
+    ]);
+
+    $data['user_id'] = Auth::id();
+    $data['masih_aktif'] = $request->boolean('masih_aktif');
+
+    if ($data['masih_aktif']) {
+        $data['selesai_bulan'] = null;
+        $data['selesai_tahun'] = null;
     }
 
+    PelamarOrganization::create($data);
 
-    public function deleteOrganization($id)
-    {
-        $user = Auth::user();
-        PelamarOrganization::where('user_id', $user->id)->where('id', $id)->delete();
+    return response()->json([
+        'message' => 'Organisasi berhasil ditambahkan'
+    ]);
+}
 
-        return back()->with('success', 'Organisasi berhasil dihapus.');
+public function updateOrganization(Request $request, $id)
+{
+    $org = PelamarOrganization::where('user_id', Auth::id())
+        ->where('id', $id)
+        ->firstOrFail();
+
+    $data = $request->validate([
+        'nama_organisasi' => 'required|string|max:255',
+        'posisi' => 'required|string|max:255',
+        'mulai_bulan' => 'required|integer|min:1|max:12',
+        'mulai_tahun' => 'required|integer',
+        'masih_aktif' => 'nullable|boolean',
+        'selesai_bulan' => 'nullable|integer|min:1|max:12',
+        'selesai_tahun' => 'nullable|integer',
+        'informasi_tambahan' => 'nullable|string',
+    ]);
+
+    $data['masih_aktif'] = $request->boolean('masih_aktif');
+
+    if ($data['masih_aktif']) {
+        $data['selesai_bulan'] = null;
+        $data['selesai_tahun'] = null;
     }
+
+    $org->update($data);
+
+    return response()->json([
+        'message' => 'Organisasi berhasil diperbarui',
+        'data' => $org
+    ]);
+}
+
+public function deleteOrganization($id)
+{
+    $org = PelamarOrganization::where('user_id', Auth::id())
+        ->where('id', $id)
+        ->firstOrFail();
+
+    $org->delete();
+
+    return response()->json([
+        'message' => 'Organisasi berhasil dihapus'
+    ]);
+}
+
 
     /**
      * =========================
