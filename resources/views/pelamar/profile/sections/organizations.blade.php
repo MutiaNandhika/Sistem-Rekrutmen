@@ -6,7 +6,7 @@
             Pengalaman Organisasi & Relawan
         </h6>
 
-        <button class="btn btn-link p-0"
+        <button class="btn btn-link text-primary fw-semibold p-0"
                 data-bs-toggle="modal"
                 data-bs-target="#modalOrganisasi">
             + Tambahkan

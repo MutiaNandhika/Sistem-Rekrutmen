@@ -1,26 +1,41 @@
 function csrfToken() {
     const meta = document.querySelector('meta[name="csrf-token"]');
-    return meta ? meta.content : '';
+    return meta ? meta.getAttribute('content') : '';
 }
 
 /* ================= TAMBAH / UPDATE ================= */
 window.addEducation = function () {
 
-    const id = document.getElementById('educationEditId').value;
+    const editIdEl = document.getElementById('educationEditId');
+    if (!editIdEl) return; // halaman bukan profile
+
+    const id = editIdEl.value;
 
     const payload = {
         tingkat: document.getElementById('eduTingkat').value,
-        nama_sekolah: document.getElementById('eduSchool').value,
-        bidang_studi: document.getElementById('eduMajor').value,
+        nama_sekolah: document.getElementById('eduSchool').value.trim(),
+        bidang_studi: document.getElementById('eduMajor').value.trim(),
         mulai_bulan: document.getElementById('eduStartMonth').value,
         mulai_tahun: document.getElementById('eduStartYear').value,
         selesai_bulan: document.getElementById('eduEndMonth').value,
         selesai_tahun: document.getElementById('eduEndYear').value,
-        informasi_tambahan: document.getElementById('eduInfo').value,
+        informasi_tambahan: document.getElementById('eduInfo').value.trim(),
     };
 
-    const BASE_URL = '/pelamar/profile/educations';
+    if (
+        !payload.tingkat ||
+        !payload.nama_sekolah ||
+        !payload.bidang_studi ||
+        !payload.mulai_bulan ||
+        !payload.mulai_tahun ||
+        !payload.selesai_bulan ||
+        !payload.selesai_tahun
+    ) {
+        alert('Lengkapi data wajib');
+        return;
+    }
 
+    const BASE_URL = '/pelamar/profile/educations';
     const url = id ? `${BASE_URL}/${id}` : BASE_URL;
     const method = id ? 'PUT' : 'POST';
 
@@ -33,38 +48,37 @@ window.addEducation = function () {
         },
         body: JSON.stringify(payload)
     })
-    .then(async res => {
-        const data = await res.json();
-
-        if (!res.ok) {
-            console.error(data);
-            alert('Validasi gagal:\n' + JSON.stringify(data.errors));
-            return;
-        }
-
-        location.reload();
+    .then(res => {
+        if (!res.ok) throw new Error('Request gagal');
+        return res.json();
     })
+    .then(() => location.reload())
     .catch(err => {
         console.error(err);
-        alert('Request gagal');
+        alert('Gagal menyimpan pendidikan');
     });
 };
 
 /* ================= EDIT ================= */
 window.editEducation = function (id, edu) {
+
+    if (!edu) return;
+
     document.getElementById('educationEditId').value = id;
-    document.getElementById('eduTingkat').value = edu.tingkat;
-    document.getElementById('eduSchool').value = edu.nama_sekolah;
-    document.getElementById('eduMajor').value = edu.bidang_studi;
-    document.getElementById('eduStartMonth').value = edu.mulai_bulan;
-    document.getElementById('eduStartYear').value = edu.mulai_tahun;
-    document.getElementById('eduEndMonth').value = edu.selesai_bulan;
-    document.getElementById('eduEndYear').value = edu.selesai_tahun;
+
+    document.getElementById('eduTingkat').value = edu.tingkat ?? '';
+    document.getElementById('eduSchool').value = edu.nama_sekolah ?? '';
+    document.getElementById('eduMajor').value = edu.bidang_studi ?? '';
+    document.getElementById('eduStartMonth').value = edu.mulai_bulan ?? '';
+    document.getElementById('eduStartYear').value = edu.mulai_tahun ?? '';
+    document.getElementById('eduEndMonth').value = edu.selesai_bulan ?? '';
+    document.getElementById('eduEndYear').value = edu.selesai_tahun ?? '';
     document.getElementById('eduInfo').value = edu.informasi_tambahan ?? '';
 };
 
 /* ================= DELETE ================= */
 window.deleteEducation = function (id) {
+
     if (!confirm('Yakin ingin menghapus pendidikan ini?')) return;
 
     fetch(`/pelamar/profile/educations/${id}`, {
@@ -76,16 +90,22 @@ window.deleteEducation = function (id) {
     })
     .then(res => {
         if (!res.ok) throw new Error();
-        document.getElementById(`education-${id}`).remove();
+        document.getElementById(`education-${id}`)?.remove();
     })
     .catch(() => alert('Gagal menghapus pendidikan'));
 };
 
-/* ================= RESET MODAL ================= */
-document.getElementById('modalPendidikan')
-    .addEventListener('hidden.bs.modal', () => {
+/* ================= RESET MODAL (ANTI NULL ERROR) ================= */
+document.addEventListener('DOMContentLoaded', () => {
+
+    const modal = document.getElementById('modalPendidikan');
+    if (!modal) return; // halaman lain → STOP
+
+    modal.addEventListener('hidden.bs.modal', () => {
+
         document.getElementById('educationEditId').value = '';
-        document.querySelectorAll(
-            '#modalPendidikan input, #modalPendidikan textarea, #modalPendidikan select'
-        ).forEach(el => el.value = '');
+
+        modal.querySelectorAll('input, textarea, select')
+            .forEach(el => el.value = '');
     });
+});
