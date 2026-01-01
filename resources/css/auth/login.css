@@ -188,3 +188,28 @@
     font-size: 13px;
     color: #aaa;
 }
+
+/* REMEMBER & FORGOT PASSWORD */
+
+.login-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.login-options .remember {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.forgot-link {
+    font-size: 14px;
+    font-weight: 600;
+    color: #f04e23;
+    text-decoration: none;
+}
+
+.forgot-link:hover {
+    text-decoration: underline;
+}

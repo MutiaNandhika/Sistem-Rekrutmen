@@ -39,6 +39,11 @@
                     <input type="checkbox" name="remember">
                     <span style="margin-left:6px;">Remember me</span>
                 </label>
+
+                <a href="{{ route('password.request') }}" class="forgot-link">
+                    Lupa password?
+                </a>
+
             </div>
 
             <button class="btn-login">

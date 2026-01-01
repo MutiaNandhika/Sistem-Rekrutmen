@@ -1,25 +1,61 @@
-<x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600">
-        {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
+@extends('layouts.auth')
+
+@section('title', 'Lupa Password')
+
+@section('content')
+<div class="login-wrapper">
+
+    {{-- LEFT --}}
+    <div class="login-left">
+
+        <h1 class="login-title">Lupa Password?</h1>
+
+        <p style="margin-bottom:24px;font-size:14px;color:#6b7280;">
+            Masukkan email Anda. Kami akan mengirimkan link untuk reset password.
+        </p>
+
+        @if (session('status'))
+            <div class="login-alert">
+                {{ session('status') }}
+            </div>
+        @endif
+
+        <form method="POST" action="{{ route('password.email') }}">
+            @csrf
+
+            <label>Email</label>
+            <input type="email"
+                   name="email"
+                   class="login-input"
+                   placeholder="Masukkan email Anda"
+                   required>
+
+            @error('email')
+                <small style="color:red">{{ $message }}</small>
+            @enderror
+
+            <button class="btn-login">
+                Kirim Link Reset
+            </button>
+        </form>
+
+        <a href="{{ route('login') }}"
+           style="margin-top:16px;display:inline-block;font-size:14px;">
+            ← Kembali ke Login
+        </a>
+
     </div>
 
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
-
-    <form method="POST" action="{{ route('password.email') }}">
-        @csrf
-
-        <!-- Email Address -->
+    {{-- RIGHT --}}
+    <div class="login-right">
         <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+            <h2>Butuh Bantuan?</h2>
+            <p>
+                Pastikan email yang Anda masukkan<br>
+                terdaftar di sistem
+            </p>
         </div>
+    </div>
 
-        <div class="flex items-center justify-end mt-4">
-            <x-primary-button>
-                {{ __('Email Password Reset Link') }}
-            </x-primary-button>
-        </div>
-    </form>
-</x-guest-layout>
+</div>
+@endsection
