@@ -9,6 +9,10 @@ use App\Http\Controllers\Admin\AkunAdminController;
 use App\Http\Controllers\HRD\AkunHrdController;
 use App\Http\Controllers\AccountSettingsController;
 use App\Http\Controllers\Hrd\LowonganController;
+use App\Http\Controllers\Admin\ManajemenAkunController;
+use App\Http\Controllers\Admin\UsersPdfController;
+use App\Exports\UsersExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 /*
 |--------------------------------------------------------------------------
@@ -296,9 +300,25 @@ Route::middleware(['auth', 'role:admin'])
             return view('admin.dashboard');
         })->name('dashboard');
 
-        Route::get('/manajemen-akun', function () {
-            return view('admin.manajemen-akun');
-        })->name('manajemen-akun');
+        Route::get('/manajemen-akun', [ManajemenAkunController::class, 'index'])
+            ->name('akun.index');
+
+        Route::post('/manajemen-akun', [ManajemenAkunController::class, 'store'])
+            ->name('akun.store');
+
+        Route::put('/manajemen-akun/{user}', [ManajemenAkunController::class, 'update'])
+            ->name('akun.update');
+
+        Route::delete('/manajemen-akun/{user}', [ManajemenAkunController::class, 'destroy'])
+            ->name('akun.destroy');
+
+    Route::get('/manajemen-akun/pdf', [UsersPdfController::class, 'preview']);
+    Route::get('/manajemen-akun/excel', function () {
+        return Excel::download(
+            new UsersExport(request('role')),
+            'akun.xlsx'
+        );
+    });
 
         Route::get('/monitoring', function () {
             return view('admin.monitoring');
