@@ -8,6 +8,7 @@ use App\Http\Controllers\KandidatController;
 use App\Http\Controllers\Admin\AkunAdminController;
 use App\Http\Controllers\HRD\AkunHrdController;
 use App\Http\Controllers\AccountSettingsController;
+use App\Http\Controllers\Hrd\LowonganController;
 
 /*
 |--------------------------------------------------------------------------
@@ -163,118 +164,65 @@ Route::middleware(['auth', 'role:pelamar'])
 
 /*
 |--------------------------------------------------------------------------
-| HRD ROUTES (FRONTEND MODE - TANPA DATABASE)
+| HRD ROUTES
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth', 'role:hrd'])
     ->prefix('hrd')
     ->group(function () {
 
-// Detail akun HRD
-        Route::get('/akun/{id}', [AkunHrdController::class, 'show'])
-            ->name('akun.detail');
+    /*
+    |--------------------------------------------------------------------------
+    | AKUN HRD
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/akun/{id}', [AkunHrdController::class, 'show'])
+        ->name('akun.detail');
 
-        /*
-        |-----------------------
-        | DASHBOARD HRD
-        |-----------------------
-        */
-        Route::get('/dashboard', function () {
-            return view('hrd.dashboard');
-        })->name('hrd.dashboard');
+    /*
+    |--------------------------------------------------------------------------
+    | DASHBOARD HRD
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/dashboard', function () {
+        return view('hrd.dashboard');
+    })->name('hrd.dashboard');
 
+    /*
+    |--------------------------------------------------------------------------
+    | LOWONGAN (DATABASE READY)
+    |--------------------------------------------------------------------------
+    */
 
-        /*
-        |-----------------------
-        | LOWONGAN (DUMMY DATA)
-        |-----------------------
-        */
-        Route::get('/lowongan', function () {
+    Route::get('/lowongan', [LowonganController::class, 'index'])->name('lowongan.index');
+    Route::get('/lowongan/create', [LowonganController::class, 'create'])->name('lowongan.create');
+    Route::post('/lowongan', [LowonganController::class, 'store'])->name('lowongan.store');
 
-            // ✅ DUMMY DATA (TANPA DATABASE)
-            $lowongans = collect([
-                (object) [
-                    'id' => 1,
-                    'judul' => 'Business Development - Duluin Gajian',
-                    'perusahaan' => 'PT JNE',
-                    'tipe_pekerjaan' => 'Penuh Waktu · Kerja di kantor',
-                    'lokasi' => 'Jl. Merdeka no. 1945 Soedirman',
-                    'status' => 'aktif',
-                    'updated_at' => now()->subDays(1),
-                ],
-                (object) [
-                    'id' => 2,
-                    'judul' => 'Marketing Executive',
-                    'perusahaan' => 'PT MDA Partner',
-                    'tipe_pekerjaan' => 'Penuh Waktu · Hybrid',
-                    'lokasi' => 'Jakarta Selatan',
-                    'status' => 'nonaktif',
-                    'updated_at' => now()->subDays(5),
-                ],
-            ]);
+    Route::get('/lowongan/{lowongan}/edit', [LowonganController::class, 'edit'])->name('lowongan.edit');
+    Route::put('/lowongan/{lowongan}', [LowonganController::class, 'update'])->name('lowongan.update');
 
-            /*
-            |------------------------------------
-            | HITUNG JUMLAH UNTUK TAB BADGE
-            |------------------------------------
-            */
-            $total    = $lowongans->count();
-            $aktif    = $lowongans->where('status', 'aktif')->count();
-            $nonaktif = $lowongans->where('status', 'nonaktif')->count();
-            $draft    = $lowongans->where('status', 'draft')->count();
+    Route::get('/lowongan/{lowongan}/deskripsi', [LowonganController::class, 'createDeskripsi'])
+        ->name('lowongan.create.deskripsi');
 
-            return view('hrd.lowongan.index', compact(
-                'lowongans',
-                'total',
-                'aktif',
-                'nonaktif',
-                'draft'
-            ));
+    Route::put('/lowongan/{lowongan}/deskripsi', [LowonganController::class, 'updateDeskripsi'])
+        ->name('lowongan.update.deskripsi');
 
-        })->name('lowongan.index');
+    Route::delete('/lowongan/{lowongan}', [LowonganController::class, 'destroy'])
+    ->name('lowongan.destroy');
 
-        /*
-        |-------------------------------------------------
-        | TOGGLE STATUS (FRONTEND ONLY / SIMULASI)
-        |-------------------------------------------------
-        */
-        Route::post('/lowongan/{id}/toggle-status', function ($id) {
+    Route::post('/lowongan/{lowongan}/status', 
+    [LowonganController::class, 'updateStatus']
+)->name('lowongan.update-status');
 
-            // ❗ HANYA RESPONSE DUMMY
-            return response()->json([
-                'status' => 'ok'
-            ]);
+Route::get('/lowongan/{lowongan}', 
+    [LowonganController::class, 'show']
+)->name('lowongan.show');
 
-        })->name('lowongan.toggle-status');
-
-        /*
-        |-----------------------
-        | LOWONGAN - CREATE (FORM)
-        |-----------------------
-        */
-        Route::get('/lowongan/create', function () {
-            return view('hrd.lowongan.create');
-        })->name('lowongan.create');
-
-        Route::get('/lowongan/create/deskripsi', function () {
-            return view('hrd.lowongan.create-deskripsi');
-        })->name('lowongan.create.deskripsi');  
-
-        Route::get('/lowongan/{id}/edit', fn ($id) => view('hrd.lowongan.edit'))
-            ->name('lowongan.edit');
-
-        /*
-        |-----------------------
-        | LOWONGAN - STORE (DUMMY)
-        |-----------------------
-        */
-        Route::post('/lowongan', function () {
-            // ⛔ belum simpan database
-            return redirect()
-                ->route('lowongan.index')
-                ->with('success', 'Lowongan berhasil ditambahkan (simulasi)');
-        })->name('lowongan.store');
-
+    /*
+    |--------------------------------------------------------------------------
+    | KANDIDAT (MASIH DUMMY – TIDAK DISENTUH DULU)
+    |--------------------------------------------------------------------------
+    */
     Route::get('/lowongan/{lowongan}/kandidat', function ($lowongan) {
 
         $kandidats = collect([
@@ -303,35 +251,40 @@ Route::middleware(['auth', 'role:hrd'])
         ]);
 
         return view('hrd.kandidat.index', compact('kandidats', 'lowongan'));
+
     })->name('hrd.kandidat.index');
 
-    // =====================
-// DETAIL PELAMAR
-// =====================
-Route::get('/lowongan/{lowongan}/kandidat/{pelamar}', function ($lowongan, $pelamar) {
+    Route::get('/lowongan/{lowongan}/kandidat/{pelamar}', function ($lowongan, $pelamar) {
 
-    // dummy data pelamar
-    $pelamarData = (object) [
-        'id' => $pelamar,
-        'nama' => 'Mutia Nandhika',
-        'whatsapp' => '081234567890',
-        'email' => 'mutianandhika@gmail.com',
-        'lokasi' => 'Jakarta',
-        'usia' => 21,
-        'pendidikan' => 'SMA / SMK',
-        'gender' => 'Perempuan',
-    ];
+        $pelamarData = (object) [
+            'id' => $pelamar,
+            'nama' => 'Mutia Nandhika',
+            'whatsapp' => '081234567890',
+            'email' => 'mutianandhika@gmail.com',
+            'lokasi' => 'Jakarta',
+            'usia' => 21,
+            'pendidikan' => 'SMA / SMK',
+            'gender' => 'Perempuan',
+        ];
 
-    return view('hrd.kandidat.detail', [
-        'lowongan' => $lowongan,
-        'pelamar'  => $pelamarData,
-    ]);
+        return view('hrd.kandidat.detail', [
+            'lowongan' => $lowongan,
+            'pelamar'  => $pelamarData,
+        ]);
 
-})->name('hrd.kandidat.detail');
-    });
-Route::get('/lowongan/{lowongan}/laporan', function ($lowongan) {
-    return view('hrd.laporan.index', compact('lowongan'));
-})->name('hrd.laporan.index');
+    })->name('hrd.kandidat.detail');
+
+    /*
+    |--------------------------------------------------------------------------
+    | LAPORAN LOWONGAN
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/lowongan/{lowongan}/laporan', function ($lowongan) {
+        return view('hrd.laporan.index', compact('lowongan'));
+    })->name('hrd.laporan.index');
+
+});
+
 /*
 |--------------------------------------------------------------------------
 | ADMIN

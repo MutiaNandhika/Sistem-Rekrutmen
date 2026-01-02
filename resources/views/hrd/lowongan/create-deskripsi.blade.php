@@ -19,7 +19,6 @@
 {{-- STEP INDICATOR --}}
 <div class="d-flex justify-content-center align-items-center gap-3 mb-4">
 
-    {{-- STEP 1 (SUDAH DILEWATI, TETAP NYALA) --}}
     <div class="d-flex align-items-center gap-2">
         <span class="step-circle done">1</span>
         <span class="fw-semibold">Info Loker</span>
@@ -27,7 +26,6 @@
 
     <div class="step-line"></div>
 
-    {{-- STEP 2 (AKTIF) --}}
     <div class="d-flex align-items-center gap-2">
         <span class="step-circle active">2</span>
         <span class="fw-semibold">Deskripsi Pekerjaan</span>
@@ -35,42 +33,56 @@
 
 </div>
 
+<form method="POST"
+      action="{{ route('lowongan.update.deskripsi', $lowongan->id) }}">
+    @csrf
+    @method('PUT')
 
-<form>
+    <div class="card mb-4">
+        <div class="card-header fw-semibold">
+            Deskripsi Pekerjaan <span class="text-danger">*</span>
+        </div>
 
-<div class="card mb-4">
-    <div class="card-header fw-semibold">
-        Deskripsi Pekerjaan <span class="text-danger">*</span>
+        <div class="card-body">
+            <label class="form-label fw-semibold">Deskripsi</label>
+
+            <textarea name="deskripsi_pekerjaan"
+                      class="form-control"
+                      rows="8"
+                      required>{{ old('deskripsi_pekerjaan', $lowongan->deskripsi_pekerjaan) }}</textarea>
+        </div>
     </div>
 
-    <div class="card-body">
-        <label class="form-label fw-semibold">Deskripsi</label>
-        <textarea
-            class="form-control"
-            rows="5"
-            placeholder="Jelaskan tanggung jawab pekerjaan..."></textarea>
+    {{-- ACTION BUTTON --}}
+    <div class="d-flex justify-content-between mb-5">
+
+        {{-- 🔙 SEBELUMNYA (SUBMIT!) --}}
+        <button type="submit"
+                name="action"
+                value="back"
+                class="btn btn-light border">
+            Sebelumnya
+        </button>
+
+        <div class="d-flex gap-2">
+            {{-- 💾 DRAFT --}}
+            <button type="submit"
+                    name="action"
+                    value="draft"
+                    class="btn btn-warning text-white">
+                Simpan Draft
+            </button>
+
+            {{-- 🚀 PUBLISH --}}
+            <button type="submit"
+                    name="action"
+                    value="publish"
+                    class="btn btn-primary">
+                Upload Loker
+            </button>
+        </div>
+
     </div>
-</div>
-
-{{-- ACTION BUTTON --}}
-<div class="d-flex justify-content-end gap-2 mb-5">
-
-    <a href="{{ route('lowongan.create') }}"
-       class="btn btn-light border">
-        Sebelumnya
-    </a>
-
-    <button type="submit"
-            class="btn btn-primary">
-        Upload Loker
-    </button>
-
-    <button type="button"
-            class="btn btn-warning text-white">
-        Draft
-    </button>
-
-</div>
 
 </form>
 

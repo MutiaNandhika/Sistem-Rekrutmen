@@ -3,7 +3,6 @@
 @section('title', 'Daftar Lowongan Kerja')
 
 @php
-    // ================= COUNTER =================
     $total = $lowongans->count();
     $aktif = $lowongans->where('status', 'aktif')->count();
     $nonaktif = $lowongans->where('status', 'nonaktif')->count();
@@ -17,7 +16,7 @@
     <h4 class="fw-bold">Daftar Lowongan Kerja</h4>
 
     <a href="{{ route('lowongan.create') }}"
-    class="btn btn-primary d-flex align-items-center gap-2">
+       class="btn btn-primary d-flex align-items-center gap-2">
         <i class="bi bi-plus-lg"></i>
         Tambah Lowongan Kerja
     </a>
@@ -34,28 +33,24 @@
                     <span class="badge" data-count="total">{{ $total }}</span>
                 </a>
             </li>
-
             <li class="nav-item">
                 <a class="nav-link" href="#" data-filter="aktif">
                     Aktif
                     <span class="badge" data-count="aktif">{{ $aktif }}</span>
                 </a>
             </li>
-
             <li class="nav-item">
                 <a class="nav-link" href="#" data-filter="nonaktif">
                     Nonaktif
                     <span class="badge" data-count="nonaktif">{{ $nonaktif }}</span>
                 </a>
             </li>
-
-            <li class="nav-item">
+                        <li class="nav-item">
                 <a class="nav-link" href="#" data-filter="arsip">
                     Arsip
                     <span class="badge" data-count="arsip">0</span>
                 </a>
             </li>
-
             <li class="nav-item">
                 <a class="nav-link" href="#" data-filter="draft">
                     Draft
@@ -64,13 +59,8 @@
             </li>
         </ul>
 
-        <button
-            id="sortButton"
-            class="btn btn-light border"
-            data-order="desc"
-        >
-            <i class="bi bi-arrow-down-up"></i>
-            Urutkan: Terbaru
+        <button id="sortButton" class="btn btn-light border" data-order="desc">
+            <i class="bi bi-arrow-down-up"></i> Urutkan: Terbaru
         </button>
 
     </div>
@@ -79,113 +69,129 @@
 {{-- LIST LOWONGAN --}}
 <div class="lowongan-list">
 
-    @forelse ($lowongans as $lowongan)
-        <div class="lowongan-card {{ $lowongan->status === 'aktif' ? 'active' : '' }}"
+@forelse ($lowongans as $lowongan)
+<div class="lowongan-card {{ $lowongan->status === 'aktif' ? 'active' : '' }}"
+     data-id="{{ $lowongan->id }}"
      data-status="{{ $lowongan->status }}"
-     data-updated="{{ $lowongan->updated_at ?? '2025-01-01' }}">
+     data-updated="{{ $lowongan->updated_at }}">
 
-
-            {{-- HEADER --}}
-            <div class="lowongan-header d-flex justify-content-between align-items-start">
-                <div>
-                    <h6>{{ $lowongan->judul }}</h6>
-                    <small class="text-muted">
-                        <i class="bi bi-clock"></i>
-                        {{ \Carbon\Carbon::parse($lowongan->updated_at ?? '2025-01-01')->translatedFormat('d M Y') }}
-                    </small>
-                </div>
-
-                <span class="status-badge {{ $lowongan->status }}">
-                    {{ ucfirst($lowongan->status) }}
-                </span>
+        {{-- HEADER --}}
+        <div class="lowongan-header d-flex justify-content-between align-items-start">
+            <div>
+                <h6>{{ $lowongan->nama_lowongan }}</h6>
+                <small class="text-muted">
+                    <i class="bi bi-clock"></i>
+                    {{ $lowongan->updated_at->translatedFormat('d M Y') }}
+                </small>
             </div>
 
+            <span class="status-badge {{ $lowongan->status }}">
+                {{ ucfirst($lowongan->status) }}
+            </span>
+        </div>
 
-            {{-- META --}}
-            <ul class="lowongan-meta">
-                <li>
-                    <i class="bi bi-building"></i>
-                    {{ $lowongan->perusahaan }}
-                </li>
-                <li>
-                    <i class="bi bi-briefcase"></i>
-                    {{ $lowongan->tipe_pekerjaan }}
-                </li>
-                <li>
-                    <i class="bi bi-geo-alt"></i>
-                    {{ $lowongan->lokasi }}
-                </li>
-            </ul>
+        {{-- META --}}
+        <ul class="lowongan-meta">
+            <li>
+                <i class="bi bi-briefcase"></i>
+                {{ ucfirst(str_replace('_',' ',$lowongan->tipe_kerja)) }}
+            </li>
+            <li>
+                <i class="bi bi-geo-alt"></i>
+                {{ $lowongan->lokasi }}
+            </li>
+        </ul>
 
-            <div class="lowongan-actions">
+        {{-- ACTIONS --}}
+        <div class="lowongan-actions">
 
-    {{-- LEFT ACTIONS --}}
-    <div class="left-actions">
-        <a href="#" class="btn-dashboard orange sm">
-            Detail Lowongan
-        </a>
+            {{-- LEFT --}}
+            <div class="left-actions">
+                <a href="{{ route('lowongan.show',$lowongan->id) }}"
+                class="btn-dashboard orange sm">
+                    Detail Lowongan
+                </a>
 
-        <a href="{{ route('hrd.kandidat.index', $lowongan->id) }}"
-        class="btn-dashboard blue sm">
-            Kelola Kandidat
-        </a>
+                <a href="{{ route('hrd.kandidat.index',$lowongan->id) }}"
+                   class="btn-dashboard blue sm">
+                    Kelola Kandidat
+                </a>
+            </div>
 
+            {{-- RIGHT --}}
+            <div class="right-actions action-icons">
+
+                {{-- EDIT --}}
+                <a href="{{ route('lowongan.edit',$lowongan->id) }}"
+                   class="action-btn edit"
+                   title="Edit Lowongan">
+                    <i class="bi bi-pencil"></i>
+                </a>
+
+                {{-- DELETE --}}
+                <button class="action-btn delete"
+                        onclick="deleteLowongan({{ $lowongan->id }}, this)"
+                        title="Hapus Lowongan">
+                    <i class="bi bi-trash"></i>
+                </button>
+
+                {{-- DROPDOWN --}}
+                <div class="dropdown">
+                    <button class="action-btn more"
+                            data-bs-toggle="dropdown">
+                        <i class="bi bi-three-dots"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end action-menu"></ul>
+                </div>
+
+            </div>
+        </div>
     </div>
-
-    {{-- RIGHT ICON ACTIONS --}}
-    <div class="right-actions action-icons">
-
-        {{-- EDIT --}}
-        <a href="#"
-           class="action-btn edit"
-           title="Edit Lowongan">
-            <i class="bi bi-pencil"></i>
-        </a>
-
-        {{-- DELETE --}}
-        <button class="action-btn delete"
-                onclick="deleteLowongan(this)"
-                title="Hapus Lowongan">
-            <i class="bi bi-trash"></i>
-        </button>
-
-        {{-- DROPDOWN --}}
-        <div class="dropdown">
-            <button class="action-btn more"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                    title="Aksi Lainnya">
-                <i class="bi bi-three-dots"></i>
-            </button>
-
-            <ul class="dropdown-menu dropdown-menu-end action-menu">
-                {{-- diisi oleh JS --}}
-            </ul>
-        </div>
-
+@empty
+    <div class="text-center text-muted py-5">
+        Belum ada lowongan kerja.
     </div>
+@endforelse
 
 </div>
-
-
-</div>
-
-
-        </div>
-    @empty
-        <div class="text-center text-muted py-5">
-            Belum ada lowongan kerja.
-        </div>
-    @endforelse
-
-</div>
-
 @endsection
 
-{{-- ================= SCRIPT ================= --}}
 @push('scripts')
-
 <script>
+
+/* ================= DELETE (REAL DB) ================= */
+function deleteLowongan(id, btn) {
+    if (!confirm('Apakah anda yakin ingin menghapus lowongan ini?')) {
+        return;
+    }
+
+    fetch(`/hrd/lowongan/${id}`, {
+        method: 'DELETE',
+        headers: {
+            'X-CSRF-TOKEN': document
+                .querySelector('meta[name="csrf-token"]')
+                .getAttribute('content'),
+            'Accept': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Gagal menghapus data');
+        }
+        return response.json();
+    })
+    .then(() => {
+        const card = btn.closest('.lowongan-card');
+        if (card) {
+            card.remove();
+            updateCounters();
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        alert('Terjadi kesalahan saat menghapus data');
+    });
+}
 
 /* ================= FILTER ================= */
 document.querySelectorAll('.lowongan-tabs .nav-link').forEach(tab => {
@@ -218,19 +224,14 @@ document.getElementById('sortButton').addEventListener('click', function () {
     const cards = [...list.children];
     const order = this.dataset.order;
 
-    cards.sort((a, b) =>
+    cards.sort((a,b) =>
         order === 'desc'
             ? new Date(b.dataset.updated) - new Date(a.dataset.updated)
             : new Date(a.dataset.updated) - new Date(b.dataset.updated)
     );
 
     cards.forEach(card => list.appendChild(card));
-
     this.dataset.order = order === 'desc' ? 'asc' : 'desc';
-    this.innerHTML =
-        order === 'desc'
-            ? `<i class="bi bi-arrow-up"></i> Urutkan: Terlama`
-            : `<i class="bi bi-arrow-down"></i> Urutkan: Terbaru`;
 });
 
 /* ================= COUNTER ================= */
@@ -258,85 +259,9 @@ function updateCounters() {
     document.querySelector('[data-count="arsip"]').textContent = arsip;
 }
 
-function deleteLowongan(btn) {
+/* ================= DROPDOWN ACTION ================= */
 
-    if (!confirm('Apakah anda yakin ingin menghapus lowongan ini?')) {
-        return;
-    }
-
-    // ambil card terdekat
-    const card = btn.closest('.lowongan-card');
-
-    if (!card) return;
-
-    // 🔥 tambahkan class animasi
-    card.classList.add('removing');
-
-    // ⏳ tunggu animasi, lalu hapus
-    setTimeout(() => {
-        card.remove();
-
-        // update counter tab
-        updateCounters();
-
-        // re-apply filter aktif
-        document
-            .querySelector('.lowongan-tabs .nav-link.active')
-            ?.click();
-
-    }, 200);
-}
-
-function publishLowongan(btn) {
-    if (!confirm('Publish lowongan ini?')) return;
-    updateStatus(btn.closest('.lowongan-card'), 'aktif');
-}
-
-function deactivateLowongan(btn) {
-    if (!confirm('Nonaktifkan lowongan ini?')) return;
-    updateStatus(btn.closest('.lowongan-card'), 'nonaktif');
-}
-
-function activateLowongan(btn) {
-    if (!confirm('Aktifkan kembali lowongan ini?')) return;
-    updateStatus(btn.closest('.lowongan-card'), 'aktif');
-}
-
-function archiveLowongan(btn) {
-    if (!confirm('Arsipkan lowongan ini?')) return;
-
-    updateStatus(btn.closest('.lowongan-card'), 'arsip');
-}
-
-function updateStatus(card, status) {
-    if (!card) return;
-
-    // update status dataset
-    card.dataset.status = status;
-
-    // update class aktif
-    card.classList.toggle('active', status === 'aktif');
-
-    // update badge status (jika ada)
-    const badge = card.querySelector('.status-badge');
-    if (badge) {
-        badge.textContent = status.charAt(0).toUpperCase() + status.slice(1);
-        badge.className = `status-badge ${status}`;
-    }
-
-    // 🔥 render ulang dropdown sesuai status baru
-    renderDropdown(card);
-
-    // update counter
-    updateCounters();
-
-    // re-apply filter aktif
-    document
-        .querySelector('.lowongan-tabs .nav-link.active')
-        ?.click();
-}
-
-    function renderDropdown(card) {
+function renderDropdown(card) {
     const status = card.dataset.status;
     const menu = card.querySelector('.action-menu');
 
@@ -385,15 +310,93 @@ function updateStatus(card, status) {
 
     if (status === 'arsip') {
     html = `
-        <li class="dropdown-item text-muted">
-            Tidak ada aksi
+        <li>
+            <button type="button"
+                    class="dropdown-item text-success"
+                    onclick="restoreLowongan(this)">
+                Kembalikan ke Draft
+            </button>
         </li>
     `;
 }
 
-
     menu.innerHTML = html;
 }
+
+/* ================= STATUS CHANGE (FRONTEND ONLY) ================= */
+
+function publishLowongan(btn) {
+    if (!confirm('Publish lowongan ini?')) return;
+    updateStatus(btn.closest('.lowongan-card'), 'aktif');
+}
+
+function deactivateLowongan(btn) {
+    if (!confirm('Nonaktifkan lowongan ini?')) return;
+    updateStatus(btn.closest('.lowongan-card'), 'nonaktif');
+}
+
+function activateLowongan(btn) {
+    if (!confirm('Aktifkan kembali lowongan ini?')) return;
+    updateStatus(btn.closest('.lowongan-card'), 'aktif');
+}
+
+function archiveLowongan(btn) {
+    if (!confirm('Arsipkan lowongan ini?')) return;
+    updateStatus(btn.closest('.lowongan-card'), 'arsip');
+}
+
+function restoreLowongan(btn) {
+    if (!confirm('Kembalikan lowongan ini ke Draft?')) return;
+    updateStatus(btn.closest('.lowongan-card'), 'draft');
+}
+
+function updateStatus(card, status) {
+    if (!card) return;
+
+    const id = card.dataset.id;
+
+    fetch(`/hrd/lowongan/${id}/status`, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': document
+                .querySelector('meta[name="csrf-token"]')
+                .getAttribute('content'),
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({ status })
+    })
+    .then(res => {
+        if (!res.ok) throw new Error('Gagal update status');
+        return res.json();
+    })
+    .then(data => {
+
+        // 🔥 UPDATE UI SETELAH DB BERHASIL
+        card.dataset.status = data.status;
+        card.classList.toggle('active', data.status === 'aktif');
+
+        const badge = card.querySelector('.status-badge');
+        if (badge) {
+            badge.textContent =
+                data.status.charAt(0).toUpperCase() + data.status.slice(1);
+            badge.className = `status-badge ${data.status}`;
+        }
+
+        renderDropdown(card);
+        updateCounters();
+
+        document
+            .querySelector('.lowongan-tabs .nav-link.active')
+            ?.click();
+    })
+    .catch(err => {
+        console.error(err);
+        alert('Gagal memperbarui status lowongan');
+    });
+}
+
+/* ================= INIT ================= */
 document.querySelectorAll('.lowongan-card').forEach(card => {
     renderDropdown(card);
 });
