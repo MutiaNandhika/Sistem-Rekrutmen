@@ -1,81 +1,96 @@
 @extends('layouts.public')
 
-@section('title', 'Detail Lowongan')
+@section('title', $lowongan->nama_lowongan)
 
 @section('content')
 
-{{-- BREADCRUMB --}}
 <nav class="breadcrumb-wrapper">
     <a href="{{ route('public.home') }}">Beranda</a>
     <span>/</span>
     <a href="{{ route('jobs.index') }}">Lowongan</a>
     <span>/</span>
-    <span class="active">Detail Lowongan</span>
+    <span class="active">{{ $lowongan->nama_lowongan }}</span>
 </nav>
-
 
 <section class="jobs-detail py-5">
     <div class="container">
 
-        {{-- HEADER --}}
         <div class="job-detail-header">
-
             <div class="job-detail-left">
+
                 <div class="company-logo">
-                    <i class="bi bi-image"></i>
+                    <i class="bi bi-building"></i>
                 </div>
 
                 <div class="job-detail-info">
-                    <h3 class="job-title">Office Girl</h3>
+                    <h3 class="job-title">{{ $lowongan->nama_lowongan }}</h3>
 
                     <ul class="job-meta-list">
-                        <li><i class="bi bi-building"></i> PT JNE</li>
-                        <li><i class="bi bi-cash"></i> Rp 2.000.000 – 3.000.000 / Bulan</li>
-                        <li><i class="bi bi-clock"></i> Penuh Waktu · Kerja di Kantor</li>
-                        <li><i class="bi bi-mortarboard"></i> Minimal SMA/SMK</li>
-                        <li><i class="bi bi-geo-alt"></i> Jl. Merdeka no. 1945 Soedirman</li>
+                        <li><i class="bi bi-building"></i> {{ $lowongan->penempatan ?? 'Perusahaan Mitra' }}</li>
+                        <li><i class="bi bi-cash"></i>
+                            Rp {{ number_format($lowongan->gaji_min) }}
+                            –
+                            {{ number_format($lowongan->gaji_max) }}
+                        </li>
+                        <li><i class="bi bi-clock"></i>
+                            {{ ucfirst(str_replace('_',' ',$lowongan->tipe_kerja)) }}
+                            · {{ ucfirst($lowongan->sistem_kerja) }}
+                        </li>
+                        <li><i class="bi bi-mortarboard"></i>
+                            Minimal {{ $lowongan->pendidikan_minimal }}
+                        </li>
+                        <li><i class="bi bi-geo-alt"></i> {{ $lowongan->lokasi }}</li>
                     </ul>
 
                     <div class="mt-4">
                         <a href="#" class="btn-lamar">
                             Lamar Sekarang
                         </a>
-
                     </div>
                 </div>
             </div>
-
         </div>
 
         <hr class="my-5">
 
-        {{-- CONTENT --}}
         <div class="row">
 
-            {{-- PERSYARATAN --}}
             <div class="col-md-6">
                 <h5 class="fw-bold mb-3">Persyaratan</h5>
                 <ul class="job-list">
-                    <li>Kerja di kantor</li>
-                    <li>Minimal SMA/SMK</li>
-                    <li>Usia 18 – 30 tahun</li>
-                    <li>Perempuan saja</li>
+                    <li>{{ ucfirst($lowongan->sistem_kerja) }}</li>
+                    <li>{{ $lowongan->pendidikan_minimal }}</li>
+                    @if(!$lowongan->tanpa_batas_usia)
+                        <li>Usia {{ $lowongan->usia_min }} – {{ $lowongan->usia_max }} tahun</li>
+                    @endif
+                    <li>{{ ucfirst($lowongan->jenis_kelamin ?? 'Semua') }}</li>
                 </ul>
             </div>
 
-            {{-- SKILLS --}}
             <div class="col-md-6">
-                <h5 class="fw-bold mb-3">Skills</h5>
-                <ul class="job-list">
-                    <li>Data Entry</li>
-                    <li>Customer Service</li>
-                    <li>Office Administration</li>
-                </ul>
+                <h5 class="fw-bold mb-3">Deskripsi Pekerjaan</h5>
+                <p class="text-muted">
+                    {!! nl2br(e($lowongan->deskripsi_pekerjaan)) !!}
+                </p>
             </div>
-
         </div>
+
+        {{-- SKILLS --}}
+        <div class="mt-5">
+            <h5 class="fw-bold mb-3">Skills yang Dibutuhkan</h5>
+
+            @if ($lowongan->skills->count())
+                <ul class="job-list">
+                    @foreach ($lowongan->skills as $skill)
+                        <li>{{ $skill->nama_skill }}</li>
+                    @endforeach
+                </ul>
+            @else
+                <p class="text-muted">Tidak ada skill khusus.</p>
+            @endif
+        </div>
+
 
     </div>
 </section>
-
 @endsection

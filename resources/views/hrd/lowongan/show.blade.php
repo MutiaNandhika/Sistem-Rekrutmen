@@ -53,6 +53,11 @@
         </div>
 
         <div class="row mb-3">
+            <div class="col-md-4 text-muted">Penempatan</div>
+            <div class="col-md-8">{{ $lowongan->penempatan }}</div>
+        </div>
+
+        <div class="row mb-3">
             <div class="col-md-4 text-muted">Status</div>
             <div class="col-md-8">
                 <span class="status-badge {{ $lowongan->status }}">

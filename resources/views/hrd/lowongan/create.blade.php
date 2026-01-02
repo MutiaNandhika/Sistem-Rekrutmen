@@ -110,9 +110,18 @@ method="POST">
             <input type="text" name="lokasi" class="form-control"
                value="{{ old('lokasi',$lowongan->lokasi ?? '') }}" required>
         </div>
+        <div>
+            <label class="form-label fw-semibold mt-3">Penempatan Kerja</label>
+            <input type="text"
+           name="penempatan"
+           class="form-control"
+           placeholder="Contoh: Perusahaan Klien (Manufaktur)"
+           value="{{ old('penempatan', $lowongan->penempatan ?? '') }}">
+        </div>
 
     </div>
 </div>
+
 
 {{-- ================= GAJI ================= --}}
 <div class="card mb-4">

@@ -16,6 +16,7 @@ class Lowongan extends Model
         'tipe_kerja',
         'sistem_kerja',
         'lokasi',
+        'penempatan',
         'gaji_min',
         'gaji_max',
         'jenis_kelamin',
@@ -30,6 +31,11 @@ class Lowongan extends Model
 
     public function skills()
     {
-        return $this->belongsToMany(Skill::class, 'lowongan_skill');
+        return $this->belongsToMany(
+            Skill::class,
+            'lowongan_skill',
+            'lowongan_id',
+            'skill_id'
+        );
     }
 }

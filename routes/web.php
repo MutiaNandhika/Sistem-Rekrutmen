@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\JobController;
+use App\Http\Controllers\Public\JobController;
 use App\Http\Controllers\KandidatController;
 use App\Http\Controllers\Admin\AkunAdminController;
 use App\Http\Controllers\HRD\AkunHrdController;
@@ -22,13 +22,10 @@ Route::get('/', function () {
 
 /* ===== LOWONGAN ===== */
 
-// Halaman daftar lowongan (PUBLIC)
-Route::get('/lowongan', function () {
-    return view('public.jobs.index');
-})->name('jobs.index');
+Route::get('/lowongan', [JobController::class, 'index'])
+    ->name('jobs.index');
 
-// Halaman detail lowongan (WAJIB LOGIN)
-Route::get('/lowongan/{id}', [JobController::class, 'show'])
+Route::get('/lowongan/{lowongan}', [JobController::class, 'show'])
     ->name('jobs.show');
 
 Route::get('/tentang-kami', function () {
