@@ -61,50 +61,51 @@
 
 {{-- MODAL TAMBAH --}}
 <div class="modal fade" id="modalTambah">
-<div class="modal-dialog">
-<form method="POST" action="{{ route('admin.akun.store') }}" class="modal-content">
-@csrf
-<div class="modal-header"><h5>Tambah Akun</h5></div>
-<div class="modal-body">
-<input name="name" class="form-control mb-2" placeholder="Nama">
-<input name="email" class="form-control mb-2" placeholder="Email">
-<select name="role" class="form-select mb-2">
-<option value="admin">Admin</option>
-<option value="hrd">HRD</option>
-<option value="pelamar">Pelamar</option>
-</select>
-<input name="password" class="form-control" placeholder="Password">
+	<div class="modal-dialog">
+		<form method="POST" action="{{ route('admin.akun.store') }}" class="modal-content">
+			 @csrf
+			<div class="modal-header">
+				<h5>Tambah Akun</h5>
+			</div>
+			<div class="modal-body">
+				<input name="name" class="form-control mb-2" placeholder="Nama">
+				<input name="email" class="form-control mb-2" placeholder="Email">
+				<select name="role" class="form-select mb-2">
+					<option value="admin">Admin</option>
+					<option value="hrd">HRD</option>
+					<option value="pelamar">Pelamar</option>
+				</select>
+				<input name="password" class="form-control" placeholder="Password"></div>
+			<div class="modal-footer">
+				<button class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+				<button class="btn btn-primary">Simpan</button>
+			</div>
+		</form>
+	</div>
 </div>
-<div class="modal-footer">
-<button class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-<button class="btn btn-primary">Simpan</button>
-</div>
-</form>
-</div>
-</div>
-
-{{-- MODAL EDIT --}}
+ {{-- MODAL EDIT --}}
 <div class="modal fade" id="modalEdit">
-<div class="modal-dialog">
-<form method="POST" id="formEdit" class="modal-content">
-@csrf @method('PUT')
-<div class="modal-header"><h5>Edit Akun</h5></div>
-<div class="modal-body">
-<input id="editName" name="name" class="form-control mb-2">
-<input id="editEmail" name="email" class="form-control mb-2">
-<select id="editRole" name="role" class="form-select mb-2">
-<option value="admin">Admin</option>
-<option value="hrd">HRD</option>
-<option value="pelamar">Pelamar</option>
-</select>
-<input name="password" class="form-control" placeholder="Password baru (opsional)">
-</div>
-<div class="modal-footer">
-<button class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-<button class="btn btn-warning">Update</button>
-</div>
-</form>
-</div>
+	<div class="modal-dialog">
+		<form method="POST" id="formEdit" class="modal-content">
+			 @csrf @method('PUT')
+			<div class="modal-header">
+				<h5>Edit Akun</h5>
+			</div>
+			<div class="modal-body">
+				<input id="editName" name="name" class="form-control mb-2">
+				<input id="editEmail" name="email" class="form-control mb-2">
+				<select id="editRole" name="role" class="form-select mb-2">
+					<option value="admin">Admin</option>
+					<option value="hrd">HRD</option>
+					<option value="pelamar">Pelamar</option>
+				</select>
+				<input name="password" class="form-control" placeholder="Password baru (opsional)"></div>
+			<div class="modal-footer">
+				<button class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+				<button class="btn btn-warning">Update</button>
+			</div>
+		</form>
+	</div>
 </div>
 
 <script>
