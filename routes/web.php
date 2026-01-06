@@ -4,16 +4,20 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Public\JobController;
-use App\Http\Controllers\KandidatController;
 use App\Http\Controllers\Admin\AkunAdminController;
-use App\Http\Controllers\HRD\AkunHrdController;
-use App\Http\Controllers\AccountSettingsController;
-use App\Http\Controllers\Hrd\LowonganController;
 use App\Http\Controllers\Admin\ManajemenAkunController;
 use App\Http\Controllers\Admin\UsersPdfController;
+use App\Http\Controllers\Hrd\AkunHrdController;
+use App\Http\Controllers\Hrd\LowonganController;
+use App\Http\Controllers\Hrd\LamaranHrdController;
+use App\Http\Controllers\Hrd\KandidatController;
+use App\Http\Controllers\AccountSettingsController;
+use App\Models\Application;
+use App\Http\Controllers\Pelamar\LamaranController;
 use App\Exports\UsersExport;
 use Maatwebsite\Excel\Facades\Excel;
-
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 /*
 |--------------------------------------------------------------------------
 | PUBLIC / UMUM (GUEST BOLEH)
@@ -85,8 +89,22 @@ Route::middleware(['auth', 'role:pelamar'])
             ->name('profile');
 
         Route::get('/lamaran', function () {
-            return view('pelamar.lamaran');
+
+            $application = Application::where('user_id', Auth::id())
+                ->latest()
+                ->first();
+
+            return view('pelamar.lamaran', compact('application'));
+
         })->name('lamaran');
+
+        Route::post('/lamar/{lowongan}', [LamaranController::class, 'store'])
+        ->name('lamar.store');
+
+        Route::post('/lamaran/{application}/offer-response',
+            [LamaranController::class, 'offerResponse']
+        )->name('offer.response');
+
  /*
         |========================
         | DATA DIRI
@@ -160,131 +178,90 @@ Route::middleware(['auth', 'role:pelamar'])
         Route::post('/profile/achievements', [ProfileController::class, 'storeAchievement']);
         Route::put('/profile/achievements/{id}', [ProfileController::class, 'updateAchievement']);
         Route::delete('/profile/achievements/{id}', [ProfileController::class, 'deleteAchievement']);
+
     });
 
 
-/*
-|--------------------------------------------------------------------------
-| HRD ROUTES
-|--------------------------------------------------------------------------
-*/
+
 Route::middleware(['auth', 'role:hrd'])
     ->prefix('hrd')
+    ->name('hrd.')
     ->group(function () {
 
-    /*
-    |--------------------------------------------------------------------------
-    | AKUN HRD
-    |--------------------------------------------------------------------------
-    */
-    Route::get('/akun/{id}', [AkunHrdController::class, 'show'])
-        ->name('akun.detail');
-
-    /*
-    |--------------------------------------------------------------------------
-    | DASHBOARD HRD
-    |--------------------------------------------------------------------------
-    */
+    /* ================= DASHBOARD ================= */
     Route::get('/dashboard', function () {
         return view('hrd.dashboard');
-    })->name('hrd.dashboard');
+    })->name('dashboard');
 
-    /*
-    |--------------------------------------------------------------------------
-    | LOWONGAN (DATABASE READY)
-    |--------------------------------------------------------------------------
-    */
+    /* ================= LAMARAN ================= */
+    Route::get('/lamaran', [LamaranHrdController::class, 'index'])
+        ->name('lamaran.index');
 
-    Route::get('/lowongan', [LowonganController::class, 'index'])->name('lowongan.index');
-    Route::get('/lowongan/create', [LowonganController::class, 'create'])->name('lowongan.create');
-    Route::post('/lowongan', [LowonganController::class, 'store'])->name('lowongan.store');
+    Route::put('/lamaran/{application}', [LamaranHrdController::class, 'update'])
+        ->name('lamaran.update');
 
-    Route::get('/lowongan/{lowongan}/edit', [LowonganController::class, 'edit'])->name('lowongan.edit');
-    Route::put('/lowongan/{lowongan}', [LowonganController::class, 'update'])->name('lowongan.update');
+    Route::put('/lamaran/{application}/interview',
+        [LamaranHrdController::class, 'setInterview']
+    )->name('lamaran.interview');
 
-    Route::get('/lowongan/{lowongan}/deskripsi', [LowonganController::class, 'createDeskripsi'])
-        ->name('lowongan.create.deskripsi');
+    Route::delete('/lamaran/{application}/interview',
+        [LamaranHrdController::class, 'deleteInterview']
+    )->name('lamaran.interview.delete');
 
-    Route::put('/lowongan/{lowongan}/deskripsi', [LowonganController::class, 'updateDeskripsi'])
-        ->name('lowongan.update.deskripsi');
+    Route::post(
+    '/lamaran/{application}/offer',
+        [LamaranHrdController::class, 'uploadOffer']
+    )->name('lamaran.offer.upload');
+
+
+    /* ================= KANDIDAT ================= */
+    Route::get('/lowongan/{lowongan}/kandidat',
+        [KandidatController::class, 'index']
+    )->name('kandidat.index');
+
+    Route::get('/lowongan/{lowongan}/kandidat/{application}',
+        [KandidatController::class, 'show']
+    )->name('kandidat.detail');
+
+    /* ================= LOWONGAN ================= */
+    Route::get('/lowongan', [LowonganController::class, 'index'])
+        ->name('lowongan.index');
+
+    Route::get('/lowongan/create', [LowonganController::class, 'create'])
+        ->name('lowongan.create');
+
+    Route::post('/lowongan', [LowonganController::class, 'store'])
+        ->name('lowongan.store');
+
+    Route::get('/lowongan/{lowongan}', [LowonganController::class, 'show'])
+        ->name('lowongan.show');
+
+    Route::get('/lowongan/{lowongan}/edit', [LowonganController::class, 'edit'])
+        ->name('lowongan.edit');
+
+    Route::put('/lowongan/{lowongan}', [LowonganController::class, 'update'])
+        ->name('lowongan.update');
 
     Route::delete('/lowongan/{lowongan}', [LowonganController::class, 'destroy'])
-    ->name('lowongan.destroy');
+        ->name('lowongan.destroy');
 
-    Route::post('/lowongan/{lowongan}/status', 
-    [LowonganController::class, 'updateStatus']
-)->name('lowongan.update-status');
+    /* ===== DESKRIPSI LOWONGAN ===== */
+    Route::get('/lowongan/{lowongan}/deskripsi',
+        [LowonganController::class, 'createDeskripsi']
+    )->name('lowongan.deskripsi.create');
 
-Route::get('/lowongan/{lowongan}', 
-    [LowonganController::class, 'show']
-)->name('lowongan.show');
+    Route::put('/lowongan/{lowongan}/deskripsi',
+        [LowonganController::class, 'updateDeskripsi']
+    )->name('lowongan.deskripsi.update');
 
-    /*
-    |--------------------------------------------------------------------------
-    | KANDIDAT (MASIH DUMMY – TIDAK DISENTUH DULU)
-    |--------------------------------------------------------------------------
-    */
-    Route::get('/lowongan/{lowongan}/kandidat', function ($lowongan) {
-
-        $kandidats = collect([
-            (object) [
-                'id' => 1,
-                'nama' => 'Joodiva',
-                'status' => 'Diproses',
-                'tanggal' => '2025-12-14',
-                'pendidikan' => 'S1',
-                'pengalaman' => 5,
-                'keahlian' => 3,
-                'skor' => 82,
-                'ranking' => 2,
-            ],
-            (object) [
-                'id' => 2,
-                'nama' => 'Naruto',
-                'status' => 'Diterima',
-                'tanggal' => '2025-12-01',
-                'pendidikan' => 'SMK',
-                'pengalaman' => 2,
-                'keahlian' => 6,
-                'skor' => 90,
-                'ranking' => 1,
-            ],
-        ]);
-
-        return view('hrd.kandidat.index', compact('kandidats', 'lowongan'));
-
-    })->name('hrd.kandidat.index');
-
-    Route::get('/lowongan/{lowongan}/kandidat/{pelamar}', function ($lowongan, $pelamar) {
-
-        $pelamarData = (object) [
-            'id' => $pelamar,
-            'nama' => 'Mutia Nandhika',
-            'whatsapp' => '081234567890',
-            'email' => 'mutianandhika@gmail.com',
-            'lokasi' => 'Jakarta',
-            'usia' => 21,
-            'pendidikan' => 'SMA / SMK',
-            'gender' => 'Perempuan',
-        ];
-
-        return view('hrd.kandidat.detail', [
-            'lowongan' => $lowongan,
-            'pelamar'  => $pelamarData,
-        ]);
-
-    })->name('hrd.kandidat.detail');
-
-    /*
-    |--------------------------------------------------------------------------
-    | LAPORAN LOWONGAN
-    |--------------------------------------------------------------------------
-    */
+    /* ================= LAPORAN ================= */
     Route::get('/lowongan/{lowongan}/laporan', function ($lowongan) {
         return view('hrd.laporan.index', compact('lowongan'));
-    })->name('hrd.laporan.index');
+    })->name('laporan.index');
 
 });
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -351,4 +328,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/pengaturan-akun/password', [AccountSettingsController::class, 'updatePassword'])
         ->name('account.password.update');
 
+});
+
+Route::get('/log-test', function () {
+    Log::info('INI LOG TEST BARU DARI /log-test');
+    return 'OK';
 });

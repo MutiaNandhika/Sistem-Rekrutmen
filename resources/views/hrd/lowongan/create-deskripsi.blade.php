@@ -6,7 +6,7 @@
 <nav class="breadcrumb-wrapper">
     <a href="{{ route('hrd.dashboard') }}">Dashboard</a>
     <span>/</span>
-    <a href="{{ route('lowongan.index') }}">Lowongan</a>
+    <a href="{{ route('hrd.lowongan.index') }}">Lowongan</a>
     <span>/</span>
     <span class="active">Deskripsi Pekerjaan</span>
 </nav>
@@ -34,7 +34,7 @@
 </div>
 
 <form method="POST"
-      action="{{ route('lowongan.update.deskripsi', $lowongan->id) }}">
+      action="{{ route('hrd.update.deskripsi', $lowongan->id) }}">
     @csrf
     @method('PUT')
 

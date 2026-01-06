@@ -43,10 +43,47 @@
                     </ul>
 
                     <div class="mt-4">
-                        <a href="#" class="btn-lamar">
-                            Lamar Sekarang
+                    @guest
+                        <a href="{{ route('login') }}" class="btn btn-secondary">
+                            Login untuk Melamar
                         </a>
-                    </div>
+
+                    @else
+
+                        @if(auth()->user()->role !== 'pelamar')
+                            <button class="btn btn-secondary" disabled>
+                                Hanya Pelamar yang Bisa Melamar
+                            </button>
+
+                        @elseif(!auth()->user()->isProfileComplete())
+                            <button class="btn btn-warning" disabled
+                                title="Lengkapi Data Diri, Tentang Saya, Pendidikan, Skills, dan Resume">
+                                Lengkapi Profil
+                            </button>
+
+                        @elseif($application && $application->status === 'diterima')
+                            <button class="btn btn-success" disabled>
+                                Anda Sudah Diterima
+                            </button>
+
+                        @elseif($application && $application->status !== 'ditolak')
+                            <button class="btn btn-secondary" disabled>
+                                Lamaran Sedang Diproses
+                            </button>
+
+                        @else
+                            {{-- BOLEH MELAMAR --}}
+                            <form method="POST" action="{{ route('pelamar.lamar.store', $lowongan->id) }}">
+                                @csrf
+                                <button class="btn btn-primary">
+                                    Lamar
+                                </button>
+                            </form>
+                        @endif
+
+                    @endguest
+                </div>
+
                 </div>
             </div>
         </div>

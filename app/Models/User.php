@@ -108,5 +108,17 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function isProfileComplete(): bool
+{
+    return
+        $this->pelamarProfile &&
+        !empty(trim($this->pelamarProfile->tentang_saya)) &&
+        $this->pelamarEducations()->exists() &&
+        $this->pelamarSkills()->exists() &&
+        $this->pelamarResume !== null;
 }
+
+}
+
 

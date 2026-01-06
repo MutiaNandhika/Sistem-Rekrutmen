@@ -4,7 +4,7 @@
 
 @section('breadcrumb')
 <nav class="breadcrumb-wrapper">
-    <a href="{{ route('lowongan.index') }}">Lowongan</a>
+    <a href="{{ route('hrd.lowongan.index') }}">Lowongan</a>
     <span>/</span>
     <span class="active">Kelola Kandidat</span>
 </nav>
@@ -44,42 +44,42 @@
     </thead>
 
     <tbody>
-    @foreach ($kandidats as $kandidat)
-    <tr>
-        <td class="fw-semibold">{{ $kandidat->nama }}</td>
+    @foreach ($kandidats as $k)
+<tr>
+    <td>{{ $k->user->name }}</td>
 
-        <td>
-            <span class="badge 
-                {{ $kandidat->status === 'Diterima' ? 'bg-success' : 'bg-warning text-dark' }}">
-                {{ $kandidat->status }}
-            </span>
-        </td>
+    <td>
+        <span class="badge bg-warning text-dark">
+            {{ ucfirst($k->status) }}
+        </span>
+    </td>
 
-        <td>{{ \Carbon\Carbon::parse($kandidat->tanggal)->format('d M Y') }}</td>
-        <td>{{ $kandidat->pendidikan }}</td>
-        <td>{{ $kandidat->pengalaman }} th</td>
-        <td>{{ $kandidat->keahlian }}</td>
+    <td>{{ $k->created_at->format('d M Y') }}</td>
 
-        <td>
-            <span class="badge bg-info text-dark">
-                {{ $kandidat->skor }}
-            </span>
-        </td>
+    <td>
+        {{ optional($k->user->pelamarEducations->first())->tingkat ?? '-' }}
+    </td>
 
-        <td>
-            <span class="badge bg-primary">
-                #{{ $kandidat->ranking }}
-            </span>
-        </td>
+    <td>
+        {{ $k->user->pelamarExperiences->count() }} th
+    </td>
 
-        <td>
-            <a href="{{ route('hrd.kandidat.detail', [$lowongan, $kandidat->id]) }}"
-            class="btn btn-sm btn-primary">
-                Detail
-            </a>
-        </td>
-    </tr>
-    @endforeach
+    <td>
+        {{ $k->user->pelamarSkills->count() }}
+    </td>
+
+    <td>-</td>
+    <td>-</td>
+
+    <td>
+        <a href="{{ route('hrd.kandidat.detail', [$lowongan, $k->id]) }}"
+           class="btn btn-sm btn-primary">
+            Detail
+        </a>
+    </td>
+</tr>
+@endforeach
+
     </tbody>
 
 </table>

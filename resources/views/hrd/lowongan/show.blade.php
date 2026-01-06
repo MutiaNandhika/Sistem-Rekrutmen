@@ -6,7 +6,7 @@
 <nav class="breadcrumb-wrapper">
     <a href="{{ route('hrd.dashboard') }}">Dashboard</a>
     <span>/</span>
-    <a href="{{ route('lowongan.index') }}">Lowongan</a>
+    <a href="{{ route('hrd.lowongan.index') }}">Lowongan</a>
     <span>/</span>
     <span class="active">Detail Lowongan</span>
 </nav>
@@ -153,7 +153,7 @@
 
 {{-- ACTION --}}
 <div class="text-end">
-    <a href="{{ route('lowongan.index') }}" class="btn btn-light border">
+    <a href="{{ route('hrd.lowongan.index') }}" class="btn btn-light border">
         Kembali
     </a>
 </div>

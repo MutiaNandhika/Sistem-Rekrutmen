@@ -3,36 +3,44 @@
 namespace App\Http\Controllers\Hrd;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Models\Application;
+use App\Models\Lowongan;
 
 class KandidatController extends Controller
 {
-    public function index($lowonganId)
+    // LIST KANDIDAT PER LOWONGAN
+    public function index(Lowongan $lowongan)
     {
-        // dummy data (nanti ganti dari DB)
-        $kandidats = collect([
-            [
-                'nama' => 'Joodiva',
-                'status' => 'Diproses',
-                'tanggal' => '2025-12-14',
-                'pendidikan' => 'S1',
-                'pengalaman' => 5,
-                'keahlian' => 3,
-                'skor' => 82,
-                'ranking' => 2,
-            ],
-            [
-                'nama' => 'Naruto',
-                'status' => 'Diterima',
-                'tanggal' => '2025-12-01',
-                'pendidikan' => 'SMK',
-                'pengalaman' => 2,
-                'keahlian' => 6,
-                'skor' => 90,
-                'ranking' => 1,
-            ],
+        // keamanan: hanya HRD pemilik
+        abort_if($lowongan->hrd_id !== auth()->id(), 403);
+
+        $kandidats = Application::with([
+                'user.pelamarProfile',
+                'user.pelamarEducations',
+                'user.pelamarSkills'
+            ])
+            ->where('lowongan_id', $lowongan->id)
+            ->latest()
+            ->get();
+
+        return view('hrd.kandidat.index', compact('lowongan', 'kandidats'));
+    }
+
+    // DETAIL KANDIDAT
+    public function show(Lowongan $lowongan, Application $application)
+    {
+        abort_if($lowongan->hrd_id !== auth()->id(), 403);
+
+        $application->load([
+            'user.pelamarProfile',
+            'user.pelamarEducations',
+            'user.pelamarSkills',
+            'user.pelamarExperiences',
+            'user.pelamarAchievements',
+            'user.pelamarCertificates',
+            'user.pelamarResume'
         ]);
 
-        return view('hrd.kandidat.index', compact('kandidats'));
+        return view('hrd.kandidat.detail', compact('lowongan', 'application'));
     }
 }

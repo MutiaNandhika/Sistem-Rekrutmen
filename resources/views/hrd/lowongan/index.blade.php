@@ -15,7 +15,7 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h4 class="fw-bold">Daftar Lowongan Kerja</h4>
 
-    <a href="{{ route('lowongan.create') }}"
+    <a href="{{ route('hrd.lowongan.create') }}"
        class="btn btn-primary d-flex align-items-center gap-2">
         <i class="bi bi-plus-lg"></i>
         Tambah Lowongan Kerja
@@ -107,7 +107,7 @@
 
             {{-- LEFT --}}
             <div class="left-actions">
-                <a href="{{ route('lowongan.show',$lowongan->id) }}"
+                <a href="{{ route('hrd.lowongan.show',$lowongan->id) }}"
                 class="btn-dashboard orange sm">
                     Detail Lowongan
                 </a>
@@ -122,7 +122,7 @@
             <div class="right-actions action-icons">
 
                 {{-- EDIT --}}
-                <a href="{{ route('lowongan.edit',$lowongan->id) }}"
+                <a href="{{ route('hrd.lowongan.edit',$lowongan->id) }}"
                    class="action-btn edit"
                    title="Edit Lowongan">
                     <i class="bi bi-pencil"></i>

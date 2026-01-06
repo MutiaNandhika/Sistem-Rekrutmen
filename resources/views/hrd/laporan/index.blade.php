@@ -5,7 +5,7 @@
 {{-- ================= BREADCRUMB ================= --}}
 @section('breadcrumb')
 <nav class="breadcrumb-wrapper">
-    <a href="{{ route('lowongan.index') }}">Lowongan</a>
+    <a href="{{ route('hrd.lowongan.index') }}">Lowongan</a>
     <span>/</span>
     <a href="{{ route('hrd.kandidat.index', $lowongan) }}">Kelola Kandidat</a>
     <span>/</span>

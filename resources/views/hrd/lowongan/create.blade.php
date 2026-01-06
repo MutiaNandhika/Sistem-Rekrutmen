@@ -6,7 +6,7 @@
 <nav class="breadcrumb-wrapper">
     <a href="{{ route('hrd.dashboard') }}">Dashboard</a>
     <span>/</span>
-    <a href="{{ route('lowongan.index') }}">Lowongan</a>
+    <a href="{{ route('hrd.lowongan.index') }}">Lowongan</a>
     <span>/</span>
     <span class="active">Tambah Lowongan</span>
 </nav>
@@ -36,7 +36,7 @@
 
 
 <form
-action="{{ isset($lowongan) ? route('lowongan.update',$lowongan->id) : route('lowongan.store') }}"
+action="{{ isset($lowongan) ? route('hrd.lowongan.update',$lowongan->id) : route('hrd.lowongan.store') }}"
 method="POST">
 @csrf
 @if(isset($lowongan)) @method('PUT') @endif
@@ -223,7 +223,7 @@ method="POST">
 
 {{-- ================= ACTION BUTTON ================= --}}
 <div class="d-flex justify-content-end gap-2">
-    <a href="{{ route('lowongan.index') }}" class="btn btn-light">Kembali</a>
+    <a href="{{ route('hrd.lowongan.index') }}" class="btn btn-light">Kembali</a>
     <button type="submit" class="btn btn-primary">Selanjutnya</button>
 </div>
 
