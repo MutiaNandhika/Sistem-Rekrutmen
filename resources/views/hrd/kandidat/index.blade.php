@@ -16,10 +16,15 @@
     <h4 class="fw-bold">Kelola Kandidat</h4>
 
     <div class="d-flex gap-2">
-        <button class="btn btn-primary">Screening</button>
+        <form action="{{ route('hrd.kandidat.screening', $lowongan) }}" method="POST">
+            @csrf
+            <button class="btn btn-primary">
+                Screening
+            </button>
+        </form>
+
         <a href="{{ route('hrd.laporan.index', $lowongan) }}"
-        class="btn btn-dark d-flex align-items-center gap-2">
-            <i class="bi bi-file-earmark-text"></i>
+           class="btn btn-dark">
             Lihat Laporan
         </a>
     </div>
@@ -28,61 +33,75 @@
 <div class="card">
     <div class="card-body">
 
-        <table id="kandidatTable" class="table kandidat-table align-middle w-100">
-    <thead>
-        <tr>
-            <th>Nama Kandidat</th>
-            <th>Status Seleksi</th>
-            <th>Tanggal Melamar</th>
-            <th>Pendidikan</th>
-            <th>Pengalaman</th>
-            <th>Keahlian</th>
-            <th>Skor</th>
-            <th>Ranking</th>
-            <th class="text-center">Action</th>
-        </tr>
-    </thead>
+        <table id="kandidatTable"
+               class="table kandidat-table align-middle w-100">
+            <thead>
+                <tr>
+                    <th>Nama Kandidat</th>
+                    <th>Status Seleksi</th>
+                    <th>Tanggal Melamar</th>
+                    <th>Pendidikan</th>
+                    <th>Pengalaman</th>
+                    <th>Keahlian</th>
+                    <th>Skor</th>
+                    <th>Ranking</th>
+                    <th class="text-center">Action</th>
+                </tr>
+            </thead>
 
-    <tbody>
-    @foreach ($kandidats as $k)
-<tr>
-    <td>{{ $k->user->name }}</td>
+            <tbody>
+            @foreach ($kandidats as $k)
+                <tr>
+                    {{-- NAMA --}}
+                    <td>{{ $k->user->name }}</td>
 
-    <td>
-        <span class="badge bg-warning text-dark">
-            {{ ucfirst($k->status) }}
-        </span>
-    </td>
+                    {{-- STATUS --}}
+                    <td>
+                        <span class="badge bg-warning text-dark">
+                            {{ ucfirst($k->status) }}
+                        </span>
+                    </td>
 
-    <td>{{ $k->created_at->format('d M Y') }}</td>
+                    {{-- TANGGAL --}}
+                    <td>{{ $k->created_at->format('d M Y') }}</td>
 
-    <td>
-        {{ optional($k->user->pelamarEducations->first())->tingkat ?? '-' }}
-    </td>
+                    <td>
+                        {{
+                            optional(
+                                $k->user->pelamarEducations
+                                    ->sortByDesc('created_at')
+                                    ->first()
+                            )->tingkat ?? '-'
+                        }}
+                    </td>
 
-    <td>
-        {{ $k->user->pelamarExperiences->count() }} th
-    </td>
+                    {{-- TOTAL PENGALAMAN (TAHUN) --}}
+                    <td>
+                        {{ $k->user->totalPengalamanTahun() }} th
+                    </td>
 
-    <td>
-        {{ $k->user->pelamarSkills->count() }}
-    </td>
 
-    <td>-</td>
-    <td>-</td>
+                    {{-- JUMLAH SKILL --}}
+                    <td>
+                        {{ $k->user->pelamarSkills->count() }}
+                    </td>
 
-    <td>
-        <a href="{{ route('hrd.kandidat.detail', [$lowongan, $k->id]) }}"
-           class="btn btn-sm btn-primary">
-            Detail
-        </a>
-    </td>
-</tr>
-@endforeach
+                    {{-- SKOR & RANK --}}
+                    <td>{{ $k->saw_score ?? '-' }}</td>
+                    <td>{{ $k->saw_rank ?? '-' }}</td>
 
-    </tbody>
+                    {{-- ACTION --}}
+                    <td class="text-center">
+                        <a href="{{ route('hrd.kandidat.detail', [$lowongan, $k->id]) }}"
+                           class="btn btn-sm btn-primary">
+                            Detail
+                        </a>
+                    </td>
+                </tr>
+            @endforeach
+            </tbody>
 
-</table>
+        </table>
 
     </div>
 </div>
@@ -90,8 +109,9 @@
 @endsection
 
 @push('scripts')
-<!-- DataTables -->
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css">
+<link rel="stylesheet"
+      href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css">
+
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
 

@@ -10,21 +10,22 @@ class KandidatController extends Controller
 {
     // LIST KANDIDAT PER LOWONGAN
     public function index(Lowongan $lowongan)
-    {
-        // keamanan: hanya HRD pemilik
-        abort_if($lowongan->hrd_id !== auth()->id(), 403);
+{
+    // 🔐 SECURITY: hanya HRD pemilik lowongan
+    abort_if($lowongan->hrd_id !== auth()->id(), 403);
 
-        $kandidats = Application::with([
-                'user.pelamarProfile',
-                'user.pelamarEducations',
-                'user.pelamarSkills'
-            ])
-            ->where('lowongan_id', $lowongan->id)
-            ->latest()
-            ->get();
+    $kandidats = Application::with([
+        'user.pelamarProfile',
+        'user.pelamarEducations',
+        'user.pelamarExperiences',
+        'user.pelamarSkills'
+    ])
+    ->where('lowongan_id', $lowongan->id)
+    ->orderBy('created_at') // penting untuk SAW & ranking
+    ->get();
 
-        return view('hrd.kandidat.index', compact('lowongan', 'kandidats'));
-    }
+    return view('hrd.kandidat.index', compact('lowongan', 'kandidats'));
+}
 
     // DETAIL KANDIDAT
     public function show(Lowongan $lowongan, Application $application)

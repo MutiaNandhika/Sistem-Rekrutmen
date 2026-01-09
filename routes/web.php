@@ -11,6 +11,7 @@ use App\Http\Controllers\Hrd\AkunHrdController;
 use App\Http\Controllers\Hrd\LowonganController;
 use App\Http\Controllers\Hrd\LamaranHrdController;
 use App\Http\Controllers\Hrd\KandidatController;
+use App\Http\Controllers\Hrd\SawController;
 use App\Http\Controllers\AccountSettingsController;
 use App\Models\Application;
 use App\Http\Controllers\Pelamar\LamaranController;
@@ -248,6 +249,19 @@ Route::middleware(['auth', 'role:hrd'])
     Route::delete('/lowongan/{lowongan}', [LowonganController::class, 'destroy'])
         ->name('lowongan.destroy');
 
+    Route::get('/lowongan/{lowongan}/laporan', [SawController::class, 'laporan']
+        )->name('laporan.index');
+
+    Route::post('/lowongan/{lowongan}/screening', [SawController::class, 'hitung']
+        )->name('kandidat.screening');
+
+    Route::get('/lowongan/{lowongan}/laporan/pdf',[SawController::class, 'exportPdf']
+        )->name('laporan.pdf');
+
+    Route::get('/lowongan/{lowongan}/laporan/excel',[SawController::class, 'exportExcel']
+        )->name('laporan.excel');
+
+
     /* ===== DESKRIPSI LOWONGAN ===== */
     Route::get('/lowongan/{lowongan}/deskripsi',
         [LowonganController::class, 'createDeskripsi']
@@ -256,11 +270,6 @@ Route::middleware(['auth', 'role:hrd'])
     Route::put('/lowongan/{lowongan}/deskripsi',
         [LowonganController::class, 'updateDeskripsi']
     )->name('lowongan.deskripsi.update');
-
-    /* ================= LAPORAN ================= */
-    Route::get('/lowongan/{lowongan}/laporan', function ($lowongan) {
-        return view('hrd.laporan.index', compact('lowongan'));
-    })->name('laporan.index');
 
 });
 

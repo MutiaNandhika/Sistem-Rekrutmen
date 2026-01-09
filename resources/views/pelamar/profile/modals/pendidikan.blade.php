@@ -26,7 +26,8 @@
                     </label>
                     <select id="eduTingkat" class="form-select">
                         <option value="">Pilih tingkat pendidikan</option>
-                        <option>SMA / SMK</option>
+                        <option>SMA</option>
+                        <option>SMK</option>
                         <option>D3</option>
                         <option>S1</option>
                         <option>S2</option>

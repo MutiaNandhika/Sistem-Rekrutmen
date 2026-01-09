@@ -14,6 +14,7 @@ use App\Models\PelamarResume;
 use App\Models\PelamarCertificate;
 use App\Models\PelamarOrganization;
 use App\Models\PelamarAchievement;
+use Carbon\Carbon;
 
 class User extends Authenticatable
 {
@@ -117,6 +118,76 @@ class User extends Authenticatable
         $this->pelamarEducations()->exists() &&
         $this->pelamarSkills()->exists() &&
         $this->pelamarResume !== null;
+}
+
+public function totalPengalamanTahun(): float
+{
+    if ($this->pelamarExperiences->isEmpty()) {
+        return 0;
+    }
+
+    $totalBulan = 0;
+
+    foreach ($this->pelamarExperiences as $exp) {
+
+        // ⛔ skip kalau tanggal_mulai kosong
+        if (! $exp->tanggal_mulai) {
+            continue;
+        }
+
+        try {
+            // ✅ PAKAI NAMA KOLOM DATABASE YANG BENAR
+            $start = \Carbon\Carbon::parse($exp->tanggal_mulai);
+
+            // kalau masih bekerja → pakai hari ini
+            if ($exp->masih_bekerja) {
+                $end = now();
+            } else {
+                // kalau sudah selesai → pakai tanggal_selesai
+                if (! $exp->tanggal_selesai) {
+                    continue;
+                }
+                $end = \Carbon\Carbon::parse($exp->tanggal_selesai);
+            }
+
+            // validasi waktu
+            if ($end->greaterThan($start)) {
+                $totalBulan += $start->diffInMonths($end);
+            }
+
+        } catch (\Exception $e) {
+            // skip data rusak
+            continue;
+        }
+    }
+
+    return round($totalBulan / 12, 1);
+}
+
+public function nilaiPendidikanTerakhir(): int
+{
+    if ($this->pelamarEducations->isEmpty()) {
+        return 0;
+    }
+
+    $map = [
+        'SMA' => 1,
+        'SMK' => 1,
+        'D3'  => 2,
+        'S1'  => 3,
+        'S2'  => 4,
+        'S3'  => 5,
+    ];
+
+    $nilai = 0;
+
+    foreach ($this->pelamarEducations as $edu) {
+        if (isset($map[$edu->tingkat])) {
+            $nilai = max($nilai, $map[$edu->tingkat]);
+        }
+    }
+
+    return $nilai;
 }
 
 }

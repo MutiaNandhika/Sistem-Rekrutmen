@@ -15,6 +15,8 @@ class Application extends Model
         'interview_link',
         'offer_file',
         'offer_response',
+        'saw_score',
+        'saw_rank'
     ];
 
     protected $casts = [
