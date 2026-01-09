@@ -242,6 +242,9 @@ Route::middleware(['auth', 'role:hrd'])
     Route::put('/lowongan/{lowongan}', [LowonganController::class, 'update'])
         ->name('lowongan.update');
 
+    Route::post('/lowongan/{lowongan}/status', [LowonganController::class, 'updateStatus']
+        )->name('lowongan.status');
+
     Route::delete('/lowongan/{lowongan}', [LowonganController::class, 'destroy'])
         ->name('lowongan.destroy');
 
