@@ -3,10 +3,11 @@
 @section('title', 'Daftar Lowongan Kerja')
 
 @php
-    $total = $lowongans->count();
+    $total = $lowongans->where('status', '!=', 'arsip')->count();
     $aktif = $lowongans->where('status', 'aktif')->count();
     $nonaktif = $lowongans->where('status', 'nonaktif')->count();
     $draft = $lowongans->where('status', 'draft')->count();
+    $arsip = $lowongans->where('status', 'arsip')->count();
 @endphp
 
 @section('content')
@@ -48,7 +49,7 @@
                         <li class="nav-item">
                 <a class="nav-link" href="#" data-filter="arsip">
                     Arsip
-                    <span class="badge" data-count="arsip">0</span>
+                    <span class="badge" data-count="arsip">{{ $arsip }}</span>
                 </a>
             </li>
             <li class="nav-item">

@@ -7,6 +7,7 @@ use App\Http\Controllers\Public\JobController;
 use App\Http\Controllers\Admin\AkunAdminController;
 use App\Http\Controllers\Admin\ManajemenAkunController;
 use App\Http\Controllers\Admin\UsersPdfController;
+use App\Http\Controllers\Admin\MonitoringController;
 use App\Http\Controllers\Hrd\AkunHrdController;
 use App\Http\Controllers\Hrd\LowonganController;
 use App\Http\Controllers\Hrd\LamaranHrdController;
@@ -16,6 +17,7 @@ use App\Http\Controllers\AccountSettingsController;
 use App\Models\Application;
 use App\Http\Controllers\Pelamar\LamaranController;
 use App\Exports\UsersExport;
+use App\Http\Controllers\Hrd\DashboardController;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
@@ -189,10 +191,12 @@ Route::middleware(['auth', 'role:hrd'])
     ->name('hrd.')
     ->group(function () {
 
-    /* ================= DASHBOARD ================= */
-    Route::get('/dashboard', function () {
-        return view('hrd.dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+            ->name('dashboard');
+
+        // AJAX DATA
+    Route::get('/dashboard/data', [DashboardController::class, 'data'])
+            ->name('dashboard.data');
 
     /* ================= LAMARAN ================= */
     Route::get('/lamaran', [LamaranHrdController::class, 'index'])
@@ -261,7 +265,6 @@ Route::middleware(['auth', 'role:hrd'])
     Route::get('/lowongan/{lowongan}/laporan/excel',[SawController::class, 'exportExcel']
         )->name('laporan.excel');
 
-
     /* ===== DESKRIPSI LOWONGAN ===== */
     Route::get('/lowongan/{lowongan}/deskripsi',
         [LowonganController::class, 'createDeskripsi']
@@ -289,6 +292,12 @@ Route::middleware(['auth', 'role:admin'])
             return view('admin.dashboard');
         })->name('dashboard');
 
+        Route::get('/monitoring', [MonitoringController::class, 'index'])
+            ->name('monitoring');
+
+        Route::get('/monitoring/data', [MonitoringController::class, 'data'])
+            ->name('monitoring.data');
+            
         Route::get('/manajemen-akun', [ManajemenAkunController::class, 'index'])
             ->name('akun.index');
 
@@ -309,9 +318,8 @@ Route::middleware(['auth', 'role:admin'])
         );
     });
 
-        Route::get('/monitoring', function () {
-            return view('admin.monitoring');
-        })->name('monitoring');
+        Route::get('/monitoring', [MonitoringController::class, 'index'])
+            ->name('admin.monitoring');
 
         Route::get('/akun/{id}', [AkunAdminController::class, 'show'])
             ->name('akun.detail');
