@@ -9,11 +9,11 @@
     <div class="login-left">
 
         {{-- NOTIFIKASI DARI REDIRECT --}}
-    @if(request('reason') === 'job_detail')
-    <div class="login-alert">
-        Silakan login terlebih dahulu untuk melihat detail lowongan.
-    </div>
-@endif
+        @if(request('reason') === 'job_detail')
+            <div class="login-alert">
+                Silakan login terlebih dahulu untuk melihat detail lowongan.
+            </div>
+        @endif
 
         <h1 class="login-title">Selamat Datang Kembali!</h1>
 
@@ -28,11 +28,19 @@
                    required>
 
             <label>Password</label>
-            <input type="password"
-                   name="password"
-                   class="login-input"
-                   placeholder="Masukkan password Anda"
-                   required>
+            <div class="password-wrapper">
+                <input type="password"
+                       name="password"
+                       id="loginPassword"
+                       class="login-input"
+                       placeholder="Masukkan password"
+                       required>
+
+                <span class="toggle-password"
+                      onclick="togglePassword('loginPassword', this)">
+                    <i class="bi bi-eye"></i>
+                </span>
+            </div>
 
             <div style="margin-bottom:20px;">
                 <label>
@@ -43,7 +51,6 @@
                 <a href="{{ route('password.request') }}" class="forgot-link">
                     Lupa password?
                 </a>
-
             </div>
 
             <button class="btn-login">

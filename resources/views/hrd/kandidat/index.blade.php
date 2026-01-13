@@ -15,18 +15,31 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h4 class="fw-bold">Kelola Kandidat</h4>
 
-    <div class="d-flex gap-2">
-        <form action="{{ route('hrd.kandidat.screening', $lowongan) }}" method="POST">
-            @csrf
-            <button class="btn btn-primary">
-                Screening
-            </button>
-        </form>
+    @if (!$isOwner)
+    <div class="alert alert-info mb-4">
+        Anda hanya dapat melihat data kandidat (read-only).
+        Proses seleksi hanya dapat dilakukan oleh HRD pembuat lowongan.
+    </div>
+@endif
 
-        <a href="{{ route('hrd.laporan.index', $lowongan) }}"
-           class="btn btn-dark">
-            Lihat Laporan
-        </a>
+
+    <div class="d-flex gap-2">
+        @if ($isOwner)
+    <form action="{{ route('hrd.kandidat.screening', $lowongan) }}" method="POST">
+        @csrf
+        <button class="btn btn-primary">
+            Screening
+        </button>
+    </form>
+@endif
+
+        @if ($isOwner)
+    <a href="{{ route('hrd.laporan.index', $lowongan) }}"
+       class="btn btn-dark">
+        Lihat Laporan
+    </a>
+@endif
+
     </div>
 </div>
 

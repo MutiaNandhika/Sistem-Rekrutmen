@@ -14,64 +14,89 @@
 
 {{-- HEADER --}}
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h4 class="fw-bold">Daftar Lowongan Kerja</h4>
-
+    <h4 class="fw-bold">
+        Daftar Lowongan Kerja
+    </h4>
     <a href="{{ route('hrd.lowongan.create') }}"
        class="btn btn-primary d-flex align-items-center gap-2">
-        <i class="bi bi-plus-lg"></i>
+        <i class="bi bi-plus-lg">
+        </i>
         Tambah Lowongan Kerja
     </a>
 </div>
-
 {{-- FILTER TABS --}}
 <div class="card mb-4">
     <div class="card-body d-flex justify-content-between align-items-center">
-
         <ul class="nav nav-tabs lowongan-tabs">
             <li class="nav-item">
                 <a class="nav-link active" href="#" data-filter="all">
                     Semua Loker
-                    <span class="badge" data-count="total">{{ $total }}</span>
+                    <span class="badge" data-count="total">
+                        {{ $total }}
+                    </span>
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#" data-filter="aktif">
                     Aktif
-                    <span class="badge" data-count="aktif">{{ $aktif }}</span>
+                    <span class="badge" data-count="aktif">
+                        {{ $aktif }}
+                    </span>
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#" data-filter="nonaktif">
                     Nonaktif
-                    <span class="badge" data-count="nonaktif">{{ $nonaktif }}</span>
+                    <span class="badge" data-count="nonaktif">
+                        {{ $nonaktif }}
+                    </span>
                 </a>
             </li>
-                        <li class="nav-item">
+            <li class="nav-item">
                 <a class="nav-link" href="#" data-filter="arsip">
                     Arsip
-                    <span class="badge" data-count="arsip">{{ $arsip }}</span>
+                    <span class="badge" data-count="arsip">
+                        {{ $arsip }}
+                    </span>
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#" data-filter="draft">
                     Draft
-                    <span class="badge" data-count="draft">{{ $draft }}</span>
+                    <span class="badge" data-count="draft">
+                        {{ $draft }}
+                    </span>
                 </a>
             </li>
         </ul>
-
         <button id="sortButton" class="btn btn-light border" data-order="desc">
-            <i class="bi bi-arrow-down-up"></i> Urutkan: Terbaru
+            <i class="bi bi-arrow-down-up">
+            </i>
+            Urutkan: Terbaru
         </button>
-
     </div>
 </div>
-
+<form method="GET" class="mb-3">
+    <select name="pic"
+            class="form-select w-auto"
+            onchange="this.form.submit()">
+        <option value="">
+            Semua PIC (HRD)
+        </option>
+        @foreach ($hrds as $hrd)
+        <option value="{{ $hrd->
+            id }}"
+                {{ request('pic') == $hrd->id ? 'selected' : '' }}>
+                {{ $hrd->name }}
+        </option>
+        @endforeach
+    </select>
+</form>
 {{-- LIST LOWONGAN --}}
 <div class="lowongan-list">
-
-@forelse ($lowongans as $lowongan)
-<div class="lowongan-card {{ $lowongan->status === 'aktif' ? 'active' : '' }}"
+    @forelse ($lowongans as $lowongan)
+    <div class="lowongan-card {{ $lowongan->
+        status === 'aktif' ? 'active' : '' }}"
      data-id="{{ $lowongan->id }}"
      data-status="{{ $lowongan->status }}"
      data-updated="{{ $lowongan->updated_at }}">
@@ -79,88 +104,108 @@
         {{-- HEADER --}}
         <div class="lowongan-header d-flex justify-content-between align-items-start">
             <div>
-                <h6>{{ $lowongan->nama_lowongan }}</h6>
+                <h6>
+                    {{ $lowongan->nama_lowongan }}
+                </h6>
                 <small class="text-muted">
-                    <i class="bi bi-clock"></i>
+                    <i class="bi bi-clock">
+                    </i>
                     {{ $lowongan->updated_at->translatedFormat('d M Y') }}
                 </small>
             </div>
-
-            <span class="status-badge {{ $lowongan->status }}">
+            <span class="status-badge {{ $lowongan->
+                status }}">
                 {{ ucfirst($lowongan->status) }}
             </span>
         </div>
-
         {{-- META --}}
         <ul class="lowongan-meta">
             <li>
-                <i class="bi bi-briefcase"></i>
+                <i class="bi bi-briefcase">
+                </i>
                 {{ ucfirst(str_replace('_',' ',$lowongan->tipe_kerja)) }}
             </li>
             <li>
-                <i class="bi bi-geo-alt"></i>
+                <i class="bi bi-geo-alt">
+                </i>
                 {{ $lowongan->lokasi }}
             </li>
         </ul>
-
+        {{-- INFO PIC --}}
+        <small class="text-muted">
+            PIC:
+            <span class="badge 
+                    {{ $lowongan->
+                hrd_id === $userId ? 'bg-success' : 'bg-secondary' }}">
+                    {{ $lowongan->hrd_id === $userId ? 'Saya' : $lowongan->hrd->name }}
+            </span>
+        </small>
         {{-- ACTIONS --}}
         <div class="lowongan-actions">
-
             {{-- LEFT --}}
             <div class="left-actions">
-                <a href="{{ route('hrd.lowongan.show',$lowongan->id) }}"
+                <a href="{{ route('hrd.lowongan.show',$lowongan->
+                    id) }}"
                 class="btn-dashboard orange sm">
                     Detail Lowongan
                 </a>
-
-                <a href="{{ route('hrd.kandidat.index',$lowongan->id) }}"
+                {{-- KELOLA (HANYA PIC) --}}
+                    @if ($lowongan->hrd_id === auth()->id())
+                <a href="{{ route('hrd.kandidat.index',$lowongan->
+                    id) }}"
                    class="btn-dashboard blue sm">
                     Kelola Kandidat
                 </a>
+                @endif
             </div>
-
             {{-- RIGHT --}}
             <div class="right-actions action-icons">
-
-                {{-- EDIT --}}
-                <a href="{{ route('hrd.lowongan.edit',$lowongan->id) }}"
+                @if ($lowongan->hrd_id === auth()->id())
+                <a href="{{ route('hrd.lowongan.edit',$lowongan->
+                    id) }}"
                    class="action-btn edit"
                    title="Edit Lowongan">
-                    <i class="bi bi-pencil"></i>
+                    <i class="bi bi-pencil">
+                    </i>
                 </a>
+                @else
+                <span class="badge bg-info">
+                    Read Only
+                </span>
+                @endif
 
                 {{-- DELETE --}}
                 <button class="action-btn delete"
-                        onclick="deleteLowongan({{ $lowongan->id }}, this)"
+                        onclick="deleteLowongan({{ $lowongan->
+                    id }}, this)"
                         title="Hapus Lowongan">
-                    <i class="bi bi-trash"></i>
+                    <i class="bi bi-trash">
+                    </i>
                 </button>
-
                 {{-- DROPDOWN --}}
                 <div class="dropdown">
                     <button class="action-btn more"
                             data-bs-toggle="dropdown">
-                        <i class="bi bi-three-dots"></i>
+                        <i class="bi bi-three-dots">
+                        </i>
                     </button>
-                    <ul class="dropdown-menu dropdown-menu-end action-menu"></ul>
+                    <ul class="dropdown-menu dropdown-menu-end action-menu">
+                    </ul>
                 </div>
-
             </div>
         </div>
     </div>
-@empty
+    @empty
     <div class="text-center text-muted py-5">
         Belum ada lowongan kerja.
     </div>
-@endforelse
-
+    @endforelse
 </div>
 @endsection
 
 @push('scripts')
 <script>
-
-/* ================= DELETE (REAL DB) ================= */
+    /* ================= DELETE (REAL DB) ================= */
 function deleteLowongan(id, btn) {
     if (!confirm('Apakah anda yakin ingin menghapus lowongan ini?')) {
         return;
@@ -272,52 +317,52 @@ function renderDropdown(card) {
 
     if (status === 'draft') {
         html = `
-            <li>
-                <button type="button" class="dropdown-item"
+    <li>
+        <button type="button" class="dropdown-item"
                         onclick="publishLowongan(this)">
-                    Publish
-                </button>
-            </li>
-        `;
+            Publish
+        </button>
+    </li>
+    `;
     }
 
     if (status === 'aktif') {
         html = `
-            <li>
-                <button type="button" class="dropdown-item text-warning"
+    <li>
+        <button type="button" class="dropdown-item text-warning"
                         onclick="deactivateLowongan(this)">
-                    Nonaktifkan
-                </button>
-            </li>
-        `;
+            Nonaktifkan
+        </button>
+    </li>
+    `;
     }
 
     if (status === 'nonaktif') {
         html = `
-            <li>
-                <button type="button" class="dropdown-item text-success"
+    <li>
+        <button type="button" class="dropdown-item text-success"
                         onclick="activateLowongan(this)">
-                    Aktifkan
-                </button>
-            </li>
-            <li>
-                <button type="button" class="dropdown-item text-muted"
+            Aktifkan
+        </button>
+    </li>
+    <li>
+        <button type="button" class="dropdown-item text-muted"
                         onclick="archiveLowongan(this)">
-                    Arsip
-                </button>
-            </li>
-        `;
+            Arsip
+        </button>
+    </li>
+    `;
     }
 
     if (status === 'arsip') {
     html = `
-        <li>
-            <button type="button"
+    <li>
+        <button type="button"
                     class="dropdown-item text-success"
                     onclick="restoreLowongan(this)">
-                Kembalikan ke Draft
-            </button>
-        </li>
+            Kembalikan ke Draft
+        </button>
+    </li>
     `;
 }
 
@@ -401,6 +446,5 @@ function updateStatus(card, status) {
 document.querySelectorAll('.lowongan-card').forEach(card => {
     renderDropdown(card);
 });
-
 </script>
 @endpush

@@ -190,6 +190,12 @@ public function nilaiPendidikanTerakhir(): int
     return $nilai;
 }
 
+public function lowongans()
+{
+    return $this->hasMany(Lowongan::class, 'hrd_id');
+}
+
+
 }
 
 

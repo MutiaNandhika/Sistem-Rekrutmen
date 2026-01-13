@@ -38,4 +38,10 @@ class Lowongan extends Model
             'skill_id'
         );
     }
+
+    public function hrd()
+{
+    return $this->belongsTo(User::class, 'hrd_id');
+}
+    
 }

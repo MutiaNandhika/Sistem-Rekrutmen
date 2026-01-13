@@ -6,20 +6,36 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Lowongan;
 use App\Models\Skill;
+use App\Models\User;
 
 class LowonganController extends Controller
 {
     /* ======================================================
     | INDEX
     ====================================================== */
-    public function index()
-    {
-        $lowongans = Lowongan::where('hrd_id', auth()->id())
-            ->latest()
-            ->get();
+public function index(Request $request)
+{
+    $userId = auth()->id();
 
-        return view('hrd.lowongan.index', compact('lowongans'));
-    }
+    // 🔹 Ambil semua HRD untuk filter PIC
+    $hrds = User::where('role', 'hrd')
+        ->orderBy('name')
+        ->get();
+
+    // 🔹 Query lowongan + relasi HRD
+    $lowongans = Lowongan::with('hrd')
+        ->when($request->pic, function ($q) use ($request) {
+            $q->where('hrd_id', $request->pic);
+        })
+        ->orderBy('created_at', 'desc')
+        ->get();
+
+    return view('hrd.lowongan.index', [
+        'lowongans' => $lowongans,
+        'hrds'      => $hrds,      // ❗ INI YANG TADI HILANG
+        'userId'    => $userId,
+    ]);
+}
 
     /* ======================================================
     | CREATE (STEP 1)
@@ -191,13 +207,13 @@ class LowonganController extends Controller
     | SHOW
     ====================================================== */
     public function show(Lowongan $lowongan)
-    {
-        $this->authorizeLowongan($lowongan);
+{
+    return view('hrd.lowongan.show', [
+        'lowongan' => $lowongan,
+        'isOwner'  => $lowongan->hrd_id === auth()->id()
+    ]);
+}
 
-        $lowongan->load('skills');
-
-        return view('hrd.lowongan.show', compact('lowongan'));
-    }
 
     /* ======================================================
     | SECURITY HELPER

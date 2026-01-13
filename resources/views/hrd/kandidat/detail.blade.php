@@ -242,6 +242,14 @@
 {{-- ======================================================
 | RIGHT : TRACKING LAMARAN
 ====================================================== --}}
+
+@if (!$isOwner)
+    <div class="alert alert-info small">
+        Anda sedang melihat kandidat ini sebagai <strong>viewer</strong>.
+        Aksi seleksi hanya dapat dilakukan oleh HRD pembuat lowongan.
+    </div>
+@endif
+
 <div class="col-lg-5">
     <div class="card shadow-sm">
         <div class="card-body">
@@ -252,7 +260,7 @@
             <div class="mb-4">
                 <strong>1. DIPROSES</strong>
 
-                @if($application->status === 'diproses')
+               @if($isOwner && $application->status === 'diproses')
                     <div class="d-flex gap-2 mt-2">
                         <form method="POST" action="{{ route('hrd.lamaran.update', $application) }}">
                             @csrf @method('PUT')
@@ -273,7 +281,7 @@
             <div class="mb-4">
                 <strong>2. SCREENING</strong>
 
-                @if($application->status === 'screening')
+                @if($isOwner && $application->status === 'screening')
                     <div class="d-flex gap-2 mt-2">
                         <form method="POST" action="{{ route('hrd.lamaran.update', $application) }}">
                             @csrf @method('PUT')
@@ -311,7 +319,7 @@
     @endif
 
     {{-- AKSI HRD --}}
-    @if($application->status === 'interview')
+    @if($isOwner && $application->status === 'interview')
 
         {{-- ❌ TOLAK --}}
         <form method="POST"
@@ -354,7 +362,7 @@
             <div>
                 <strong>4. OFFER</strong>
 
-                @if($application->status === 'offer')
+               @if($isOwner && $application->status === 'offer')
                     <p class="text-muted small mt-2">
                         Offering sudah dikirim
                     </p>

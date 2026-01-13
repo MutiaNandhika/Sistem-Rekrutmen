@@ -50,7 +50,7 @@ class RegisteredUserController extends Controller
     return match ($user->role) {
         'admin' => redirect('/admin/dashboard'),
         'hrd' => redirect('/hrd/dashboard'),
-        default => redirect('/pelamar/dashboard'),
+        default => redirect('/pelamar/profile'),
     };
 }
 }

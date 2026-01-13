@@ -41,11 +41,19 @@
 
             {{-- PASSWORD --}}
             <label>Password</label>
-            <input type="password"
-                   name="password"
-                   class="login-input"
-                   placeholder="Masukkan password"
-                   required>
+            <div class="password-wrapper">
+                <input type="password"
+                       name="password"
+                       id="registerPassword"
+                       class="login-input"
+                       placeholder="Masukkan password"
+                       required>
+
+                <span class="toggle-password"
+                      onclick="togglePassword('registerPassword', this)">
+                    <i class="bi bi-eye"></i>
+                </span>
+            </div>
 
             @error('password')
                 <div class="login-alert">{{ $message }}</div>
@@ -53,11 +61,19 @@
 
             {{-- CONFIRM PASSWORD --}}
             <label>Konfirmasi Password</label>
-            <input type="password"
-                   name="password_confirmation"
-                   class="login-input"
-                   placeholder="Ulangi password"
-                   required>
+            <div class="password-wrapper">
+                <input type="password"
+                       name="password_confirmation"
+                       id="registerPasswordConfirm"
+                       class="login-input"
+                       placeholder="Ulangi password"
+                       required>
+
+                <span class="toggle-password"
+                      onclick="togglePassword('registerPasswordConfirm', this)">
+                    <i class="bi bi-eye"></i>
+                </span>
+            </div>
 
             <button class="btn-login">
                 Daftar

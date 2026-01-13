@@ -9,28 +9,38 @@ use App\Models\Lowongan;
 class KandidatController extends Controller
 {
     // LIST KANDIDAT PER LOWONGAN
-    public function index(Lowongan $lowongan)
-{
-    // 🔐 SECURITY: hanya HRD pemilik lowongan
-    abort_if($lowongan->hrd_id !== auth()->id(), 403);
+public function index(Lowongan $lowongan)
+    {
+        // ❗ TIDAK BOLEH abort — HRD lain boleh lihat
+        $isOwner = $lowongan->hrd_id === auth()->id();
 
-    $kandidats = Application::with([
-        'user.pelamarProfile',
-        'user.pelamarEducations',
-        'user.pelamarExperiences',
-        'user.pelamarSkills'
-    ])
-    ->where('lowongan_id', $lowongan->id)
-    ->orderBy('created_at') // penting untuk SAW & ranking
-    ->get();
+        $kandidats = Application::with([
+                'user.pelamarProfile',
+                'user.pelamarEducations',
+                'user.pelamarExperiences',
+                'user.pelamarSkills',
+            ])
+            ->where('lowongan_id', $lowongan->id)
+            ->orderBy('created_at')
+            ->get();
 
-    return view('hrd.kandidat.index', compact('lowongan', 'kandidats'));
-}
+        return view('hrd.kandidat.index', [
+            'lowongan'  => $lowongan,
+            'kandidats' => $kandidats,
+            'isOwner'   => $isOwner,
+        ]);
+    }
 
-    // DETAIL KANDIDAT
+     /**
+     * DETAIL KANDIDAT
+     */
     public function show(Lowongan $lowongan, Application $application)
     {
-        abort_if($lowongan->hrd_id !== auth()->id(), 403);
+        // ❗ TIDAK abort — viewer allowed
+        $isOwner = $lowongan->hrd_id === auth()->id();
+
+        // 🔐 pastikan kandidat milik lowongan
+        abort_if($application->lowongan_id !== $lowongan->id, 404);
 
         $application->load([
             'user.pelamarProfile',
@@ -39,9 +49,13 @@ class KandidatController extends Controller
             'user.pelamarExperiences',
             'user.pelamarAchievements',
             'user.pelamarCertificates',
-            'user.pelamarResume'
+            'user.pelamarResume',
         ]);
 
-        return view('hrd.kandidat.detail', compact('lowongan', 'application'));
+        return view('hrd.kandidat.detail', [
+            'lowongan'    => $lowongan,
+            'application' => $application,
+            'isOwner'     => $isOwner,
+        ]);
     }
 }
