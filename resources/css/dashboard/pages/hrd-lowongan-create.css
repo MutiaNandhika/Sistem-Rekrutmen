@@ -142,3 +142,7 @@
 .action-btn.more:hover {
     background: rgba(108,117,125,.15);
 }
+#editSkillName {
+    padding-left: 12px !important;
+    text-indent: 0 !important;
+}

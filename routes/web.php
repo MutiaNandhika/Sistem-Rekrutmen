@@ -13,6 +13,8 @@ use App\Http\Controllers\Hrd\LowonganController;
 use App\Http\Controllers\Hrd\LamaranHrdController;
 use App\Http\Controllers\Hrd\KandidatController;
 use App\Http\Controllers\Hrd\SawController;
+use App\Http\Controllers\Hrd\SkillController;
+use App\Http\Controllers\Hrd\BidangKerjaController;
 use App\Http\Controllers\AccountSettingsController;
 use App\Models\Application;
 use App\Http\Controllers\Pelamar\LamaranController;
@@ -274,9 +276,14 @@ Route::middleware(['auth', 'role:hrd'])
         [LowonganController::class, 'updateDeskripsi']
     )->name('lowongan.deskripsi.update');
 
+    Route::post('/skills', [SkillController::class, 'store']);
+    Route::put('/skills/{skill}', [SkillController::class, 'update']);
+    Route::delete('/skills/{skill}', [SkillController::class, 'destroy']);
+
+    Route::post('/bidang-kerja', [BidangKerjaController::class, 'store']);
+    Route::put('/bidang-kerja/{bidangKerja}', [BidangKerjaController::class, 'update']);
+    Route::delete('/bidang-kerja/{bidangKerja}', [BidangKerjaController::class, 'destroy']);
 });
-
-
 
 /*
 |--------------------------------------------------------------------------

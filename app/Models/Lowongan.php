@@ -12,7 +12,7 @@ class Lowongan extends Model
     protected $fillable = [
         'hrd_id',
         'nama_lowongan',
-        'bidang_kerja',
+        'bidang_kerja_id',
         'tipe_kerja',
         'sistem_kerja',
         'lokasi',
@@ -44,4 +44,9 @@ class Lowongan extends Model
     return $this->belongsTo(User::class, 'hrd_id');
 }
     
+public function bidangKerja()
+{
+    return $this->belongsTo(BidangKerja::class);
+}
+
 }

@@ -32,7 +32,7 @@
     <a href="{{ url('/admin/manajemen-akun/excel?role='.request('role')) }}" class="btn btn-success">Export Excel</a>
 </div>
 
-<table class="table table-bordered">
+<table class="table table-bordered" id="tableAkun">
 <thead>
 <tr>
     <th>Nama</th>
@@ -125,5 +125,28 @@ function hapus(id){
         headers:{'X-CSRF-TOKEN':'{{ csrf_token() }}'}
     }).then(()=>document.getElementById(`row-${id}`).remove());
 }
+
+$(document).ready(function () {
+    $('#tableAkun').DataTable({
+        pageLength: 5,
+        lengthMenu: [5, 10, 25, 50],
+        ordering: true,
+        searching: true,
+        responsive: true,
+        language: {
+            search: "Cari:",
+            lengthMenu: "Tampilkan _MENU_ data",
+            info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+            paginate: {
+                previous: "Sebelumnya",
+                next: "Berikutnya"
+            },
+            zeroRecords: "Data tidak ditemukan"
+        },
+        columnDefs: [
+            { orderable: false, targets: 3 } // kolom Aksi
+        ]
+    });
+});
 </script>
 @endsection

@@ -59,16 +59,32 @@ method="POST">
         </div>
 
         <div class="mb-3">
-            <label class="form-label fw-semibold mt-3">Bidang Kerja</label>
-        <select name="bidang_kerja" class="form-select" required>
-            @foreach (['Sales','Marketing','IT','Finance'] as $bidang)
-                <option value="{{ $bidang }}"
-                    {{ old('bidang_kerja',$lowongan->bidang_kerja ?? '') == $bidang ? 'selected' : '' }}>
-                    {{ $bidang }}
-                </option>
-            @endforeach
-        </select>
-        </div>
+    <div class="d-flex justify-content-between align-items-center mb-1">
+        <label class="form-label fw-semibold mb-0">
+            Bidang Kerja
+        </label>
+
+        <button type="button"
+                class="btn btn-sm btn-outline-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#modalBidangKerja">
+            + Tambah Bidang Kerja
+        </button>
+    </div>
+
+    <select name="bidang_kerja_id"
+            class="form-select select-bidang-kerja"
+            required>
+        <option value="">-- Pilih Bidang Kerja --</option>
+        @foreach ($bidangKerja as $bidang)
+            <option value="{{ $bidang->id }}"
+                {{ old('bidang_kerja_id', $lowongan->bidang_kerja_id ?? '') == $bidang->id ? 'selected' : '' }}>
+                {{ $bidang->nama }}
+            </option>
+        @endforeach
+    </select>
+</div>
+
 
         <div class="mb-2">
             <label class="form-label fw-semibold mt-3">Tipe Kerja</label>
@@ -147,14 +163,21 @@ method="POST">
     <div class="card-body">
 
         <label class="form-label fw-semibold">Jenis Kelamin</label>
+
         <div class="d-flex gap-4 mb-3">
-             @foreach (['laki-laki'=>'Laki-laki','perempuan'=>'Perempuan'] as $val=>$label)
-            <div>
-                <input type="radio" name="jenis_kelamin" value="{{ $val }}"
-                    {{ old('jenis_kelamin',$lowongan->jenis_kelamin ?? '') == $val ? 'checked' : '' }}>
-                {{ $label }}
-            </div>
-        @endforeach
+            @foreach ([
+                'laki-laki' => 'Laki-laki',
+                'perempuan' => 'Perempuan',
+                'semua' => 'Laki-laki & Perempuan'
+            ] as $val => $label)
+                <div>
+                    <input type="radio"
+                        name="jenis_kelamin"
+                        value="{{ $val }}"
+                        {{ old('jenis_kelamin', $lowongan->jenis_kelamin ?? 'semua') == $val ? 'checked' : '' }}>
+                    {{ $label }}
+                </div>
+            @endforeach
         </div>
 
         <label class="form-label fw-semibold">Usia</label>
@@ -176,9 +199,18 @@ method="POST">
         </div>
 
         <div class="mb-3">
-            <label class="form-label fw-semibold">
-                Skill Wajib Diisi
-            </label>
+            <div class="d-flex justify-content-between align-items-center mb-1">
+                <label class="form-label fw-semibold mb-0">
+                    Skill Wajib Diisi
+                </label>
+
+                <button type="button"
+                        class="btn btn-sm btn-outline-primary"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalSkill">
+                    + Tambah Skill
+                </button>
+            </div>
 
             <select class="form-select select-skill" name="skills[]" multiple>
             @foreach ($skills as $skill)
@@ -209,7 +241,7 @@ method="POST">
                 Pengalaman Kerja yang Dibutuhkan
             </label>
             <select name="pengalaman_kerja" class="form-select">
-            @foreach (['fresh_graduate','1-2_tahun','3_tahun_lebih'] as $p)
+            @foreach (['Fresh_Graduate','1-2_Tahun','3_Tahun_Lebih'] as $p)
                 <option value="{{ $p }}"
                     {{ old('pengalaman_kerja',$lowongan->pengalaman_kerja ?? '') == $p ? 'selected' : '' }}>
                     {{ str_replace('_',' ',$p) }}
@@ -229,6 +261,106 @@ method="POST">
 
 </form>
 
+<div class="modal fade" id="modalSkill" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Tambah Skill</h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <input type="text"
+                       id="skillName"
+                       class="form-control"
+                       placeholder="Contoh: Leadership">
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="saveSkill()">
+                    Simpan
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modalEditSkill" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Skill</h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <input type="hidden" id="editSkillId">
+                <input type="text" id="editSkillName" class="form-control">
+            </div>
+
+            <div class="modal-footer d-flex justify-content-between">
+                <button class="btn btn-danger" onclick="deleteSkill()">Hapus</button>
+                <button class="btn btn-primary" onclick="updateSkill()">Simpan</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{{-- MODAL TAMBAH BIDANG KERJA --}}
+<div class="modal fade" id="modalBidangKerja" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Tambah Bidang Kerja</h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <input type="text"
+                       id="bidangKerjaName"
+                       class="form-control"
+                       placeholder="Contoh: Finance">
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="saveBidangKerja()">
+                    Simpan
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{{-- MODAL EDIT BIDANG KERJA --}}
+<div class="modal fade" id="modalEditBidangKerja" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Bidang Kerja</h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <input type="hidden" id="editBidangKerjaId">
+                <input type="text" id="editBidangKerjaName" class="form-control">
+            </div>
+
+            <div class="modal-footer d-flex justify-content-between">
+                <button class="btn btn-danger" onclick="deleteBidangKerja()">Hapus</button>
+                <button class="btn btn-primary" onclick="updateBidangKerja()">Simpan</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
 @endsection
 
 @push('scripts')
@@ -239,5 +371,220 @@ $(function () {
         width: '100%'
     });
 });
+
+function saveSkill() {
+    const name = document.getElementById('skillName').value.trim();
+    if (!name) {
+        alert('Nama skill wajib diisi');
+        return;
+    }
+
+    fetch('/hrd/skills', {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': document
+                .querySelector('meta[name="csrf-token"]').content,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({ nama_skill: name })
+    })
+    .then(res => {
+        if (!res.ok) throw new Error('Skill sudah ada');
+        return res.json();
+    })
+    .then(skill => {
+
+        // 🔥 Tambahkan langsung ke select
+        const option = new Option(
+            skill.nama_skill,
+            skill.id,
+            true,
+            true
+        );
+
+        $('.select-skill').append(option).trigger('change');
+
+        document.getElementById('skillName').value = '';
+        bootstrap.Modal.getInstance(
+            document.getElementById('modalSkill')
+        ).hide();
+    })
+    .catch(err => alert(err.message));
+}
+
+$('.select-skill').on('select2:select', function (e) {
+    const data = e.params.data;
+
+    document.getElementById('editSkillId').value = data.id;
+    document.getElementById('editSkillName').value =
+        data.element.textContent.trim();
+
+    new bootstrap.Modal(
+        document.getElementById('modalEditSkill')
+    ).show();
+});
+
+function updateSkill() {
+    const id = document.getElementById('editSkillId').value;
+    const name = document.getElementById('editSkillName').value.trim();
+
+    fetch(`/hrd/skills/${id}`, {
+        method: 'PUT',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ nama_skill: name })
+    })
+    .then(res => {
+        if (!res.ok) throw new Error('Gagal update');
+        return res.json();
+    })
+    .then(skill => {
+        const option = new Option(skill.nama_skill, skill.id, true, true);
+        $('.select-skill option[value="'+skill.id+'"]').replaceWith(option);
+        $('.select-skill').trigger('change');
+
+        bootstrap.Modal.getInstance(
+            document.getElementById('modalEditSkill')
+        ).hide();
+    })
+    .catch(err => alert(err.message));
+}
+
+function deleteSkill() {
+    const id = document.getElementById('editSkillId').value;
+
+    if (!confirm('Yakin hapus skill ini?')) return;
+
+    fetch(`/hrd/skills/${id}`, {
+        method: 'DELETE',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        }
+    })
+    .then(res => {
+        if (!res.ok) throw new Error('Skill sudah dipakai lowongan');
+        return res.json();
+    })
+    .then(() => {
+        $('.select-skill option[value="'+id+'"]').remove();
+        $('.select-skill').trigger('change');
+
+        bootstrap.Modal.getInstance(
+            document.getElementById('modalEditSkill')
+        ).hide();
+    })
+    .catch(err => alert(err.message));
+}
+$(function () {
+    $('.select-bidang-kerja').select2({
+        placeholder: 'Pilih bidang kerja',
+        width: '100%'
+    });
+});
+
+/* ================= SAVE ================= */
+function saveBidangKerja() {
+    const name = document.getElementById('bidangKerjaName').value.trim();
+    if (!name) {
+        alert('Nama bidang kerja wajib diisi');
+        return;
+    }
+
+    fetch('/hrd/bidang-kerja', {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({ nama: name })
+    })
+    .then(res => {
+        if (!res.ok) throw new Error('Bidang kerja sudah ada');
+        return res.json();
+    })
+    .then(bidang => {
+        const option = new Option(bidang.nama, bidang.id, true, true);
+        $('.select-bidang-kerja').append(option).trigger('change');
+
+        document.getElementById('bidangKerjaName').value = '';
+        bootstrap.Modal.getInstance(
+            document.getElementById('modalBidangKerja')
+        ).hide();
+    })
+    .catch(err => alert(err.message));
+}
+
+/* ================= OPEN EDIT ================= */
+$('.select-bidang-kerja').on('select2:select', function (e) {
+    const data = e.params.data;
+
+    document.getElementById('editBidangKerjaId').value = data.id;
+    document.getElementById('editBidangKerjaName').value =
+        data.element.textContent.trim();
+
+    new bootstrap.Modal(
+        document.getElementById('modalEditBidangKerja')
+    ).show();
+});
+
+/* ================= UPDATE ================= */
+function updateBidangKerja() {
+    const id = document.getElementById('editBidangKerjaId').value;
+    const name = document.getElementById('editBidangKerjaName').value.trim();
+
+    fetch(`/hrd/bidang-kerja/${id}`, {
+        method: 'PUT',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ nama: name })
+    })
+    .then(res => {
+        if (!res.ok) throw new Error('Gagal update');
+        return res.json();
+    })
+    .then(bidang => {
+        const option = new Option(bidang.nama, bidang.id, true, true);
+        $('.select-bidang-kerja option[value="'+bidang.id+'"]').replaceWith(option);
+        $('.select-bidang-kerja').trigger('change');
+
+        bootstrap.Modal.getInstance(
+            document.getElementById('modalEditBidangKerja')
+        ).hide();
+    })
+    .catch(err => alert(err.message));
+}
+
+/* ================= DELETE ================= */
+function deleteBidangKerja() {
+    const id = document.getElementById('editBidangKerjaId').value;
+
+    if (!confirm('Yakin hapus bidang kerja ini?')) return;
+
+    fetch(`/hrd/bidang-kerja/${id}`, {
+        method: 'DELETE',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        }
+    })
+    .then(res => {
+        if (!res.ok) throw new Error('Bidang kerja masih dipakai lowongan');
+        return res.json();
+    })
+    .then(() => {
+        $('.select-bidang-kerja option[value="'+id+'"]').remove();
+        $('.select-bidang-kerja').trigger('change');
+
+        bootstrap.Modal.getInstance(
+            document.getElementById('modalEditBidangKerja')
+        ).hide();
+    })
+    .catch(err => alert(err.message));
+}
 </script>
 @endpush

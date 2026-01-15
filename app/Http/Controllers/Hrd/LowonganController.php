@@ -7,43 +7,49 @@ use Illuminate\Http\Request;
 use App\Models\Lowongan;
 use App\Models\Skill;
 use App\Models\User;
+use App\Models\BidangKerja;
 
 class LowonganController extends Controller
 {
     /* ======================================================
     | INDEX
     ====================================================== */
-public function index(Request $request)
-{
-    $userId = auth()->id();
+    public function index(Request $request)
+    {
+        $userId = auth()->id();
 
-    // 🔹 Ambil semua HRD untuk filter PIC
-    $hrds = User::where('role', 'hrd')
-        ->orderBy('name')
-        ->get();
+        // Ambil semua HRD untuk filter PIC
+        $hrds = User::where('role', 'hrd')
+            ->orderBy('name')
+            ->get();
 
-    // 🔹 Query lowongan + relasi HRD
-    $lowongans = Lowongan::with('hrd')
-        ->when($request->pic, function ($q) use ($request) {
-            $q->where('hrd_id', $request->pic);
-        })
-        ->orderBy('created_at', 'desc')
-        ->get();
+        // Query lowongan + relasi HRD & Bidang Kerja
+        $lowongans = Lowongan::with(['hrd', 'bidangKerja'])
+            ->when($request->pic, function ($q) use ($request) {
+                $q->where('hrd_id', $request->pic);
+            })
+            ->orderBy('created_at', 'desc')
+            ->get();
 
-    return view('hrd.lowongan.index', [
-        'lowongans' => $lowongans,
-        'hrds'      => $hrds,      // ❗ INI YANG TADI HILANG
-        'userId'    => $userId,
-    ]);
-}
+        return view('hrd.lowongan.index', [
+            'lowongans' => $lowongans,
+            'hrds'      => $hrds,
+            'userId'    => $userId,
+        ]);
+    }
 
     /* ======================================================
     | CREATE (STEP 1)
     ====================================================== */
     public function create()
     {
-        $skills = Skill::all();
-        return view('hrd.lowongan.create', compact('skills'));
+        $skills = Skill::orderBy('nama_skill')->get();
+        $bidangKerja = BidangKerja::orderBy('nama')->get();
+
+        return view('hrd.lowongan.create', compact(
+            'skills',
+            'bidangKerja'
+        ));
     }
 
     /* ======================================================
@@ -52,29 +58,29 @@ public function index(Request $request)
     public function store(Request $request)
     {
         $data = $request->validate([
-            'nama_lowongan'       => 'required|string',
-            'bidang_kerja'        => 'required|string',
-            'tipe_kerja'          => 'required|string',
-            'sistem_kerja'        => 'required|string',
-            'lokasi'              => 'required|string',
-            'penempatan'          => 'nullable|string',
-            'gaji_min'            => 'nullable|numeric',
-            'gaji_max'            => 'nullable|numeric',
-            'jenis_kelamin'       => 'nullable|string',
-            'usia_min'            => 'nullable|numeric',
-            'usia_max'            => 'nullable|numeric',
-            'pendidikan_minimal'  => 'nullable|string',
-            'pengalaman_kerja'    => 'nullable|string',
+            'nama_lowongan'      => 'required|string',
+            'bidang_kerja_id'    => 'required|exists:bidang_kerja,id',
+            'tipe_kerja'         => 'required|string',
+            'sistem_kerja'       => 'required|string',
+            'lokasi'             => 'required|string',
+            'penempatan'         => 'nullable|string',
+            'gaji_min'           => 'nullable|numeric',
+            'gaji_max'           => 'nullable|numeric',
+            'jenis_kelamin' => 'nullable|in:laki-laki,perempuan,semua',
+            'usia_min'           => 'nullable|numeric',
+            'usia_max'           => 'nullable|numeric',
+            'pendidikan_minimal' => 'nullable|string',
+            'pengalaman_kerja'   => 'nullable|string',
         ]);
 
         $lowongan = Lowongan::create([
             ...$data,
-            'hrd_id'            => auth()->id(),
-            'tanpa_batas_usia'  => $request->has('tanpa_batas_usia') ? 1 : 0,
-            'status'            => 'draft',
+            'hrd_id'           => auth()->id(),
+            'tanpa_batas_usia' => $request->has('tanpa_batas_usia'),
+            'status'           => 'draft',
         ]);
 
-        if ($request->skills) {
+        if ($request->filled('skills')) {
             $lowongan->skills()->sync($request->skills);
         }
 
@@ -89,8 +95,14 @@ public function index(Request $request)
     {
         $this->authorizeLowongan($lowongan);
 
-        $skills = Skill::all();
-        return view('hrd.lowongan.create', compact('lowongan', 'skills'));
+        $skills = Skill::orderBy('nama_skill')->get();
+        $bidangKerja = BidangKerja::orderBy('nama')->get();
+
+        return view('hrd.lowongan.create', compact(
+            'lowongan',
+            'skills',
+            'bidangKerja'
+        ));
     }
 
     /* ======================================================
@@ -101,27 +113,27 @@ public function index(Request $request)
         $this->authorizeLowongan($lowongan);
 
         $data = $request->validate([
-            'nama_lowongan'       => 'required|string',
-            'bidang_kerja'        => 'required|string',
-            'tipe_kerja'          => 'required|string',
-            'sistem_kerja'        => 'required|string',
-            'lokasi'              => 'required|string',
-            'penempatan'          => 'nullable|string',
-            'gaji_min'            => 'nullable|numeric',
-            'gaji_max'            => 'nullable|numeric',
-            'jenis_kelamin'       => 'nullable|string',
-            'usia_min'            => 'nullable|numeric',
-            'usia_max'            => 'nullable|numeric',
-            'pendidikan_minimal'  => 'nullable|string',
-            'pengalaman_kerja'    => 'nullable|string',
+            'nama_lowongan'      => 'required|string',
+            'bidang_kerja_id'    => 'required|exists:bidang_kerja,id',
+            'tipe_kerja'         => 'required|string',
+            'sistem_kerja'       => 'required|string',
+            'lokasi'             => 'required|string',
+            'penempatan'         => 'nullable|string',
+            'gaji_min'           => 'nullable|numeric',
+            'gaji_max'           => 'nullable|numeric',
+            'jenis_kelamin' => 'nullable|in:laki-laki,perempuan,semua',
+            'usia_min'           => 'nullable|numeric',
+            'usia_max'           => 'nullable|numeric',
+            'pendidikan_minimal' => 'nullable|string',
+            'pengalaman_kerja'   => 'nullable|string',
         ]);
 
         $lowongan->update([
             ...$data,
-            'tanpa_batas_usia' => $request->has('tanpa_batas_usia') ? 1 : 0,
+            'tanpa_batas_usia' => $request->has('tanpa_batas_usia'),
         ]);
 
-        if ($request->skills) {
+        if ($request->filled('skills')) {
             $lowongan->skills()->sync($request->skills);
         }
 
@@ -171,11 +183,11 @@ public function index(Request $request)
                 ->route('hrd.lowongan.edit', $lowongan->id);
         }
 
-        if ($request->action === 'publish') {
-            $lowongan->update(['status' => 'aktif']);
-        } else {
-            $lowongan->update(['status' => 'draft']);
-        }
+        $lowongan->update([
+            'status' => $request->action === 'publish'
+                ? 'aktif'
+                : 'draft'
+        ]);
 
         return redirect()
             ->route('hrd.lowongan.index')
@@ -207,13 +219,12 @@ public function index(Request $request)
     | SHOW
     ====================================================== */
     public function show(Lowongan $lowongan)
-{
-    return view('hrd.lowongan.show', [
-        'lowongan' => $lowongan,
-        'isOwner'  => $lowongan->hrd_id === auth()->id()
-    ]);
-}
-
+    {
+        return view('hrd.lowongan.show', [
+            'lowongan' => $lowongan,
+            'isOwner'  => $lowongan->hrd_id === auth()->id()
+        ]);
+    }
 
     /* ======================================================
     | SECURITY HELPER

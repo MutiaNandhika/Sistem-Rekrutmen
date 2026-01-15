@@ -34,7 +34,7 @@
 </div>
 
 <form method="POST"
-      action="{{ route('hrd.update.deskripsi', $lowongan->id) }}">
+      action="{{ route('hrd.lowongan.deskripsi.update', $lowongan->id) }}">
     @csrf
     @method('PUT')
 

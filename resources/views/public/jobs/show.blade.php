@@ -100,7 +100,14 @@
                     @if(!$lowongan->tanpa_batas_usia)
                         <li>Usia {{ $lowongan->usia_min }} – {{ $lowongan->usia_max }} tahun</li>
                     @endif
-                    <li>{{ ucfirst($lowongan->jenis_kelamin ?? 'Semua') }}</li>
+                    <li>
+                        <strong>Jenis Kelamin:</strong>
+                        @if($lowongan->jenis_kelamin === 'semua')
+                            Laki-laki & Perempuan
+                        @else
+                            {{ ucfirst($lowongan->jenis_kelamin) }}
+                        @endif
+                    </li>
                 </ul>
             </div>
 
