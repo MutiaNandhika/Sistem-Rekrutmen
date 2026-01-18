@@ -1,10 +1,10 @@
+console.log('certificate.js loaded');
+
 document.addEventListener('DOMContentLoaded', () => {
 
-    /* ================= GUARD ================= */
     const modal = document.getElementById('modalSertifikat');
     const editIdInput = document.getElementById('certificateEditId');
 
-    // kalau bukan halaman profile → STOP
     if (!modal || !editIdInput) return;
 
     function csrfToken() {
@@ -15,19 +15,37 @@ document.addEventListener('DOMContentLoaded', () => {
     /* ================= TAMBAH / UPDATE ================= */
     window.addCertificate = function () {
 
-        const id = editIdInput.value;
+        const nama   = document.getElementById('certName').value.trim();
+        const org    = document.getElementById('certIssuer').value.trim();
+        const bulan  = document.getElementById('certIssueMonth').value;
+        const tahun  = document.getElementById('certIssueYear').value;
+        const noExp  = document.getElementById('certNoExpire').checked;
+        const expM   = document.getElementById('certExpireMonth').value;
+        const expY   = document.getElementById('certExpireYear').value;
+        const desc   = document.getElementById('certDesc').value.trim();
 
+        /* ===== VALIDASI WAJIB ===== */
+        if (!nama || !org || !bulan || !tahun) {
+            alert('Lengkapi semua field wajib');
+            return;
+        }
+
+        /* ===== PAYLOAD BERSIH ===== */
         const payload = {
-            nama_sertifikat: document.getElementById('certName').value,
-            organisasi_penerbit: document.getElementById('certIssuer').value,
-            bulan_terbit: document.getElementById('certIssueMonth').value,
-            tahun_terbit: document.getElementById('certIssueYear').value,
-            tanpa_expired: document.getElementById('certNoExpire').checked,
-            bulan_expired: document.getElementById('certExpireMonth').value,
-            tahun_expired: document.getElementById('certExpireYear').value,
-            informasi_tambahan: document.getElementById('certDesc').value,
+            nama_sertifikat: nama,
+            organisasi_penerbit: org,
+            bulan_terbit: bulan,
+            tahun_terbit: tahun,
+            tanpa_expired: noExp,
+            informasi_tambahan: desc || null
         };
 
+        if (!noExp) {
+            payload.bulan_expired = expM || null;
+            payload.tahun_expired = expY || null;
+        }
+
+        const id = editIdInput.value;
         const BASE_URL = '/pelamar/profile/certificates';
         const url = id ? `${BASE_URL}/${id}` : BASE_URL;
         const method = id ? 'PUT' : 'POST';
@@ -46,14 +64,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (!res.ok) {
                 console.error(data);
-                alert('Validasi gagal');
+                alert('Validasi gagal, cek input');
                 return;
             }
 
-            // ⬅️ PENTING: BIAR LIST SYNC
             location.reload();
         })
-        .catch(() => alert('Request gagal'));
+        .catch(err => {
+            console.error(err);
+            alert('Request gagal');
+        });
     };
 
     /* ================= EDIT ================= */
@@ -65,10 +85,17 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('certIssuer').value = cert.organisasi_penerbit;
         document.getElementById('certIssueMonth').value = cert.bulan_terbit;
         document.getElementById('certIssueYear').value = cert.tahun_terbit;
-        document.getElementById('certExpireMonth').value = cert.bulan_expired ?? '';
-        document.getElementById('certExpireYear').value = cert.tahun_expired ?? '';
+
         document.getElementById('certNoExpire').checked = cert.tanpa_expired;
-        document.getElementById('certDesc').value = cert.informasi_tambahan ?? '';
+
+        document.getElementById('certExpireMonth').value =
+            cert.tanpa_expired ? '' : cert.bulan_expired ?? '';
+
+        document.getElementById('certExpireYear').value =
+            cert.tanpa_expired ? '' : cert.tahun_expired ?? '';
+
+        document.getElementById('certDesc').value =
+            cert.informasi_tambahan ?? '';
     };
 
     /* ================= DELETE ================= */
@@ -99,7 +126,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         document.querySelectorAll(
             '#modalSertifikat input, #modalSertifikat textarea, #modalSertifikat select'
-        ).forEach(el => el.value = '');
+        ).forEach(el => {
+            if (el.type === 'checkbox') el.checked = false;
+            else el.value = '';
+        });
     });
 
 });

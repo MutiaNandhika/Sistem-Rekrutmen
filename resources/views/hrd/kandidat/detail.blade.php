@@ -21,42 +21,62 @@
         return Carbon::create()->month((int)$angka)->translatedFormat('F');
     }
 
-    $user = $application->user;
+    $user    = $application->user;
     $profile = $user->pelamarProfile;
+
+    $label = match($application->status) {
+        'diproses' => 'Diproses',
+        'screening' => 'Screening Administrasi',
+        'seleksi' => 'Seleksi',
+        'interview' => 'Interview',
+        'offer' => 'Offer',
+        'diterima' => 'Diterima',
+        'ditolak' => 'Ditolak',
+        'ditolak_administrasi' => 'Ditolak Administrasi',
+        default => ucfirst($application->status),
+    };
+
+    $badgeClass = match($application->status) {
+        'diterima' => 'bg-success',
+        'ditolak', 'ditolak_administrasi' => 'bg-danger',
+        'seleksi' => 'bg-info text-dark',
+        'interview' => 'bg-primary',
+        'offer' => 'bg-secondary',
+        default => 'bg-warning text-dark',
+    };
 @endphp
 
+{{-- HEADER --}}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h4 class="fw-bold mb-0">Detail Kandidat</h4>
-
-    <a href="{{ route('hrd.kandidat.index', $lowongan) }}"
-       class="btn btn-light border">
+    <a href="{{ route('hrd.kandidat.index', $lowongan) }}" class="btn btn-light border">
         ← Kembali ke Kandidat
     </a>
 </div>
 
 <div class="row g-4">
 
-{{-- ======================================================
-| LEFT : PROFIL KANDIDAT
+               {{-- ======================================================
+| LEFT : PROFIL
 ====================================================== --}}
 <div class="col-lg-7">
 
     {{-- PROFILE CARD --}}
     <div class="card shadow-sm mb-4">
         <div class="card-body d-flex gap-4">
+
             <div class="avatar-lg text-muted">
                 <i class="bi bi-person-circle fs-1"></i>
             </div>
 
             <div class="flex-grow-1">
-                <h5 class="fw-bold mb-1">{{ $user->name }}</h5>
 
-                <span class="badge 
-                    {{ $application->status === 'diterima' ? 'bg-success' : 'bg-warning text-dark' }}">
-                    {{ ucfirst($application->status) }}
-                </span>
+                <h5 class="fw-bold mb-2 d-flex align-items-center gap-2">
+                    {{ $user->name }}
+                    <span class="badge {{ $badgeClass }}">{{ $label }}</span>
+                </h5>
 
-                <div class="row small text-muted mt-3">
+                <div class="row small text-muted">
                     <div class="col-6 mb-2"><strong>WhatsApp</strong><br>{{ $profile->phone ?? '-' }}</div>
                     <div class="col-6 mb-2"><strong>Email</strong><br>{{ $user->email }}</div>
                     <div class="col-6 mb-2"><strong>Lokasi</strong><br>{{ $profile->location ?? '-' }}</div>
@@ -64,10 +84,11 @@
                     <div class="col-6 mb-2"><strong>Pendidikan Terakhir</strong><br>{{ $profile->last_education ?? '-' }}</div>
                     <div class="col-6 mb-2"><strong>Jenis Kelamin</strong><br>{{ $profile->gender ?? '-' }}</div>
                 </div>
+
             </div>
         </div>
     </div>
-
+    
     {{-- TENTANG SAYA --}}
     <div class="mb-4">
         <h6 class="fw-bold text-uppercase small">Tentang Saya</h6>
@@ -256,144 +277,182 @@
 
             <h6 class="fw-bold mb-4">Tracking Lamaran</h6>
 
-            {{-- ================= STEP 1 : DIPROSES ================= --}}
+            {{-- ================= 1. DIPROSES ================= --}}
             <div class="mb-4">
                 <strong>1. DIPROSES</strong>
 
-               @if($isOwner && $application->status === 'diproses')
-                    <div class="d-flex gap-2 mt-2">
-                        <form method="POST" action="{{ route('hrd.lamaran.update', $application) }}">
-                            @csrf @method('PUT')
-                            <input type="hidden" name="status" value="ditolak">
-                            <button class="btn btn-danger btn-sm">Tidak Lolos</button>
-                        </form>
-
-                        <form method="POST" action="{{ route('hrd.lamaran.update', $application) }}">
-                            @csrf @method('PUT')
-                            <input type="hidden" name="status" value="screening">
-                            <button class="btn btn-primary btn-sm">Lolos</button>
-                        </form>
-                    </div>
+                @if($isOwner && $application->status === 'diproses')
+                    <form method="POST" action="{{ route('hrd.lamaran.update', $application) }}">
+                        @csrf
+                        @method('PUT')
+                        <input type="hidden" name="status" value="screening">
+                        <button class="btn btn-primary btn-sm mt-2">
+                            Proses ke Screening
+                        </button>
+                    </form>
                 @endif
             </div>
 
-            {{-- ================= STEP 2 : SCREENING ================= --}}
+            {{-- ================= 2. SCREENING ================= --}}
             <div class="mb-4">
-                <strong>2. SCREENING</strong>
+                <strong>2. SCREENING (Administrasi)</strong>
+
+                @if($application->status === 'screening')
+                    <p class="text-muted small mt-2">
+                        Berkas administrasi kandidat sedang diperiksa.
+                    </p>
+                @endif
 
                 @if($isOwner && $application->status === 'screening')
                     <div class="d-flex gap-2 mt-2">
+
+                        {{-- ❌ TOLAK ADMIN --}}
                         <form method="POST" action="{{ route('hrd.lamaran.update', $application) }}">
-                            @csrf @method('PUT')
-                            <input type="hidden" name="status" value="ditolak">
-                            <button class="btn btn-danger btn-sm">Tidak Lolos</button>
+                            @csrf
+                            @method('PUT')
+                            <input type="hidden" name="status" value="ditolak_administrasi">
+                            <button class="btn btn-danger btn-sm">
+                                Ditolak Administrasi
+                            </button>
                         </form>
 
-                        <button class="btn btn-primary btn-sm"
-                            data-bs-toggle="modal"
-                            data-bs-target="#modalInterview">
-                            Atur Jadwal Interview
-                        </button>
+                        {{-- ✅ LOLOS ADMIN --}}
+                        <form
+                            action="{{ route('hrd.kandidat.lolos_administrasi', [$lowongan->id, $application->id]) }}"
+                            method="POST"
+                        >
+                            @csrf
+                            @method('PUT')
+                            <button class="btn btn-success btn-sm">
+                                Lolos Administrasi
+                            </button>
+                        </form>
+
                     </div>
                 @endif
             </div>
 
-{{-- ================= STEP 3 : INTERVIEW ================= --}}
-<div class="mb-4">
-    <strong>3. INTERVIEW</strong>
+            {{-- ================= 3. SELEKSI ================= --}}
+            <div class="mb-4">
+                <strong>3. SELEKSI</strong>
 
-    {{-- INFO INTERVIEW --}}
-    @if($application->interview_at)
-        <div class="alert alert-warning small mt-2">
-            <strong>Wawancara:</strong> {{ ucfirst($application->interview_method) }}<br>
-            <strong>Tanggal:</strong>
-            {{ $application->interview_at->translatedFormat('d F Y H:i') }}<br>
-
-            @if($application->interview_link)
-                <strong>Link:</strong>
-                <a href="{{ $application->interview_link }}" target="_blank">
-                    {{ $application->interview_link }}
-                </a>
-            @endif
-        </div>
-    @endif
-
-    {{-- AKSI HRD --}}
-    @if($isOwner && $application->status === 'interview')
-
-        {{-- ❌ TOLAK --}}
-        <form method="POST"
-              action="{{ route('hrd.lamaran.update', $application) }}"
-              class="mb-3">
-            @csrf
-            @method('PUT')
-            <input type="hidden" name="status" value="ditolak">
-            <button class="btn btn-danger btn-sm">
-                Tidak Lolos
-            </button>
-        </form>
-
-        {{-- ✅ KIRIM OFFER VIA LINK --}}
-        <form method="POST"
-              action="{{ route('hrd.lamaran.offer.upload', $application) }}">
-            @csrf
-
-            <label class="form-label small">
-                Link Offering (Google Drive / PDF / Dokumen Online)
-            </label>
-
-            <input type="url"
-                   name="offer_file"
-                   class="form-control mb-2"
-                   placeholder="https://..."
-                   required>
-
-            <button class="btn btn-success btn-sm">
-                Kirim Offer ke Pelamar
-            </button>
-        </form>
-
-    @endif
-</div>
-
-
-
-            {{-- ================= STEP 4 : OFFER ================= --}}
-            <div>
-                <strong>4. OFFER</strong>
-
-               @if($isOwner && $application->status === 'offer')
+                @if($application->status === 'seleksi')
                     <p class="text-muted small mt-2">
-                        Offering sudah dikirim
+                        Kandidat telah lolos administrasi dan
+                        <strong>sedang dalam tahap seleksi lanjutan</strong>.
                     </p>
-
-                    <a href="{{ $application->offer_file }}"
-                    target="_blank"
-                    class="btn btn-outline-primary btn-sm">
-                        Lihat Offering
-                    </a>
-                @endif
-
-                @if($application->offer_response)
-                    <span class="badge 
-                        {{ $application->offer_response === 'diterima'
-                            ? 'bg-success'
-                            : 'bg-danger' }}">
-                        {{ ucfirst($application->offer_response) }}
-                    </span>
                 @endif
             </div>
 
-            <hr class="my-4">
+           {{-- ================= 4. INTERVIEW ================= --}}
+<div class="mb-4">
+    <strong>4. INTERVIEW</strong>
 
-            <small class="text-muted">
-                Terakhir diperbarui:
-                {{ $application->updated_at->translatedFormat('d F Y') }}
-            </small>
+    {{-- 🔒 INTERVIEW TERKUNCI JIKA SAW BELUM SELESAI --}}
+    @if(is_null($application->saw_score))
+        <p class="text-muted small mt-2">
+            Tahap interview akan tersedia setelah proses seleksi (SAW) selesai.
+        </p>
 
-        </div>
-    </div>
+    {{-- ❌ TIDAK LOLOS SAW --}}
+    @elseif($application->status !== 'interview')
+        <p class="text-muted small mt-2">
+            Kandidat tidak termasuk dalam hasil seleksi interview.
+        </p>
+
+    {{-- ✅ LOLOS SAW & MASUK INTERVIEW --}}
+    @else
+
+        {{-- INFO INTERVIEW --}}
+        @if($application->interview_at)
+            <div class="alert alert-warning small mt-2">
+                <strong>Metode:</strong> {{ ucfirst($application->interview_method) }}<br>
+                <strong>Tanggal:</strong>
+                {{ $application->interview_at->translatedFormat('d F Y H:i') }}<br>
+
+                @if($application->interview_link)
+                    <strong>Link:</strong>
+                    <a href="{{ $application->interview_link }}" target="_blank">
+                        {{ $application->interview_link }}
+                    </a>
+                @endif
+            </div>
+        @else
+            <p class="text-muted small mt-2">
+                Jadwal interview belum ditentukan.
+            </p>
+        @endif
+
+        {{-- AKSI HRD --}}
+        @if($isOwner)
+            <div class="d-flex gap-2 mt-2">
+
+                {{-- ❌ TIDAK LOLOS INTERVIEW --}}
+                <form method="POST"
+                      action="{{ route('hrd.lamaran.update', $application) }}">
+                    @csrf
+                    @method('PUT')
+                    <input type="hidden" name="status" value="ditolak">
+                    <button class="btn btn-danger btn-sm">
+                        Tidak Lolos
+                    </button>
+                </form>
+
+                {{-- ✅ KIRIM OFFER --}}
+                <form method="POST"
+                      action="{{ route('hrd.lamaran.offer.upload', $application) }}">
+                    @csrf
+                    <input type="hidden" name="status" value="offer">
+
+                    <input type="url"
+                           name="offer_file"
+                           class="form-control form-control-sm mb-2"
+                           placeholder="Link Offering (Google Drive / PDF)"
+                           required>
+
+                    <button class="btn btn-success btn-sm">
+                        Kirim Offer
+                    </button>
+                </form>
+
+            </div>
+        @endif
+
+    @endif
 </div>
+
+{{-- ================= 5. OFFER ================= --}}
+<div>
+    <strong>5. OFFER</strong>
+
+    @if($application->status === 'offer')
+        <p class="text-muted small mt-2">
+            Offering telah dikirim ke pelamar.
+        </p>
+
+        <a href="{{ $application->offer_file }}"
+           target="_blank"
+           class="btn btn-outline-primary btn-sm">
+            Lihat Offering
+        </a>
+    @endif
+
+    @if($application->offer_response)
+        <span class="badge mt-2
+            {{ $application->offer_response === 'diterima'
+                ? 'bg-success'
+                : 'bg-danger' }}">
+            {{ ucfirst($application->offer_response) }}
+        </span>
+    @endif
+</div>
+
+<hr class="my-4">
+
+<small class="text-muted">
+    Terakhir diperbarui:
+    {{ $application->updated_at->translatedFormat('d F Y') }}
+</small>
 
 
 <div class="modal fade" id="modalInterview" tabindex="-1">

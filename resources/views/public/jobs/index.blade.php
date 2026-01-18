@@ -99,6 +99,22 @@
                             <div><i class="bi bi-geo-alt"></i> {{ $lowongan->lokasi }}</div>
                         </div>
 
+                        {{-- BATAS PENDAFTARAN --}}
+                        @if ($lowongan->tanggal_selesai)
+                            <div class="job-deadline text-muted small mt-2">
+                                <i class="bi bi-calendar-x"></i>
+                                Ditutup:
+                                <strong>
+                                    {{ \Carbon\Carbon::parse($lowongan->tanggal_selesai)->translatedFormat('d M Y') }}
+                                </strong>
+                            </div>
+                        @else
+                            <div class="job-deadline text-muted small mt-2">
+                                <i class="bi bi-calendar-check"></i>
+                                Tanpa batas pendaftaran
+                            </div>
+                        @endif
+
                         <a href="{{ route('jobs.show', $lowongan->id) }}"
                            class="btn btn-job-detail">
                             <i class="bi bi-arrow-right-circle"></i>

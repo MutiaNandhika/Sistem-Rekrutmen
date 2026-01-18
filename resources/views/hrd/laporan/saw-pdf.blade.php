@@ -57,9 +57,9 @@
         <tr>
             <td>{{ $i + 1 }}</td>
             <td class="left">{{ $a->user->name }}</td>
-            <td>{{ $matrix[$a->id]['c1'] ?? '-' }}</td>
-            <td>{{ $matrix[$a->id]['c2'] ?? '-' }}</td>
-            <td>{{ $matrix[$a->id]['c3'] ?? '-' }}</td>
+            <td>{{ $matrix[$a->id]['pendidikan'] }}</td>
+            <td>{{ $matrix[$a->id]['pengalaman'] }}</td>
+            <td>{{ $matrix[$a->id]['skill'] }}</td>
             <td>{{ number_format($a->saw_score, 3) }}</td>
             <td>{{ $a->saw_rank }}</td>
         </tr>

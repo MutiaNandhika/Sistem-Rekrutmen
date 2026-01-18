@@ -15,9 +15,13 @@ class JobController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Lowongan::query()
-            ->where('status', 'aktif');
-
+        // 🔥 QUERY DASAR (AKTIF & BELUM EXPIRED)
+        $query = Lowongan::where('status', 'aktif')
+            ->where(function ($q) {
+                $q->whereNull('tanggal_selesai')
+                  ->orWhereDate('tanggal_selesai', '>=', now());
+            });
+            
         // 🔍 FILTER POSISI
         if ($request->filled('posisi')) {
             $query->where('nama_lowongan', 'like', '%' . $request->posisi . '%');

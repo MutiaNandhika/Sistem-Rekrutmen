@@ -101,6 +101,40 @@ method="POST">
     </div>
 </div>
 
+{{-- ================= PERIODE PENDAFTARAN ================= --}}
+<div class="card mb-4">
+    <div class="card-header fw-semibold">
+        Periode Pendaftaran
+    </div>
+
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <label class="form-label fw-semibold">
+                    Tanggal Mulai Pendaftaran
+                </label>
+                <input type="date"
+                       name="tanggal_mulai"
+                       class="form-control"
+                       value="{{ old('tanggal_mulai', $lowongan->tanggal_mulai ?? '') }}">
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label fw-semibold">
+                    Tanggal Selesai Pendaftaran
+                </label>
+                <input type="date"
+                       name="tanggal_selesai"
+                       class="form-control"
+                       value="{{ old('tanggal_selesai', $lowongan->tanggal_selesai ?? '') }}">
+                <small class="text-muted">
+                    Kosongkan jika tidak ada batas waktu
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+
 {{-- ================= LOKASI ================= --}}
 <div class="card mb-4">
     <div class="card-header fw-semibold">
@@ -252,6 +286,20 @@ method="POST">
 
     </div>
 </div>
+
+<div class="mb-3">
+    <label class="form-label">Jumlah Kandidat Diterima</label>
+    <input type="number"
+           name="jumlah_diterima"
+           class="form-control"
+           min="1"
+           value="{{ old('jumlah_diterima', $lowongan->jumlah_diterima ?? 1) }}"
+           required>
+    <small class="text-muted">
+        Sistem akan otomatis menentukan jumlah interview (3x lipat).
+    </small>
+</div>
+
 
 {{-- ================= ACTION BUTTON ================= --}}
 <div class="d-flex justify-content-end gap-2">

@@ -131,6 +131,23 @@
                 {{ $lowongan->lokasi }}
             </li>
         </ul>
+
+        {{-- BATAS PENDAFTARAN --}}
+@if ($lowongan->tanggal_selesai)
+    <small class="text-muted d-block mt-1">
+        <i class="bi bi-calendar-x"></i>
+        Ditutup pada:
+        <strong>
+            {{ \Carbon\Carbon::parse($lowongan->tanggal_selesai)->translatedFormat('d M Y') }}
+        </strong>
+    </small>
+@else
+    <small class="text-muted d-block mt-1">
+        <i class="bi bi-calendar-check"></i>
+        Tanpa batas pendaftaran
+    </small>
+@endif
+
         {{-- INFO PIC --}}
         <small class="text-muted">
             PIC:

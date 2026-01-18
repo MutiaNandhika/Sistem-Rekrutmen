@@ -1,26 +1,65 @@
+console.log('skills.js loaded');
+
+/* ===============================
+   CSRF
+================================ */
+function csrfToken() {
+    const meta = document.querySelector('meta[name="csrf-token"]');
+    return meta ? meta.getAttribute('content') : '';
+}
+
+/* ===============================
+   DELETE SKILL (GLOBAL)
+   DIPAKAI DI HALAMAN PROFILE
+================================ */
+window.deleteSkill = async function (id) {
+
+    if (!confirm('Hapus skill ini?')) return;
+
+    try {
+        const res = await fetch(`/pelamar/profile/skills/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': csrfToken(),
+                'Accept': 'application/json'
+            }
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            alert(data.message || 'Gagal menghapus skill');
+            return;
+        }
+
+        // hapus langsung dari DOM
+        const el = document.getElementById(`skill-${id}`);
+        if (el) el.remove();
+
+    } catch (err) {
+        console.error(err);
+        alert('Terjadi kesalahan');
+    }
+};
+
+/* ===============================
+   TAMBAH SKILL (MODAL)
+================================ */
 document.addEventListener('DOMContentLoaded', () => {
 
-    /* ================= GUARD ================= */
     const skillInput   = document.getElementById('skillInput');
     const skillPreview = document.getElementById('skillPreview');
-    const skillsList   = document.getElementById('skillsList');
     const modalSkills  = document.getElementById('modalSkills');
 
-    // halaman lain → STOP (INI KUNCI BIAR TIDAK CRASH)
+    // halaman tanpa modal → STOP DI SINI
     if (!skillInput || !skillPreview || !modalSkills) return;
 
     let skills = [];
 
-    function csrfToken() {
-        const meta = document.querySelector('meta[name="csrf-token"]');
-        return meta ? meta.getAttribute('content') : '';
-    }
-
-    /* ================= TAMBAH KE ARRAY ================= */
+    /* ================= TAMBAH ================= */
     function addSkill(value) {
         value = value.trim();
         if (!value) return;
-
         if (skills.includes(value)) return;
 
         if (skills.length >= 10) {
@@ -32,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
         renderPreview();
     }
 
-    /* ================= ENTER INPUT ================= */
+    /* ================= ENTER ================= */
     skillInput.addEventListener('keydown', e => {
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -41,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    /* ================= RENDER CHIP ================= */
+    /* ================= RENDER ================= */
     function renderPreview() {
         skillPreview.innerHTML = '';
 
@@ -59,16 +98,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    /* ================= REMOVE ================= */
+    /* ================= REMOVE PREVIEW ================= */
     window.removeSkill = function (index) {
         skills.splice(index, 1);
         renderPreview();
     };
 
-    /* ================= SIMPAN KE BACKEND ================= */
+    /* ================= SIMPAN ================= */
     window.saveSkills = async function () {
 
-        // kalau user ngetik tapi belum tekan enter
         if (skillInput.value.trim()) {
             addSkill(skillInput.value);
             skillInput.value = '';
@@ -98,8 +136,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             location.reload();
 
-        } catch (e) {
-            console.error(e);
+        } catch (err) {
+            console.error(err);
             alert('Gagal menyimpan skill');
         }
     };

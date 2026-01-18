@@ -25,18 +25,9 @@
 
     <div class="d-flex gap-2">
         @if ($isOwner)
-    <form action="{{ route('hrd.kandidat.screening', $lowongan) }}" method="POST">
-        @csrf
-        <button class="btn btn-primary">
-            Screening
-        </button>
-    </form>
-@endif
-
-        @if ($isOwner)
-    <a href="{{ route('hrd.laporan.index', $lowongan) }}"
-       class="btn btn-dark">
-        Lihat Laporan
+    <a href="{{ route('hrd.seleksi.index', $lowongan) }}"
+       class="btn btn-success">
+        Halaman Seleksi
     </a>
 @endif
 
@@ -53,11 +44,6 @@
                     <th>Nama Kandidat</th>
                     <th>Status Seleksi</th>
                     <th>Tanggal Melamar</th>
-                    <th>Pendidikan</th>
-                    <th>Pengalaman</th>
-                    <th>Keahlian</th>
-                    <th>Skor</th>
-                    <th>Ranking</th>
                     <th class="text-center">Action</th>
                 </tr>
             </thead>
@@ -77,31 +63,6 @@
 
                     {{-- TANGGAL --}}
                     <td>{{ $k->created_at->format('d M Y') }}</td>
-
-                    <td>
-                        {{
-                            optional(
-                                $k->user->pelamarEducations
-                                    ->sortByDesc('created_at')
-                                    ->first()
-                            )->tingkat ?? '-'
-                        }}
-                    </td>
-
-                    {{-- TOTAL PENGALAMAN (TAHUN) --}}
-                    <td>
-                        {{ $k->user->totalPengalamanTahun() }} th
-                    </td>
-
-
-                    {{-- JUMLAH SKILL --}}
-                    <td>
-                        {{ $k->user->pelamarSkills->count() }}
-                    </td>
-
-                    {{-- SKOR & RANK --}}
-                    <td>{{ $k->saw_score ?? '-' }}</td>
-                    <td>{{ $k->saw_rank ?? '-' }}</td>
 
                     {{-- ACTION --}}
                     <td class="text-center">

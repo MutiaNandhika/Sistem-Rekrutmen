@@ -11,6 +11,32 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class SawController extends Controller
 {
+public function index(Lowongan $lowongan)
+{
+    // 🔐 hanya HRD pemilik
+    abort_if($lowongan->hrd_id !== auth()->id(), 403);
+
+    // ambil kandidat yang sudah lolos administrasi
+    $apps = Application::with([
+            'user.pelamarEducations',
+            'user.pelamarExperiences',
+            'user.pelamarSkills',
+        ])
+        ->where('lowongan_id', $lowongan->id)
+        ->where('status', 'seleksi')
+        ->orderBy('created_at')
+        ->get();
+
+    // 🔥 CEK APAKAH SAW SUDAH DIHITUNG
+    $sawSudahDihitung = $apps->whereNotNull('saw_score')->count() > 0;
+
+    return view('hrd.seleksi.index', [
+        'lowongan' => $lowongan,
+        'apps'     => $apps,
+        'sawDone'  => $sawSudahDihitung,
+    ]);
+}
+
     /**
      * =====================================================
      * HITUNG SAW (DIPANGGIL DARI BUTTON SCREENING)
@@ -18,20 +44,30 @@ class SawController extends Controller
      */
     public function hitung(Lowongan $lowongan)
     {
-        // 🔐 keamanan: hanya HRD pemilik lowongan
+
+            // 🔐 hanya HRD pemilik lowongan
         abort_if($lowongan->hrd_id !== auth()->id(), 403);
 
-        // Ambil semua kandidat + relasi yang dibutuhkan
+    $cek = Application::where('lowongan_id', $lowongan->id)
+    ->whereNotNull('saw_score')
+    ->exists();
+
+if ($cek) {
+    return back()->with('error', 'SAW sudah pernah dihitung. Silakan reset jika ingin mengulang.');
+}
+
+        // 🔥 AMBIL HANYA KANDIDAT LOLOS ADMIN
         $applications = Application::with([
                 'user.pelamarEducations',
                 'user.pelamarExperiences',
                 'user.pelamarSkills',
             ])
             ->where('lowongan_id', $lowongan->id)
+            ->where('status', 'seleksi')
             ->get();
 
         if ($applications->isEmpty()) {
-            return back()->with('error', 'Tidak ada kandidat untuk dihitung');
+            return back()->with('error', 'Tidak ada kandidat lolos administrasi');
         }
 
         /**
@@ -39,17 +75,18 @@ class SawController extends Controller
          * STEP 1: DATA AWAL (MATRIX X)
          * ===============================
          */
-        $data = [];
+         $data = [];
 
         foreach ($applications as $app) {
             $user = $app->user;
 
             $data[$app->id] = [
-                'pendidikan' => $user->nilaiPendidikanTerakhir(), // dari Model User
-                'pengalaman' => $user->totalPengalamanTahun(),    // dari Model User
+                'pendidikan' => $user->nilaiPendidikanTerakhir(),
+                'pengalaman' => $user->totalPengalamanTahun(),
                 'skill'      => $user->pelamarSkills->count(),
             ];
         }
+
 
         /**
          * ===============================
@@ -101,17 +138,25 @@ class SawController extends Controller
          * STEP 5: RANKING
          * ===============================
          */
-        arsort($skorAkhir); // nilai terbesar = ranking 1
+        arsort($skorAkhir); // ranking tertinggi = 1
 
+        $limitInterview = $lowongan->jumlah_diterima * 3;
         $rank = 1;
+
         foreach ($skorAkhir as $appId => $score) {
+
             Application::where('id', $appId)->update([
                 'saw_score' => round($score, 3),
-                'saw_rank'  => $rank++,
+                'saw_rank'  => $rank,
+                'status'    => $rank <= $limitInterview
+                    ? 'interview'
+                    : 'tidak_lolos_saw'
             ]);
+
+            $rank++;
         }
 
-        return back()->with('success', 'Perhitungan SAW berhasil dilakukan');
+        return back()->with('success', 'Perhitungan SAW & seleksi kandidat berhasil');
     }
 
     /**
@@ -133,6 +178,19 @@ class SawController extends Controller
             ->whereNotNull('saw_score')
             ->orderBy('saw_rank')
             ->get();
+
+                    // ===============================
+        // CEK DATA SAW
+        // ===============================
+        if ($apps->isEmpty()) {
+        return view('hrd.laporan.index', [
+            'lowongan'    => $lowongan,
+            'apps'        => collect(),
+            'matrix'      => [],
+            'normalisasi' => [],
+        ]);
+    }
+
 
         /**
          * ===============================
@@ -205,10 +263,12 @@ class SawController extends Controller
         $user = $app->user;
 
         $matrix[$app->id] = [
-            'c1' => $user->nilaiPendidikanTerakhir(),
-            'c2' => $user->totalPengalamanTahun(),
-            'c3' => $user->pelamarSkills->count(),
-        ];
+    'nama'       => $user->name,
+    'pendidikan' => $user->nilaiPendidikanTerakhir(),
+    'pengalaman' => $user->totalPengalamanTahun(),
+    'skill'      => $user->pelamarSkills->count(),
+];
+
     }
 
     return Pdf::loadView(
@@ -227,5 +287,32 @@ public function exportExcel(Lowongan $lowongan)
         'laporan-saw-' . $lowongan->id . '.xlsx'
     );
 }
+
+public function reset(Lowongan $lowongan)
+{
+    // 🔐 hanya HRD pemilik
+    abort_if($lowongan->hrd_id !== auth()->id(), 403);
+
+    // 🔍 cek apakah SAW pernah dihitung
+    $cek = Application::where('lowongan_id', $lowongan->id)
+        ->whereNotNull('saw_score')
+        ->exists();
+
+    if (!$cek) {
+        return back()->with('error', 'Belum ada hasil SAW untuk direset.');
+    }
+
+    // 🔄 reset SAW
+    Application::where('lowongan_id', $lowongan->id)
+        ->whereIn('status', ['interview', 'tidak_lolos_saw'])
+        ->update([
+            'saw_score' => null,
+            'saw_rank'  => null,
+            'status'    => 'seleksi',
+        ]);
+
+    return back()->with('success', 'Hasil SAW berhasil direset.');
+}
+
 
 }

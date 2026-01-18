@@ -58,4 +58,26 @@ public function index(Lowongan $lowongan)
             'isOwner'     => $isOwner,
         ]);
     }
+
+public function lolosAdministrasi(Lowongan $lowongan, Application $application)
+{
+    // 🔐 hanya HRD pemilik lowongan
+    abort_if($lowongan->hrd_id !== auth()->id(), 403);
+
+    // 🔐 pastikan application milik lowongan ini
+    abort_if($application->lowongan_id !== $lowongan->id, 404);
+
+    // ✅ hanya boleh dari tahap screening
+    if ($application->status !== 'screening') {
+        return back()->with('error', 'Kandidat tidak berada pada tahap screening.');
+    }
+
+    // 🔄 lolos administrasi → masuk tahap seleksi (SAW)
+    $application->update([
+        'status' => 'seleksi',
+    ]);
+
+    return back()->with('success', 'Kandidat berhasil lolos administrasi.');
+}
+
 }

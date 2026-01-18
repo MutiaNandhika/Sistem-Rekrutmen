@@ -6,13 +6,28 @@
 <nav class="breadcrumb-wrapper">
     <a href="{{ route('hrd.lowongan.index') }}">Lowongan</a>
     <span>/</span>
+
     <a href="{{ route('hrd.kandidat.index', $lowongan) }}">Kelola Kandidat</a>
     <span>/</span>
+
+    <a href="{{ route('hrd.seleksi.index', $lowongan) }}">Seleksi (SAW)</a>
+    <span>/</span>
+
     <span class="active">Lihat Laporan</span>
 </nav>
 @endsection
 
+
 @section('content')
+
+@if($apps->isEmpty())
+    <div class="alert alert-warning">
+        <strong>Belum ada hasil SAW.</strong><br>
+        Silakan lakukan perhitungan SAW terlebih dahulu
+        pada halaman <strong>Seleksi Kandidat</strong>.
+    </div>
+@else
+
 
 <h4 class="fw-bold mb-3">
     Perhitungan Shortlisting Kandidat (Metode SAW)
@@ -147,5 +162,7 @@
         </table>
     </div>
 </div>
+
+@endif
 
 @endsection

@@ -15,6 +15,7 @@ use App\Http\Controllers\Hrd\KandidatController;
 use App\Http\Controllers\Hrd\SawController;
 use App\Http\Controllers\Hrd\SkillController;
 use App\Http\Controllers\Hrd\BidangKerjaController;
+use App\Http\Controllers\Hrd\SeleksiController;
 use App\Http\Controllers\AccountSettingsController;
 use App\Models\Application;
 use App\Http\Controllers\Pelamar\LamaranController;
@@ -283,6 +284,25 @@ Route::middleware(['auth', 'role:hrd'])
     Route::post('/bidang-kerja', [BidangKerjaController::class, 'store']);
     Route::put('/bidang-kerja/{bidangKerja}', [BidangKerjaController::class, 'update']);
     Route::delete('/bidang-kerja/{bidangKerja}', [BidangKerjaController::class, 'destroy']);
+
+    Route::put('/hrd/lowongan/{lowongan}/kandidat/{application}/lolos-administrasi',[KandidatController::class, 'lolosAdministrasi']
+    )->name('kandidat.lolos_administrasi');
+
+    Route::get(
+    '/hrd/lowongan/{lowongan}/seleksi',
+    [SawController::class, 'index']
+    )->name('seleksi.index');
+
+    Route::post(
+        '/hrd/lowongan/{lowongan}/seleksi/hitung',
+        [SawController::class, 'hitung']
+    )->name('seleksi.hitung');
+
+    Route::put('/hrd/lowongan/{lowongan}/seleksi/reset',
+    [SawController::class, 'reset']
+)->name('seleksi.reset');
+
+
 });
 
 /*

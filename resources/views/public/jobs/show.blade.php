@@ -36,6 +36,22 @@
                             {{ ucfirst(str_replace('_',' ',$lowongan->tipe_kerja)) }}
                             · {{ ucfirst($lowongan->sistem_kerja) }}
                         </li>
+
+                        @if ($lowongan->tanggal_selesai)
+                            <li>
+                                <i class="bi bi-calendar-x"></i>
+                                Pendaftaran ditutup pada
+                                <strong>
+                                    {{ \Carbon\Carbon::parse($lowongan->tanggal_selesai)->translatedFormat('d M Y') }}
+                                </strong>
+                            </li>
+                        @else
+                            <li>
+                                <i class="bi bi-calendar-check"></i>
+                                Pendaftaran tanpa batas waktu
+                            </li>
+                        @endif
+
                         <li><i class="bi bi-mortarboard"></i>
                             Minimal {{ $lowongan->pendidikan_minimal }}
                         </li>

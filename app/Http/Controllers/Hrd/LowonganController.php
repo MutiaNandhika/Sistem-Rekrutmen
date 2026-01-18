@@ -16,6 +16,12 @@ class LowonganController extends Controller
     ====================================================== */
     public function index(Request $request)
     {
+        // AUTO CLOSE
+    Lowongan::where('status', 'aktif')
+        ->whereNotNull('tanggal_selesai')
+        ->whereDate('tanggal_selesai', '<', now())
+        ->update(['status' => 'nonaktif']);
+
         $userId = auth()->id();
 
         // Ambil semua HRD untuk filter PIC
@@ -66,11 +72,14 @@ class LowonganController extends Controller
             'penempatan'         => 'nullable|string',
             'gaji_min'           => 'nullable|numeric',
             'gaji_max'           => 'nullable|numeric',
-            'jenis_kelamin' => 'nullable|in:laki-laki,perempuan,semua',
+            'jenis_kelamin'      => 'nullable|in:laki-laki,perempuan,semua',
             'usia_min'           => 'nullable|numeric',
             'usia_max'           => 'nullable|numeric',
             'pendidikan_minimal' => 'nullable|string',
             'pengalaman_kerja'   => 'nullable|string',
+            'tanggal_mulai'      => 'nullable|date',
+            'tanggal_selesai'    => 'nullable|date|after_or_equal:tanggal_mulai',
+            'jumlah_diterima' => 'required|integer|min:1',
         ]);
 
         $lowongan = Lowongan::create([
@@ -121,16 +130,20 @@ class LowonganController extends Controller
             'penempatan'         => 'nullable|string',
             'gaji_min'           => 'nullable|numeric',
             'gaji_max'           => 'nullable|numeric',
-            'jenis_kelamin' => 'nullable|in:laki-laki,perempuan,semua',
+            'jenis_kelamin'      => 'nullable|in:laki-laki,perempuan,semua',
             'usia_min'           => 'nullable|numeric',
             'usia_max'           => 'nullable|numeric',
             'pendidikan_minimal' => 'nullable|string',
             'pengalaman_kerja'   => 'nullable|string',
+            'tanggal_mulai'      => 'nullable|date',
+            'tanggal_selesai'    => 'nullable|date|after_or_equal:tanggal_mulai',
+            'jumlah_diterima' => 'required|integer|min:1',
         ]);
 
         $lowongan->update([
             ...$data,
             'tanpa_batas_usia' => $request->has('tanpa_batas_usia'),
+              'jumlah_diterima' => $request->jumlah_diterima
         ]);
 
         if ($request->filled('skills')) {
@@ -175,7 +188,8 @@ class LowonganController extends Controller
         ]);
 
         $lowongan->update([
-            'deskripsi_pekerjaan' => $request->deskripsi_pekerjaan
+            'deskripsi_pekerjaan' => $request->deskripsi_pekerjaan,
+              'jumlah_diterima' => $request->jumlah_diterima
         ]);
 
         if ($request->action === 'back') {

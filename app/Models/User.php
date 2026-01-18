@@ -110,15 +110,38 @@ class User extends Authenticatable
         ];
     }
 
-    public function isProfileComplete(): bool
+public function isProfileComplete(): bool
 {
-    return
-        $this->pelamarProfile &&
-        !empty(trim($this->pelamarProfile->tentang_saya)) &&
-        $this->pelamarEducations()->exists() &&
-        $this->pelamarSkills()->exists() &&
-        $this->pelamarResume !== null;
+    $profile = $this->pelamarProfile;
+
+    // 1️⃣ data diri wajib
+    if (!$profile || !$profile->isComplete()) {
+        return false;
+    }
+
+    // 2️⃣ tentang saya wajib
+    if (empty(trim($profile->tentang_saya ?? ''))) {
+        return false;
+    }
+
+    // 3️⃣ minimal 1 pendidikan
+    if (!$this->pelamarEducations()->exists()) {
+        return false;
+    }
+
+    // 4️⃣ minimal 1 skill
+    if (!$this->pelamarSkills()->exists()) {
+        return false;
+    }
+
+    // 5️⃣ resume wajib
+    if (!$this->pelamarResume) {
+        return false;
+    }
+
+    return true;
 }
+
 
 public function totalPengalamanTahun(): float
 {

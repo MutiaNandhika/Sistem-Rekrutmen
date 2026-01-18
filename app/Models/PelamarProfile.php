@@ -21,4 +21,15 @@ class PelamarProfile extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function isComplete(): bool
+    {
+        return
+            !empty(trim($this->phone ?? '')) &&
+            !empty(trim($this->location ?? '')) &&
+            !empty($this->age) &&
+            !empty(trim($this->gender ?? '')) &&
+            !empty(trim($this->last_education ?? '')) &&
+            !empty($this->photo);
+    }
 }
