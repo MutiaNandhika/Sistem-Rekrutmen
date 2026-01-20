@@ -83,22 +83,20 @@
 @endsection
 
 @push('scripts')
-<link rel="stylesheet"
-      href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css">
-
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
-
 <script>
 $(document).ready(function () {
     $('#kandidatTable').DataTable({
         paging: true,
         searching: true,
         ordering: true,
+
         pageLength: 5,
-        lengthChange: false,
+        lengthChange: true,
+        lengthMenu: [5, 10, 25, 50],
+
         language: {
             search: "Cari:",
+            lengthMenu: "Tampilkan _MENU_ data",
             paginate: {
                 previous: "‹",
                 next: "›"
@@ -108,3 +106,4 @@ $(document).ready(function () {
 });
 </script>
 @endpush
+

@@ -49,3 +49,5 @@ public function tentukanInterview(Lowongan $lowongan)
 
 
 }
+
+//INI SUDAH TIDAK BERLAKU KARENA SAW LANGSUNG MENENTUKAN RANGKING

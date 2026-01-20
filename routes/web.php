@@ -8,14 +8,15 @@ use App\Http\Controllers\Admin\AkunAdminController;
 use App\Http\Controllers\Admin\ManajemenAkunController;
 use App\Http\Controllers\Admin\UsersPdfController;
 use App\Http\Controllers\Admin\MonitoringController;
+use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Hrd\AkunHrdController;
 use App\Http\Controllers\Hrd\LowonganController;
 use App\Http\Controllers\Hrd\LamaranHrdController;
 use App\Http\Controllers\Hrd\KandidatController;
 use App\Http\Controllers\Hrd\SawController;
 use App\Http\Controllers\Hrd\SkillController;
+use App\Http\Controllers\Hrd\ReportController as HrdReportController;
 use App\Http\Controllers\Hrd\BidangKerjaController;
-use App\Http\Controllers\Hrd\SeleksiController;
 use App\Http\Controllers\AccountSettingsController;
 use App\Models\Application;
 use App\Http\Controllers\Pelamar\LamaranController;
@@ -259,9 +260,6 @@ Route::middleware(['auth', 'role:hrd'])
     Route::get('/lowongan/{lowongan}/laporan', [SawController::class, 'laporan']
         )->name('laporan.index');
 
-    Route::post('/lowongan/{lowongan}/screening', [SawController::class, 'hitung']
-        )->name('kandidat.screening');
-
     Route::get('/lowongan/{lowongan}/laporan/pdf',[SawController::class, 'exportPdf']
         )->name('laporan.pdf');
 
@@ -285,22 +283,31 @@ Route::middleware(['auth', 'role:hrd'])
     Route::put('/bidang-kerja/{bidangKerja}', [BidangKerjaController::class, 'update']);
     Route::delete('/bidang-kerja/{bidangKerja}', [BidangKerjaController::class, 'destroy']);
 
-    Route::put('/hrd/lowongan/{lowongan}/kandidat/{application}/lolos-administrasi',[KandidatController::class, 'lolosAdministrasi']
+    Route::put('/lowongan/{lowongan}/kandidat/{application}/lolos-administrasi',[KandidatController::class, 'lolosAdministrasi']
     )->name('kandidat.lolos_administrasi');
 
     Route::get(
-    '/hrd/lowongan/{lowongan}/seleksi',
+    '/lowongan/{lowongan}/seleksi',
     [SawController::class, 'index']
     )->name('seleksi.index');
 
     Route::post(
-        '/hrd/lowongan/{lowongan}/seleksi/hitung',
+        '/lowongan/{lowongan}/seleksi/hitung',
         [SawController::class, 'hitung']
     )->name('seleksi.hitung');
 
-    Route::put('/hrd/lowongan/{lowongan}/seleksi/reset',
+    Route::put('/lowongan/{lowongan}/seleksi/reset',
     [SawController::class, 'reset']
-)->name('seleksi.reset');
+    )->name('seleksi.reset');
+
+        Route::get('/report', [HrdReportController::class, 'index'])
+            ->name('report.index');
+
+        Route::get('/report/pdf', [HrdReportController::class, 'exportPdf'])
+            ->name('report.pdf');
+        
+        Route::get('/report/excel', [HrdReportController::class, 'exportExcel'])
+    ->name('report.excel');
 
 
 });
@@ -345,11 +352,17 @@ Route::middleware(['auth', 'role:admin'])
         );
     });
 
-        Route::get('/monitoring', [MonitoringController::class, 'index'])
-            ->name('admin.monitoring');
-
         Route::get('/akun/{id}', [AkunAdminController::class, 'show'])
             ->name('akun.detail');
+
+        Route::get('/report', [ReportController::class, 'index'])
+            ->name('report.index');
+
+        Route::get('/report/pdf', [ReportController::class, 'exportPdf'])
+            ->name('report.pdf');
+
+        Route::get('/report/excel', [ReportController::class, 'exportExcel'])
+            ->name('report.excel');
 
     });
 

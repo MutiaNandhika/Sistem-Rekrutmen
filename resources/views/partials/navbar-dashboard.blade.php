@@ -32,6 +32,12 @@
                             Lowongan
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->is('hrd/report*') ? 'active fw-semibold' : '' }}"
+                        href="{{ route('hrd.report.index') }}">
+                            Report
+                        </a>
+                    </li>
                 @endif
 
                 {{-- ADMIN --}}
@@ -56,6 +62,13 @@
                             Monitoring
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->is('admin/report*') ? 'active fw-semibold' : '' }}"
+                        href="{{ route('admin.report.index') }}">
+                            Report
+                        </a>
+                    </li>
+
                 @endif
             </ul>
 
