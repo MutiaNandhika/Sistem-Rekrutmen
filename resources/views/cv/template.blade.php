@@ -118,6 +118,11 @@
 <div class="section-item">
     <strong>{{ $cert->nama_sertifikat }}</strong><br>
 
+     {{-- ORGANISASI PENERBIT --}}
+        @if($cert->organisasi_penerbit)
+            {{ $cert->organisasi_penerbit }} •
+        @endif
+
     <span class="sub-text">
         @if($cert->bulan_terbit)
             {{ $bulan[$cert->bulan_terbit] }}

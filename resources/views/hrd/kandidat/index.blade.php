@@ -77,14 +77,27 @@
 
             <tbody>
             @foreach ($kandidats as $k)
+
+            @php
+                    $statusColor = [
+                        'diproses' => 'secondary',
+                        'screening' => 'info',
+                        'seleksi' => 'primary',
+                        'interview' => 'warning',
+                        'offer' => 'dark',
+                        'diterima' => 'success',
+                        'ditolak' => 'danger',
+                    ];
+                @endphp
+
                 <tr>
                     {{-- NAMA --}}
                     <td>{{ $k->user->name }}</td>
 
                     {{-- STATUS --}}
                     <td>
-                        <span class="badge bg-warning text-dark">
-                            {{ ucfirst($k->status) }}
+                        <span class="badge bg-{{ $statusColor[$k->status] ?? 'secondary' }}">
+                            {{ strtoupper($k->status) }}
                         </span>
                     </td>
 

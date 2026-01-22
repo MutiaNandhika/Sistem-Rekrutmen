@@ -15,8 +15,8 @@
                 <h6 class="fw-bold mb-3">Kontak</h6>
                 <ul class="list-unstyled small footer-text mb-0">
                     <li>📍 Jakarta, Indonesia</li>
-                    <li>📞 0812-xxxx-xxxx</li>
-                    <li>✉️ info@mdapartner.id</li>
+                    <li>📞 0819-1471-0001</li>
+                    <li>✉️ business@mitradaksa.com</li>
                 </ul>
             </div>
 

@@ -70,7 +70,7 @@
 
                                 <li>
                                     <a class="dropdown-item"
-                                       href="{{ route('pelamar.lamaran') }}">
+                                       href="{{ route('pelamar.lamaran.index') }}">
                                         <i class="bi bi-briefcase me-2"></i>
                                         Lamaran Saya
                                     </a>

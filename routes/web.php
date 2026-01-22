@@ -100,15 +100,11 @@ Route::middleware(['auth', 'role:pelamar'])
         Route::get('/profile', [ProfileController::class, 'index'])
             ->name('profile');
 
-        Route::get('/lamaran', function () {
-
-            $application = Application::where('user_id', Auth::id())
-                ->latest()
-                ->first();
-
-            return view('pelamar.lamaran', compact('application'));
-
-        })->name('lamaran');
+        Route::get('/lamaran', [LamaranController::class, 'index'])
+        ->name('lamaran.index');
+        
+        Route::get('/lamaran/{application}', [LamaranController::class, 'show'])
+        ->name('lamaran.show');
 
         Route::post('/lamar/{lowongan}', [LamaranController::class, 'store'])
         ->name('lamar.store');

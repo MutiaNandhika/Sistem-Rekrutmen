@@ -9,6 +9,23 @@ use Illuminate\Http\Request;
 
 class LamaranController extends Controller
 {
+public function index()
+{
+    $applications = Application::with('lowongan')
+        ->where('user_id', auth()->id())
+        ->latest()
+        ->get();
+
+    return view('pelamar.lamaran-index', compact('applications'));
+}
+public function show(Application $application)
+{
+    // 🔐 Pastikan hanya pemilik
+    abort_if($application->user_id !== auth()->id(), 403);
+
+    return view('pelamar.lamaran', compact('application'));
+}
+
     public function store(Lowongan $lowongan)
     {
         $user = auth()->user();

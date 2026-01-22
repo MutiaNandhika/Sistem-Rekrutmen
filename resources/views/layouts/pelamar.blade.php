@@ -15,12 +15,16 @@
 
 @include('partials.navbar-public')
 
+{{-- BREADCRUMB (OPTIONAL) --}}
+@hasSection('breadcrumb')
+    @yield('breadcrumb')
+@endif
+
 <main class="main-content">
     <div class="container">
         @yield('content')
     </div>
 </main>
-
 
 @include('partials.footer')
 
