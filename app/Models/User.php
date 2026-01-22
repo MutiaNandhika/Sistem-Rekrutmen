@@ -14,6 +14,7 @@ use App\Models\PelamarResume;
 use App\Models\PelamarCertificate;
 use App\Models\PelamarOrganization;
 use App\Models\PelamarAchievement;
+use App\Models\Application;
 use Carbon\Carbon;
 
 class User extends Authenticatable
@@ -218,6 +219,10 @@ public function lowongans()
     return $this->hasMany(Lowongan::class, 'hrd_id');
 }
 
+public function applications()
+    {
+        return $this->hasMany(Application::class, 'user_id');
+    }
 
 }
 

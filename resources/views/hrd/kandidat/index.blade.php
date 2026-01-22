@@ -36,6 +36,33 @@
 
 <div class="card">
     <div class="card-body">
+<form method="GET" class="row g-2 mb-3">
+
+    {{-- FILTER STATUS --}}
+    <div class="col-md-4">
+        <select name="status" class="form-select" onchange="this.form.submit()">
+            <option value="">Semua Status</option>
+
+            <optgroup label="Dalam Proses">
+                <option value="diproses" {{ request('status')=='diproses'?'selected':'' }}>Diproses</option>
+                <option value="screening" {{ request('status')=='screening'?'selected':'' }}>Screening</option>
+                <option value="seleksi" {{ request('status')=='seleksi'?'selected':'' }}>Seleksi (SAW)</option>
+                <option value="interview" {{ request('status')=='interview'?'selected':'' }}>Interview</option>
+                <option value="offer" {{ request('status')=='offer'?'selected':'' }}>Offer</option>
+            </optgroup>
+
+            <optgroup label="Selesai">
+                <option value="diterima" {{ request('status')=='diterima'?'selected':'' }}>
+                    Selesai – Diterima
+                </option>
+                <option value="ditolak" {{ request('status')=='ditolak'?'selected':'' }}>
+                    Selesai – Ditolak
+                </option>
+            </optgroup>
+        </select>
+    </div>
+
+</form>
 
         <table id="kandidatTable"
                class="table kandidat-table align-middle w-100">
@@ -70,7 +97,13 @@
                            class="btn btn-sm btn-primary">
                             Detail
                         </a>
+                        <a href="{{ route('cv.download', $k->user_id) }}"
+                        target="_blank"
+                        class="btn btn-outline-dark btn-sm">
+                            <i class="bi bi-file-earmark-pdf"></i> Download CV
+                        </a>
                     </td>
+
                 </tr>
             @endforeach
             </tbody>

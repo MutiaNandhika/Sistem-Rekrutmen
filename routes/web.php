@@ -22,6 +22,7 @@ use App\Models\Application;
 use App\Http\Controllers\Pelamar\LamaranController;
 use App\Exports\UsersExport;
 use App\Http\Controllers\Hrd\DashboardController;
+use App\Http\Controllers\CvController;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
@@ -66,6 +67,10 @@ Route::get('/redirect-after-login', function (Request $request) {
 
 })->middleware('auth');
 
+Route::middleware(['auth'])->group(function () {
+    Route::get('/cv/{user}', [CvController::class, 'download'])
+        ->name('cv.download');
+});
 
 /*
 |--------------------------------------------------------------------------
