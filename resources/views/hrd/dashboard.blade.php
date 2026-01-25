@@ -77,7 +77,11 @@
 
 @push('scripts')
 <script>
+/* ===============================
+   VARIABLE GLOBAL
+================================ */
 let chartLowongan, chartFunnel, chartOffer;
+let refreshTimer;
 
 const tahunSelect = document.getElementById('tahun');
 const bulanSelect = document.getElementById('bulan');
@@ -86,22 +90,33 @@ const chartLowonganCtx = document.getElementById('chartLowongan');
 const chartFunnelCtx   = document.getElementById('chartFunnel');
 const chartOfferCtx    = document.getElementById('chartOffer');
 
+/* ===============================
+   LOAD DASHBOARD DATA
+================================ */
 function loadDashboard() {
     fetch(`/hrd/dashboard/data?tahun=${tahunSelect.value}&bulan=${bulanSelect.value}`)
-        .then(res => res.json())
+        .then(response => response.json())
         .then(data => renderCharts(data))
-        .catch(() => alert('Gagal memuat data dashboard'));
+        .catch(() => {
+            alert('Gagal memuat data dashboard');
+        });
 }
 
+/* ===============================
+   RENDER CHART & STAT
+================================ */
 function renderCharts(data) {
 
+    // STAT
     document.getElementById('statLowongan').textContent = data.stat.lowongan_aktif;
     document.getElementById('statPelamar').textContent  = data.stat.total_pelamar;
 
+    // RESET CHART
     chartLowongan?.destroy();
     chartFunnel?.destroy();
     chartOffer?.destroy();
 
+    // CHART LOWONGAN
     chartLowongan = new Chart(chartLowonganCtx, {
         type: 'line',
         data: {
@@ -113,47 +128,73 @@ function renderCharts(data) {
                 tension: 0.4
             }]
         },
-        options: { plugins:{legend:{display:false}} }
+        options: {
+            plugins: {
+                legend: { display: false }
+            }
+        }
     });
 
+    // CHART FUNNEL
     chartFunnel = new Chart(chartFunnelCtx, {
-    type: 'bar',
-    data: {
-        labels: ['Diproses','Screening','Interview','Offer','Hired'],
-        datasets: [{
-            data: Object.values(data.funnel),
-            backgroundColor: '#0d6efd'
-        }]
-    },
-    options: {
-        plugins: {
-            legend: { display: false }
+        type: 'bar',
+        data: {
+            labels: ['Diproses','Screening','Interview','Offer','Hired'],
+            datasets: [{
+                data: Object.values(data.funnel),
+                backgroundColor: '#0d6efd'
+            }]
+        },
+        options: {
+            plugins: {
+                legend: { display: false }
+            }
         }
-    }
-});
+    });
 
-
+    // CHART OFFER
     chartOffer = new Chart(chartOfferCtx, {
-    type: 'bar',
-    data: {
-        labels: ['Dikirim','Diterima','Ditolak','Tidak Respon'],
-        datasets: [{
-            data: Object.values(data.offer),
-            backgroundColor: '#0d6efd'
-        }]
-    },
-    options: {
-        plugins: {
-            legend: { display: false }
+        type: 'bar',
+        data: {
+            labels: ['Dikirim','Diterima','Ditolak','Tidak Respon'],
+            datasets: [{
+                data: Object.values(data.offer),
+                backgroundColor: '#0d6efd'
+            }]
+        },
+        options: {
+            plugins: {
+                legend: { display: false }
+            }
         }
-    }
-});
-
+    });
 }
 
-tahunSelect.addEventListener('change', loadDashboard);
-bulanSelect.addEventListener('change', loadDashboard);
+/* ===============================
+   AUTO REFRESH (POLLING)
+================================ */
+function startAutoRefresh() {
+    clearInterval(refreshTimer);
+    refreshTimer = setInterval(loadDashboard, 10000); // 10 detik
+}
 
+/* ===============================
+   EVENT HANDLER
+================================ */
+tahunSelect.addEventListener('change', () => {
+    loadDashboard();
+    startAutoRefresh();
+});
+
+bulanSelect.addEventListener('change', () => {
+    loadDashboard();
+    startAutoRefresh();
+});
+
+/* ===============================
+   INIT LOAD
+================================ */
 loadDashboard();
+startAutoRefresh();
 </script>
 @endpush

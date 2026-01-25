@@ -13,21 +13,23 @@ class SawController extends Controller
 {
 public function index(Lowongan $lowongan)
 {
-    // 🔐 hanya HRD pemilik
     abort_if($lowongan->hrd_id !== auth()->id(), 403);
 
-    // ambil kandidat yang sudah lolos administrasi
     $apps = Application::with([
             'user.pelamarEducations',
             'user.pelamarExperiences',
             'user.pelamarSkills',
         ])
         ->where('lowongan_id', $lowongan->id)
-        ->where('status', 'seleksi')
+        ->whereIn('status', [
+            'seleksi',
+            'interview',
+            'tidak_lolos_saw'
+        ])
+        ->orderByRaw('saw_rank IS NULL, saw_rank ASC')
         ->orderBy('created_at')
         ->get();
 
-    // 🔥 CEK APAKAH SAW SUDAH DIHITUNG
     $sawSudahDihitung = $apps->whereNotNull('saw_score')->count() > 0;
 
     return view('hrd.seleksi.index', [
@@ -36,6 +38,7 @@ public function index(Lowongan $lowongan)
         'sawDone'  => $sawSudahDihitung,
     ]);
 }
+
 
     /**
      * =====================================================
@@ -49,6 +52,7 @@ public function index(Lowongan $lowongan)
         abort_if($lowongan->hrd_id !== auth()->id(), 403);
 
     $cek = Application::where('lowongan_id', $lowongan->id)
+    ->whereIn('status', ['seleksi','interview','tidak_lolos_saw'])
     ->whereNotNull('saw_score')
     ->exists();
 
@@ -170,16 +174,17 @@ if ($cek) {
         abort_if($lowongan->hrd_id !== auth()->id(), 403);
 
         $apps = Application::with([
-                'user.pelamarEducations',
-                'user.pelamarExperiences',
-                'user.pelamarSkills',
-            ])
-            ->where('lowongan_id', $lowongan->id)
-            ->whereNotNull('saw_score')
-            ->orderBy('saw_rank')
-            ->get();
+        'user.pelamarEducations',
+        'user.pelamarExperiences',
+        'user.pelamarSkills',
+        ])
+        ->where('lowongan_id', $lowongan->id)
+        ->whereNotNull('saw_score')
+        ->whereIn('status', ['interview', 'tidak_lolos_saw'])
+        ->orderBy('saw_rank')
+        ->get();
 
-                    // ===============================
+        // ===============================
         // CEK DATA SAW
         // ===============================
         if ($apps->isEmpty()) {
@@ -290,28 +295,20 @@ public function exportExcel(Lowongan $lowongan)
 
 public function reset(Lowongan $lowongan)
 {
-    // 🔐 hanya HRD pemilik
     abort_if($lowongan->hrd_id !== auth()->id(), 403);
 
-    // 🔍 cek apakah SAW pernah dihitung
-    $cek = Application::where('lowongan_id', $lowongan->id)
-        ->whereNotNull('saw_score')
-        ->exists();
-
-    if (!$cek) {
-        return back()->with('error', 'Belum ada hasil SAW untuk direset.');
-    }
-
-    // 🔄 reset SAW
     Application::where('lowongan_id', $lowongan->id)
-        ->whereIn('status', ['interview', 'tidak_lolos_saw'])
+        ->whereIn('status', ['seleksi', 'interview', 'tidak_lolos_saw'])
         ->update([
-            'saw_score' => null,
-            'saw_rank'  => null,
-            'status'    => 'seleksi',
+            'saw_score'        => null,
+            'saw_rank'         => null,
+            'interview_at'     => null,
+            'interview_method' => null,
+            'interview_link'   => null,
+            'status'           => 'seleksi',
         ]);
 
-    return back()->with('success', 'Hasil SAW berhasil direset.');
+    return back()->with('success', 'Reset SAW berhasil (tanpa mengganggu kandidat diterima).');
 }
 
 

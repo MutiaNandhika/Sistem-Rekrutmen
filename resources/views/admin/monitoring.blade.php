@@ -79,6 +79,7 @@
 @push('scripts')
 <script>
 let chartLowongan, chartFunnel, chartOffer;
+let refreshTimer;
 
 const tahunSelect = document.getElementById('tahun');
 const bulanSelect = document.getElementById('bulan');
@@ -95,7 +96,6 @@ function loadAdminDashboard() {
 }
 
 function renderCharts(data) {
-
     document.getElementById('statLowongan').textContent = data.stat.lowongan_aktif;
     document.getElementById('statPelamar').textContent  = data.stat.total_pelamar;
 
@@ -142,9 +142,26 @@ function renderCharts(data) {
     });
 }
 
-tahunSelect.addEventListener('change', loadAdminDashboard);
-bulanSelect.addEventListener('change', loadAdminDashboard);
+// AUTO REFRESH
+function startAutoRefresh() {
+    clearInterval(refreshTimer);
+    refreshTimer = setInterval(loadAdminDashboard, 10000);
+}
 
+// EVENT
+tahunSelect.addEventListener('change', () => {
+    loadAdminDashboard();
+    startAutoRefresh();
+});
+
+bulanSelect.addEventListener('change', () => {
+    loadAdminDashboard();
+    startAutoRefresh();
+});
+
+// INIT
 loadAdminDashboard();
+startAutoRefresh();
 </script>
 @endpush
+

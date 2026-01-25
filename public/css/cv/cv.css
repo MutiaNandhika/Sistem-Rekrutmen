@@ -83,3 +83,18 @@ li {
 .page-break {
     page-break-before: always;
 }
+
+/* ===============================
+   AVATAR (CV)
+================================ */
+.cv-header {
+    margin-bottom: 10px;
+}
+
+.cv-avatar {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid #999;
+}

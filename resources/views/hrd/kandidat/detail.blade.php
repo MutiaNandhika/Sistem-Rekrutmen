@@ -64,10 +64,23 @@
     {{-- PROFILE CARD --}}
     <div class="card shadow-sm mb-4">
         <div class="card-body d-flex gap-4">
-
-            <div class="avatar-lg text-muted">
-                <i class="bi bi-person-circle fs-1"></i>
-            </div>
+            {{-- AVATAR --}}
+            @if($profile?->photo)
+                <img
+                    src="{{ asset('storage/'.$profile->photo) }}"
+                    alt="Foto Kandidat"
+                    class="rounded-circle border"
+                    width="72"
+                    height="72"
+                    style="object-fit:cover; cursor:pointer"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalAvatarPreview">
+            @else
+                <div class="rounded-circle bg-light d-flex align-items-center justify-content-center border"
+                    style="width:72px;height:72px">
+                    <i class="bi bi-person fs-3 text-muted"></i>
+                </div>
+            @endif
 
             <div class="flex-grow-1">
 
@@ -301,16 +314,22 @@
                     <p class="text-muted small mt-2">
                         Berkas administrasi kandidat sedang diperiksa.
                     </p>
+                @elseif($application->status === 'ditolak_administrasi')
+                    <p class="text-danger small mt-2 fw-semibold">
+                        Kandidat <strong>DITOLAK</strong> pada tahap administrasi.
+                    </p>
                 @endif
 
                 @if($isOwner && $application->status === 'screening')
                     <div class="d-flex gap-2 mt-2">
 
                         {{-- ❌ TOLAK ADMIN --}}
-                        <form method="POST" action="{{ route('hrd.lamaran.update', $application) }}">
+                        <form
+                            action="{{ route('hrd.kandidat.tolak_administrasi', [$lowongan->id, $application->id]) }}"
+                            method="POST"
+                        >
                             @csrf
                             @method('PUT')
-                            <input type="hidden" name="status" value="ditolak_administrasi">
                             <button class="btn btn-danger btn-sm">
                                 Ditolak Administrasi
                             </button>
@@ -338,32 +357,47 @@
 
                 @if($application->status === 'seleksi')
                     <p class="text-muted small mt-2">
-                        Kandidat telah lolos administrasi dan
-                        <strong>sedang dalam tahap seleksi lanjutan</strong>.
+                        Kandidat sedang dalam tahap seleksi lanjutan (SAW).
+                    </p>
+                @elseif($application->status === 'ditolak_administrasi')
+                    <p class="text-danger small mt-2">
+                        Tidak dilanjutkan ke tahap seleksi karena gagal administrasi.
                     </p>
                 @endif
             </div>
 
-           {{-- ================= 4. INTERVIEW ================= --}}
+{{-- ================= 4. INTERVIEW ================= --}}
 <div class="mb-4">
     <strong>4. INTERVIEW</strong>
 
-    {{-- 🔒 INTERVIEW TERKUNCI JIKA SAW BELUM SELESAI --}}
-    @if(is_null($application->saw_score))
+    {{-- ❌ GAGAL ADMIN --}}
+    @if($application->status === 'ditolak_administrasi')
+        <p class="text-danger small mt-2">
+            Proses berhenti. Kandidat tidak lolos tahap administrasi.
+        </p>
+
+    {{-- ⏳ BELUM SAW --}}
+    @elseif(is_null($application->saw_score))
         <p class="text-muted small mt-2">
             Tahap interview akan tersedia setelah proses seleksi (SAW) selesai.
         </p>
 
     {{-- ❌ TIDAK LOLOS SAW --}}
-    @elseif($application->status !== 'interview')
-        <p class="text-muted small mt-2">
-            Kandidat tidak termasuk dalam hasil seleksi interview.
+    @elseif($application->status === 'tidak_lolos_saw')
+        <p class="text-danger small mt-2">
+            Kandidat tidak lolos seleksi (SAW).
         </p>
 
-    {{-- ✅ LOLOS SAW & MASUK INTERVIEW --}}
-    @else
+    {{-- ❌ TIDAK LOLOS INTERVIEW --}}
+    @elseif($application->status === 'ditolak')
+        <p class="text-danger small mt-2">
+            Kandidat tidak lolos tahap interview.
+        </p>
 
-        {{-- INFO INTERVIEW --}}
+    {{-- ✅ MASUK INTERVIEW --}}
+    @elseif($application->status === 'interview')
+
+        {{-- INFO JADWAL --}}
         @if($application->interview_at)
             <div class="alert alert-warning small mt-2">
                 <strong>Metode:</strong> {{ ucfirst($application->interview_method) }}<br>
@@ -385,9 +419,18 @@
 
         {{-- AKSI HRD --}}
         @if($isOwner)
-            <div class="d-flex gap-2 mt-2">
+            <div class="d-flex flex-wrap gap-2 mt-2">
 
-                {{-- ❌ TIDAK LOLOS INTERVIEW --}}
+                {{-- 🗓️ ATUR / EDIT JADWAL --}}
+                <button
+                    class="btn btn-outline-primary btn-sm"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalInterview">
+                    <i class="bi bi-calendar-event"></i>
+                    Atur Jadwal Interview
+                </button>
+
+                {{-- ❌ TIDAK LOLOS --}}
                 <form method="POST"
                       action="{{ route('hrd.lamaran.update', $application) }}">
                     @csrf
@@ -400,9 +443,9 @@
 
                 {{-- ✅ KIRIM OFFER --}}
                 <form method="POST"
-                      action="{{ route('hrd.lamaran.offer.upload', $application) }}">
+                      action="{{ route('hrd.lamaran.offer.upload', $application) }}"
+                      class="w-100 mt-2">
                     @csrf
-                    <input type="hidden" name="status" value="offer">
 
                     <input type="url"
                            name="offer_file"
@@ -410,42 +453,89 @@
                            placeholder="Link Offering (Google Drive / PDF)"
                            required>
 
-                    <button class="btn btn-success btn-sm">
+                    <button class="btn btn-success btn-sm w-100">
                         Kirim Offer
                     </button>
                 </form>
 
             </div>
         @endif
-
     @endif
 </div>
+
 
 {{-- ================= 5. OFFER ================= --}}
 <div>
     <strong>5. OFFER</strong>
 
-    @if($application->status === 'offer')
-        <p class="text-muted small mt-2">
-            Offering telah dikirim ke pelamar.
+    {{-- ⛔ GAGAL ADMINISTRASI --}}
+    @if($application->status === 'ditolak_administrasi')
+        <p class="text-danger small mt-2">
+            Proses tidak berlanjut ke tahap offer karena kandidat
+            <strong>gagal administrasi</strong>.
         </p>
 
-        <a href="{{ $application->offer_file }}"
-           target="_blank"
-           class="btn btn-outline-primary btn-sm">
-            Lihat Offering
-        </a>
-    @endif
+    {{-- ⛔ TIDAK LOLOS SELEKSI (SAW) --}}
+    @elseif($application->status === 'tidak_lolos_saw')
+        <p class="text-danger small mt-2">
+            Proses tidak berlanjut ke tahap offer karena kandidat
+            <strong>tidak lolos seleksi</strong>.
+        </p>
 
-    @if($application->offer_response)
-        <span class="badge mt-2
-            {{ $application->offer_response === 'diterima'
-                ? 'bg-success'
-                : 'bg-danger' }}">
-            {{ ucfirst($application->offer_response) }}
-        </span>
+    {{-- ⛔ TIDAK LOLOS INTERVIEW --}}
+    @elseif($application->status === 'ditolak')
+        <p class="text-danger small mt-2">
+            Proses tidak berlanjut ke tahap offer karena kandidat
+            <strong>tidak lolos interview</strong>.
+        </p>
+
+    {{-- ⏳ MASIH INTERVIEW --}}
+    @elseif($application->status === 'interview')
+        <p class="text-muted small mt-2">
+            Menunggu hasil interview sebelum keputusan offer.
+        </p>
+
+    {{-- 📨 OFFER DIKIRIM --}}
+    @elseif($application->status === 'offer')
+        <p class="text-muted small mt-2">
+            Offer telah dikirim ke pelamar dan menunggu respon.
+        </p>
+
+        @if($application->offer_file)
+            <a href="{{ $application->offer_file }}"
+               target="_blank"
+               class="btn btn-outline-primary btn-sm mb-2">
+                <i class="bi bi-file-earmark-text"></i> Lihat Offering
+            </a>
+        @endif
+
+        <p class="text-muted small">
+            Status respon pelamar:
+            <span class="badge bg-secondary">MENUNGGU</span>
+        </p>
+
+    {{-- 🚫 OFFER DITOLAK OLEH PELAMAR --}}
+    @elseif($application->status === 'offer_ditolak')
+        <div class="alert alert-warning small mt-2">
+            ⚠️ Kandidat <strong>MENOLAK OFFER</strong> yang diberikan perusahaan.
+        </div>
+
+        @if($application->offer_file)
+            <a href="{{ $application->offer_file }}"
+               target="_blank"
+               class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-file-earmark-text"></i> Lihat Offering
+            </a>
+        @endif
+
+    {{-- ✅ OFFER DITERIMA --}}
+    @elseif($application->status === 'diterima')
+        <p class="text-success small mt-2 fw-semibold">
+            Kandidat <strong>menerima offering</strong> dan resmi diterima bekerja.
+        </p>
     @endif
 </div>
+
 
 <hr class="my-4">
 
@@ -523,5 +613,27 @@
 
 </div>
 
+{{-- ================= MODAL AVATAR PREVIEW ================= --}}
+@if($profile?->photo)
+<div class="modal fade" id="modalAvatarPreview" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Foto Kandidat</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body text-center">
+                <img
+                    src="{{ asset('storage/'.$profile->photo) }}"
+                    class="img-fluid rounded shadow"
+                    alt="Foto Kandidat">
+            </div>
+
+        </div>
+    </div>
+</div>
+@endif
 
 @endsection

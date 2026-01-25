@@ -30,6 +30,7 @@ class Lowongan extends Model
         'status',
         'tanggal_mulai',
         'tanggal_selesai',
+        'jumlah_diterima',
     ];
 
     public function skills()

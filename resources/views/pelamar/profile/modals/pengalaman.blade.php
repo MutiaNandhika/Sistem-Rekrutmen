@@ -23,8 +23,7 @@
                     <label class="form-label fw-semibold">Posisi / Jabatan</label>
                     <input type="text"
                            class="form-control"
-                           id="expPosition"
-                           placeholder="Contoh: Admin Gudang">
+                           id="expPosition">
                 </div>
 
                 {{-- PERUSAHAAN --}}
@@ -32,8 +31,7 @@
                     <label class="form-label fw-semibold">Nama Perusahaan</label>
                     <input type="text"
                            class="form-control"
-                           id="expCompany"
-                           placeholder="Contoh: PT Maju Jaya">
+                           id="expCompany">
                 </div>
 
                 {{-- PERIODE --}}
@@ -56,7 +54,7 @@
                     <textarea class="form-control"
                               rows="4"
                               id="expDescription"
-                              placeholder="Jelaskan tanggung jawab dan pencapaianmu"></textarea>
+                    ></textarea>
                 </div>
 
             </div>

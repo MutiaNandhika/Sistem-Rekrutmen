@@ -66,6 +66,13 @@
             </div>
         </div>
 
+        <div class="row mb-3">
+            <div class="col-md-4 text-muted">Jumlah Kandidat Diterima</div>
+            <div class="col-md-8 fw-semibold">
+                {{ $lowongan->jumlah_diterima }} Orang
+            </div>
+        </div>
+
     </div>
 </div>
 

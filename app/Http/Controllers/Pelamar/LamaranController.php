@@ -9,40 +9,44 @@ use Illuminate\Http\Request;
 
 class LamaranController extends Controller
 {
-public function index()
-{
-    $applications = Application::with('lowongan')
-        ->where('user_id', auth()->id())
-        ->latest()
-        ->get();
+    public function index()
+    {
+        $applications = Application::with('lowongan')
+            ->where('user_id', auth()->id())
+            ->latest()
+            ->get();
 
-    return view('pelamar.lamaran-index', compact('applications'));
-}
-public function show(Application $application)
-{
-    // 🔐 Pastikan hanya pemilik
-    abort_if($application->user_id !== auth()->id(), 403);
+        return view('pelamar.lamaran-index', compact('applications'));
+    }
 
-    return view('pelamar.lamaran', compact('application'));
-}
+    public function show(Application $application)
+    {
+        abort_if($application->user_id !== auth()->id(), 403);
+
+        return view('pelamar.lamaran', compact('application'));
+    }
 
     public function store(Lowongan $lowongan)
     {
         $user = auth()->user();
 
-        // LOWONGAN HARUS AKTIF
         abort_if($lowongan->status !== 'aktif', 403);
 
-        // PROFIL HARUS LENGKAP
         if (!$user->isProfileComplete()) {
             return redirect()
                 ->route('pelamar.profile')
                 ->with('error', 'Lengkapi profil terlebih dahulu');
         }
 
-        // CEK LAMARAN AKTIF (SELAMA BUKAN DITOLAK)
+        // ✅ CEGAH LAMARAN GANDA (SELAMA MASIH AKTIF)
         $existing = Application::where('user_id', $user->id)
-            ->whereNotIn('status', ['ditolak'])
+            ->whereIn('status', [
+                'diproses',
+                'screening',
+                'seleksi',
+                'interview',
+                'offer',
+            ])
             ->exists();
 
         if ($existing) {
@@ -61,28 +65,30 @@ public function show(Application $application)
         return back()->with('success', 'Lamaran berhasil dikirim.');
     }
 
-    // ===============================
-    // TERIMA / TOLAK OFFER
-    // ===============================
+    /**
+     * ===============================
+     * TERIMA / TOLAK OFFER
+     * ===============================
+     */
     public function offerResponse(Request $request, Application $application)
     {
-        // 🔐 hanya pelamar pemilik
         abort_if($application->user_id !== auth()->id(), 403);
-
-        // ❌ BELUM OFFER
         abort_if($application->status !== 'offer', 403);
 
         $request->validate([
             'response' => 'required|in:diterima,ditolak'
         ]);
 
+        $status = match ($request->response) {
+            'diterima' => 'diterima',
+            'ditolak'  => 'offer_ditolak',
+        };
+
         $application->update([
             'offer_response' => $request->response,
-            'status' => $request->response === 'diterima'
-                ? 'diterima'
-                : 'ditolak'
+            'status'         => $status,
         ]);
 
-        return back()->with('success', 'Keputusan berhasil dikirim');
+        return back()->with('success', 'Keputusan berhasil dikirim.');
     }
 }

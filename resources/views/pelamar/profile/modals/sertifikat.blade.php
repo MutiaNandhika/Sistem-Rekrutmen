@@ -22,8 +22,7 @@
                     </label>
                     <input type="text"
                            id="certName"
-                           class="form-control"
-                           placeholder="Contoh: Sertifikat UI/UX Design">
+                           class="form-control">
                 </div>
 
                 {{-- ORGANISASI PENERBIT --}}
@@ -33,8 +32,7 @@
                     </label>
                     <input type="text"
                            id="certIssuer"
-                           class="form-control"
-                           placeholder="Contoh: Google, Dicoding">
+                           class="form-control">
                 </div>
 
                 {{-- TANGGAL TERBIT --}}
@@ -114,8 +112,7 @@
                     <textarea id="certDesc"
                               class="form-control"
                               rows="3"
-                              maxlength="2000"
-                              placeholder="Contoh: Sertifikat tingkat lanjutan"></textarea>
+                              maxlength="2000"></textarea>
                 </div>
 
             </div>

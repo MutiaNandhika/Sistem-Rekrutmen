@@ -60,6 +60,7 @@
                     <th>Skill</th>
                     <th>Skor SAW</th>
                     <th>Ranking</th>
+                    <th>Status</th>
                 </tr>
                 </thead>
 
@@ -72,6 +73,24 @@
                         <td>{{ $app->user->pelamarSkills->count() }}</td>
                         <td>{{ $app->saw_score ?? '-' }}</td>
                         <td>{{ $app->saw_rank ?? '-' }}</td>
+                        {{-- STATUS BADGE --}}
+                        <td>
+                            @if ($app->status === 'seleksi')
+                                <span class="badge bg-secondary">
+                                    Menunggu SAW
+                                </span>
+
+                            @elseif ($app->status === 'interview')
+                                <span class="badge bg-success">
+                                    Lolos SAW (Interview)
+                                </span>
+
+                            @elseif ($app->status === 'tidak_lolos_saw')
+                                <span class="badge bg-danger">
+                                    Tidak Lolos SAW
+                                </span>
+                            @endif
+                        </td>
                     </tr>
                 @endforeach
                 </tbody>

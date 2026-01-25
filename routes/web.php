@@ -287,6 +287,12 @@ Route::middleware(['auth', 'role:hrd'])
     Route::put('/lowongan/{lowongan}/kandidat/{application}/lolos-administrasi',[KandidatController::class, 'lolosAdministrasi']
     )->name('kandidat.lolos_administrasi');
 
+    Route::put(
+    '/lowongan/{lowongan}/kandidat/{application}/tolak-administrasi',
+    [KandidatController::class, 'tolakAdministrasi']
+    )->name('kandidat.tolak_administrasi');
+
+
     Route::get(
     '/lowongan/{lowongan}/seleksi',
     [SawController::class, 'index']

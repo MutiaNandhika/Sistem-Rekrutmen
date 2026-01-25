@@ -112,4 +112,26 @@ class KandidatController extends Controller
 
         return back()->with('success', 'Kandidat berhasil lolos administrasi.');
     }
+
+    public function tolakAdministrasi(Lowongan $lowongan, Application $application)
+{
+    // 🔐 hanya HRD pemilik
+    abort_if($lowongan->hrd_id !== auth()->id(), 403);
+
+    // 🔐 pastikan kandidat milik lowongan
+    abort_if($application->lowongan_id !== $lowongan->id, 404);
+
+    // ✅ hanya dari screening
+    if ($application->status !== 'screening') {
+        return back()->with('error', 'Kandidat tidak berada pada tahap screening.');
+    }
+
+    // ❌ TOLAK ADMINISTRASI
+    $application->update([
+        'status' => 'ditolak_administrasi',
+    ]);
+
+    return back()->with('success', 'Kandidat ditolak pada tahap administrasi.');
+}
+
 }

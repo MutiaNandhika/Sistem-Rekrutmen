@@ -23,47 +23,67 @@ class LamaranHrdController extends Controller
     }
 
     public function update(Request $request, Application $application)
-    {
-        $request->validate([
-            'status' => 'required|in:diproses,screening,interview,offer,diterima,ditolak'
-        ]);
+{
+    abort_if($application->lowongan->hrd_id !== auth()->id(), 403);
 
-        $application->update([
-            'status' => $request->status
-        ]);
+    $request->validate([
+        'status' => 'required|in:diproses,screening,diterima,ditolak'
+    ]);
 
-        return back()->with('success', 'Status lamaran diperbarui');
+    // ❗ Cegah timpa hasil SAW / Interview
+    if (in_array($application->status, ['interview', 'offer']) &&
+        in_array($request->status, ['screening', 'seleksi'])) {
+        return back()->with('error', 'Status tidak valid.');
     }
+
+    $application->update([
+        'status' => $request->status
+    ]);
+
+    return back()->with('success', 'Status lamaran diperbarui');
+}
 
     public function setInterview(Request $request, Application $application)
-    {
-        $data = $request->validate([
-            'interview_method' => 'required|in:online,offline',
-            'interview_at'     => 'required|date',
-            'interview_link'   => 'nullable|string',
-        ]);
+{
+    abort_if($application->lowongan->hrd_id !== auth()->id(), 403);
 
-        $application->update([
-            'interview_method' => $data['interview_method'],
-            'interview_at'     => $data['interview_at'],
-            'interview_link'   => $data['interview_link'],
-            'status'           => 'interview',
-        ]);
-
-        return back()->with('success', 'Jadwal interview berhasil disimpan');
+    // ❗ hanya boleh jika hasil SAW & status interview
+    if ($application->status !== 'interview') {
+        return back()->with('error', 'Kandidat belum berada pada tahap interview.');
     }
+
+    $data = $request->validate([
+        'interview_method' => 'required|in:online,offline',
+        'interview_at'     => 'required|date',
+        'interview_link'   => 'nullable|string',
+    ]);
+
+    $application->update([
+        'interview_method' => $data['interview_method'],
+        'interview_at'     => $data['interview_at'],
+        'interview_link'   => $data['interview_link'],
+    ]);
+
+    return back()->with('success', 'Jadwal interview berhasil disimpan');
+}
+
 
     public function deleteInterview(Application $application)
-    {
-        $application->update([
-            'interview_method' => null,
-            'interview_at'     => null,
-            'interview_link'   => null,
-            'status'           => 'screening',
-        ]);
+{
+    // 🔐 pastikan HRD pemilik
+    abort_if($application->lowongan->hrd_id !== auth()->id(), 403);
 
-        return back()->with('success', 'Jadwal interview dihapus');
-    }
+    // ❗ HANYA HAPUS JADWAL, JANGAN UBAH STATUS
+    $application->update([
+        'interview_method' => null,
+        'interview_at'     => null,
+        'interview_link'   => null,
+        // ❌ JANGAN SENTUH STATUS
+    ]);
+
+    return back()->with('success', 'Jadwal interview berhasil dihapus');
+}
+
 
     public function uploadOffer(Request $request, Application $application)
     {

@@ -189,7 +189,6 @@ class LowonganController extends Controller
 
         $lowongan->update([
             'deskripsi_pekerjaan' => $request->deskripsi_pekerjaan,
-              'jumlah_diterima' => $request->jumlah_diterima
         ]);
 
         if ($request->action === 'back') {
