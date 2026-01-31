@@ -7,7 +7,7 @@ function csrfToken() {
 window.addExperience = function () {
 
     const editIdEl = document.getElementById('experienceEditId');
-    if (!editIdEl) return; // halaman bukan profile
+    if (!editIdEl) return; // bukan halaman profile
 
     const id = editIdEl.value;
 
@@ -24,8 +24,14 @@ window.addExperience = function () {
         deskripsi: document.getElementById('expDescription').value.trim(),
     };
 
+    /* ===== VALIDASI WAJIB ===== */
     if (!payload.posisi || !payload.perusahaan || !payload.tanggal_mulai) {
-        alert('Lengkapi data wajib');
+        showAlert({
+            icon: 'warning',
+            title: 'Periksa Data',
+            text: 'Lengkapi semua field wajib',
+            timer: null
+        });
         return;
     }
 
@@ -46,10 +52,29 @@ window.addExperience = function () {
         if (!res.ok) throw new Error('Request gagal');
         return res.json();
     })
-    .then(() => location.reload())
+    .then(() => {
+
+        showAlert({
+            icon: 'success',
+            title: 'Berhasil',
+            text: id
+                ? 'Pengalaman kerja berhasil diperbarui'
+                : 'Pengalaman kerja berhasil ditambahkan'
+        });
+
+        // reload tetap dipertahankan (sesuai flow lama)
+        setTimeout(() => {
+            location.reload();
+        }, 800);
+    })
     .catch(err => {
         console.error(err);
-        alert('Gagal menyimpan pengalaman');
+        showAlert({
+            icon: 'error',
+            title: 'Gagal',
+            text: 'Gagal menyimpan pengalaman',
+            timer: null
+        });
     });
 };
 
@@ -72,6 +97,57 @@ window.editExperience = function (id, exp) {
         exp.deskripsi ?? '';
 };
 
+/* ================= DELETE ================= */
+window.deleteExperience = function (id) {
+
+    if (typeof Swal === 'undefined') {
+        if (!confirm('Yakin ingin menghapus pengalaman ini?')) return;
+        doDelete();
+        return;
+    }
+
+    Swal.fire({
+        title: 'Yakin?',
+        text: 'Pengalaman kerja akan dihapus',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, hapus',
+        cancelButtonText: 'Batal'
+    }).then(result => {
+        if (!result.isConfirmed) return;
+        doDelete();
+    });
+
+    function doDelete() {
+        fetch(`/pelamar/profile/experiences/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': csrfToken(),
+                'Accept': 'application/json'
+            }
+        })
+        .then(res => {
+            if (!res.ok) throw new Error();
+
+            document.getElementById(`experience-${id}`)?.remove();
+
+            showAlert({
+                icon: 'success',
+                title: 'Berhasil',
+                text: 'Pengalaman kerja berhasil dihapus'
+            });
+        })
+        .catch(() => {
+            showAlert({
+                icon: 'error',
+                title: 'Gagal',
+                text: 'Gagal menghapus pengalaman',
+                timer: null
+            });
+        });
+    }
+};
+
 /* ================= RESET MODAL (ANTI NULL ERROR) ================= */
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -91,24 +167,3 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('expDescription').value = '';
     });
 });
-
-/* ================= DELETE ================= */
-window.deleteExperience = function (id) {
-
-    if (!confirm('Yakin ingin menghapus pengalaman ini?')) return;
-
-    fetch(`/pelamar/profile/experiences/${id}`, {
-        method: 'DELETE',
-        headers: {
-            'X-CSRF-TOKEN': csrfToken(),
-            'Accept': 'application/json'
-        }
-    })
-    .then(res => {
-        if (!res.ok) throw new Error();
-        document.getElementById(`experience-${id}`)?.remove();
-    })
-    .catch(() => {
-        alert('Gagal menghapus pengalaman');
-    });
-};

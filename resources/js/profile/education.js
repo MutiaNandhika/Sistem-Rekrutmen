@@ -7,7 +7,7 @@ function csrfToken() {
 window.addEducation = function () {
 
     const editIdEl = document.getElementById('educationEditId');
-    if (!editIdEl) return; // halaman bukan profile
+    if (!editIdEl) return; // bukan halaman profile
 
     const id = editIdEl.value;
 
@@ -22,6 +22,7 @@ window.addEducation = function () {
         informasi_tambahan: document.getElementById('eduInfo').value.trim(),
     };
 
+    /* ===== VALIDASI WAJIB ===== */
     if (
         !payload.tingkat ||
         !payload.nama_sekolah ||
@@ -31,7 +32,12 @@ window.addEducation = function () {
         !payload.selesai_bulan ||
         !payload.selesai_tahun
     ) {
-        alert('Lengkapi data wajib');
+        showAlert({
+            icon: 'warning',
+            title: 'Periksa Data',
+            text: 'Lengkapi semua field wajib',
+            timer: null
+        });
         return;
     }
 
@@ -52,10 +58,29 @@ window.addEducation = function () {
         if (!res.ok) throw new Error('Request gagal');
         return res.json();
     })
-    .then(() => location.reload())
+    .then(() => {
+
+        showAlert({
+            icon: 'success',
+            title: 'Berhasil',
+            text: id
+                ? 'Pendidikan berhasil diperbarui'
+                : 'Pendidikan berhasil ditambahkan'
+        });
+
+        // reload tetap dipertahankan (sesuai fitur lama)
+        setTimeout(() => {
+            location.reload();
+        }, 800);
+    })
     .catch(err => {
         console.error(err);
-        alert('Gagal menyimpan pendidikan');
+        showAlert({
+            icon: 'error',
+            title: 'Gagal',
+            text: 'Gagal menyimpan pendidikan',
+            timer: null
+        });
     });
 };
 
@@ -79,20 +104,52 @@ window.editEducation = function (id, edu) {
 /* ================= DELETE ================= */
 window.deleteEducation = function (id) {
 
-    if (!confirm('Yakin ingin menghapus pendidikan ini?')) return;
+    if (typeof Swal === 'undefined') {
+        if (!confirm('Yakin ingin menghapus pendidikan ini?')) return;
+        doDelete();
+        return;
+    }
 
-    fetch(`/pelamar/profile/educations/${id}`, {
-        method: 'DELETE',
-        headers: {
-            'X-CSRF-TOKEN': csrfToken(),
-            'Accept': 'application/json'
-        }
-    })
-    .then(res => {
-        if (!res.ok) throw new Error();
-        document.getElementById(`education-${id}`)?.remove();
-    })
-    .catch(() => alert('Gagal menghapus pendidikan'));
+    Swal.fire({
+        title: 'Yakin?',
+        text: 'Pendidikan akan dihapus',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, hapus',
+        cancelButtonText: 'Batal'
+    }).then(result => {
+        if (!result.isConfirmed) return;
+        doDelete();
+    });
+
+    function doDelete() {
+        fetch(`/pelamar/profile/educations/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': csrfToken(),
+                'Accept': 'application/json'
+            }
+        })
+        .then(res => {
+            if (!res.ok) throw new Error();
+
+            document.getElementById(`education-${id}`)?.remove();
+
+            showAlert({
+                icon: 'success',
+                title: 'Berhasil',
+                text: 'Pendidikan berhasil dihapus'
+            });
+        })
+        .catch(() => {
+            showAlert({
+                icon: 'error',
+                title: 'Gagal',
+                text: 'Gagal menghapus pendidikan',
+                timer: null
+            });
+        });
+    }
 };
 
 /* ================= RESET MODAL (ANTI NULL ERROR) ================= */

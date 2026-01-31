@@ -28,8 +28,19 @@ document.addEventListener('DOMContentLoaded', () => {
             informasi_tambahan: document.getElementById('orgDesc').value.trim(),
         };
 
-        if (!payload.nama_organisasi || !payload.posisi || !payload.mulai_bulan || !payload.mulai_tahun) {
-            alert('Lengkapi data wajib');
+        /* ===== VALIDASI WAJIB ===== */
+        if (
+            !payload.nama_organisasi ||
+            !payload.posisi ||
+            !payload.mulai_bulan ||
+            !payload.mulai_tahun
+        ) {
+            showAlert({
+                icon: 'warning',
+                title: 'Periksa Data',
+                text: 'Lengkapi semua field wajib',
+                timer: null
+            });
             return;
         }
 
@@ -50,8 +61,29 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!res.ok) throw new Error();
             return res.json();
         })
-        .then(() => location.reload())
-        .catch(() => alert('Request gagal'));
+        .then(() => {
+
+            showAlert({
+                icon: 'success',
+                title: 'Berhasil',
+                text: id
+                    ? 'Organisasi berhasil diperbarui'
+                    : 'Organisasi berhasil ditambahkan'
+            });
+
+            // reload tetap dipertahankan (sesuai flow lama)
+            setTimeout(() => {
+                location.reload();
+            }, 800);
+        })
+        .catch(() => {
+            showAlert({
+                icon: 'error',
+                title: 'Gagal',
+                text: 'Request gagal',
+                timer: null
+            });
+        });
     };
 
     /* ================= EDIT ================= */
@@ -76,26 +108,59 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('orgEndYear').value  = '';
         }
 
+        // buka modal (tetap seperti fitur lama)
         new bootstrap.Modal(modal).show();
     };
 
     /* ================= DELETE ================= */
     window.deleteOrganization = function (id) {
 
-        if (!confirm('Yakin ingin menghapus data ini?')) return;
+        if (typeof Swal === 'undefined') {
+            if (!confirm('Yakin ingin menghapus data ini?')) return;
+            doDelete();
+            return;
+        }
 
-        fetch(`/pelamar/profile/organizations/${id}`, {
-            method: 'DELETE',
-            headers: {
-                'X-CSRF-TOKEN': csrfToken(),
-                'Accept': 'application/json'
-            }
-        })
-        .then(res => {
-            if (!res.ok) throw new Error();
-            document.getElementById(`organization-${id}`)?.remove();
-        })
-        .catch(() => alert('Gagal menghapus data'));
+        Swal.fire({
+            title: 'Yakin?',
+            text: 'Data organisasi akan dihapus',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, hapus',
+            cancelButtonText: 'Batal'
+        }).then(result => {
+            if (!result.isConfirmed) return;
+            doDelete();
+        });
+
+        function doDelete() {
+            fetch(`/pelamar/profile/organizations/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken(),
+                    'Accept': 'application/json'
+                }
+            })
+            .then(res => {
+                if (!res.ok) throw new Error();
+
+                document.getElementById(`organization-${id}`)?.remove();
+
+                showAlert({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: 'Organisasi berhasil dihapus'
+                });
+            })
+            .catch(() => {
+                showAlert({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: 'Gagal menghapus data',
+                    timer: null
+                });
+            });
+        }
     };
 
 });

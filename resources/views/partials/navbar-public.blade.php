@@ -51,7 +51,6 @@
 
                         <a class="nav-link dropdown-toggle fw-semibold d-flex align-items-center gap-2"
                            data-bs-toggle="dropdown">
-                            <i class="bi bi-person-circle fs-5"></i>
                             {{ Auth::user()->name }}
                         </a>
 

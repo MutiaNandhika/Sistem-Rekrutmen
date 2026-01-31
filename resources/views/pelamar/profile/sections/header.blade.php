@@ -11,11 +11,13 @@
             <div class="profile-avatar">
                 @if($user->pelamarProfile?->photo)
                     <img
-                        src="{{ asset('storage/'.$user->pelamarProfile->photo) }}"
-                        class="rounded-circle"
-                        width="96"
-                        height="96"
-                        style="object-fit:cover">
+    id="profileAvatar"
+    src="{{ asset('storage/'.$user->pelamarProfile->photo) }}"
+    class="rounded-circle"
+    width="96"
+    height="96"
+    style="object-fit:cover">
+
                 @else
                     <div class="rounded-circle bg-light d-flex align-items-center justify-content-center"
                         style="width:96px;height:96px">
@@ -28,7 +30,7 @@
             {{-- ================= USER INFO ================= --}}
             <div class="flex-grow-1">
                 <div class="d-flex justify-content-between align-items-start">
-                    <h5 class="fw-bold mb-3">
+                    <h5 class="fw-bold mb-3" data-profile-name>
                         {{ $user->name }}
                     </h5>
                     <a href="#"
@@ -44,7 +46,7 @@
 
                 <div class="col-md-6 mb-2">
                     <strong>WHATSAPP NUMBER</strong><br>
-                    {{ $user->pelamarProfile->phone ?? '-' }}
+                    <span data-profile-phone>{{ $user->pelamarProfile->phone ?? '-' }}</span>
                 </div>
 
                 <div class="col-md-6 mb-2">
@@ -54,22 +56,23 @@
 
                 <div class="col-md-6 mb-2">
                     <strong>LOKASI</strong><br>
-                    {{ $user->pelamarProfile->location ?? '-' }}
+                    <span data-profile-location>{{ $user->pelamarProfile->location ?? '-' }}</span>
                 </div>
 
                 <div class="col-md-6 mb-2">
                     <strong>USIA</strong><br>
-                    {{ $user->pelamarProfile->age ?? '-' }}
+<span data-profile-age>{{ $user->pelamarProfile->age ?? '-' }}</span>
                 </div>
 
                 <div class="col-md-6 mb-2">
                     <strong>PENDIDIKAN TERAKHIR</strong><br>
-                    {{ $user->pelamarProfile->last_education ?? '-' }}
+<span data-profile-education>{{ $user->pelamarProfile->last_education ?? '-' }}</span>
+
                 </div>
 
                 <div class="col-md-6 mb-2">
                     <strong>JENIS KELAMIN</strong><br>
-                    {{ $user->pelamarProfile->gender ?? '-' }}
+<span data-profile-gender>{{ $user->pelamarProfile->gender ?? '-' }}</span>
                 </div>
 
             </div>

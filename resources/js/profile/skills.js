@@ -10,35 +10,68 @@ function csrfToken() {
 
 /* ===============================
    DELETE SKILL (GLOBAL)
-   DIPAKAI DI HALAMAN PROFILE
 ================================ */
 window.deleteSkill = async function (id) {
 
-    if (!confirm('Hapus skill ini?')) return;
+    if (typeof Swal === 'undefined') {
+        if (!confirm('Hapus skill ini?')) return;
+        doDelete();
+        return;
+    }
 
-    try {
-        const res = await fetch(`/pelamar/profile/skills/${id}`, {
-            method: 'DELETE',
-            headers: {
-                'X-CSRF-TOKEN': csrfToken(),
-                'Accept': 'application/json'
+    Swal.fire({
+        title: 'Yakin?',
+        text: 'Skill akan dihapus',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, hapus',
+        cancelButtonText: 'Batal'
+    }).then(result => {
+        if (!result.isConfirmed) return;
+        doDelete();
+    });
+
+    async function doDelete() {
+        try {
+            const res = await fetch(`/pelamar/profile/skills/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken(),
+                    'Accept': 'application/json'
+                }
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                showAlert({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: data.message || 'Gagal menghapus skill',
+                    timer: null
+                });
+                return;
             }
-        });
 
-        const data = await res.json();
+            // hapus langsung dari DOM
+            const el = document.getElementById(`skill-${id}`);
+            if (el) el.remove();
 
-        if (!res.ok) {
-            alert(data.message || 'Gagal menghapus skill');
-            return;
+            showAlert({
+                icon: 'success',
+                title: 'Berhasil',
+                text: 'Skill berhasil dihapus'
+            });
+
+        } catch (err) {
+            console.error(err);
+            showAlert({
+                icon: 'error',
+                title: 'Gagal',
+                text: 'Terjadi kesalahan',
+                timer: null
+            });
         }
-
-        // hapus langsung dari DOM
-        const el = document.getElementById(`skill-${id}`);
-        if (el) el.remove();
-
-    } catch (err) {
-        console.error(err);
-        alert('Terjadi kesalahan');
     }
 };
 
@@ -51,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const skillPreview = document.getElementById('skillPreview');
     const modalSkills  = document.getElementById('modalSkills');
 
-    // halaman tanpa modal → STOP DI SINI
+    // halaman tanpa modal → STOP
     if (!skillInput || !skillPreview || !modalSkills) return;
 
     let skills = [];
@@ -63,7 +96,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (skills.includes(value)) return;
 
         if (skills.length >= 10) {
-            alert('Maksimal 10 skill');
+            showAlert({
+                icon: 'warning',
+                title: 'Batas Skill',
+                text: 'Maksimal 10 skill',
+                timer: null
+            });
             return;
         }
 
@@ -113,7 +151,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (!skills.length) {
-            alert('Tambahkan minimal 1 skill');
+            showAlert({
+                icon: 'warning',
+                title: 'Periksa Data',
+                text: 'Tambahkan minimal 1 skill',
+                timer: null
+            });
             return;
         }
 
@@ -134,11 +177,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!res.ok) throw new Error();
             }
 
-            location.reload();
+            showAlert({
+                icon: 'success',
+                title: 'Berhasil',
+                text: 'Skill berhasil disimpan'
+            });
+
+            // reload tetap dipertahankan (sesuai flow lama)
+            setTimeout(() => {
+                location.reload();
+            }, 800);
 
         } catch (err) {
             console.error(err);
-            alert('Gagal menyimpan skill');
+            showAlert({
+                icon: 'error',
+                title: 'Gagal',
+                text: 'Gagal menyimpan skill',
+                timer: null
+            });
         }
     };
 

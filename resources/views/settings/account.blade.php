@@ -12,10 +12,23 @@
     <h4 class="fw-bold mb-4">Pengaturan Akun</h4>
 
     @if (session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: @json(session('success')),
+                    timer: 2500,
+                    showConfirmButton: false
+                });
+            } else {
+                alert(@json(session('success')));
+            }
+        });
+    </script>
     @endif
+
 
     {{-- ================= INFORMASI AKUN ================= --}}
     <div class="card shadow-sm mb-4">

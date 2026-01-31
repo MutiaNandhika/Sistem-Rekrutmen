@@ -1,13 +1,10 @@
 import './bootstrap';
 import './profile/index';
 
-// Bootstrap CSS & JS
+// Bootstrap CSS
 import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap';
 
-// AlpineJS (dipakai Breeze)
+// AlpineJS
 import Alpine from 'alpinejs';
-
 window.Alpine = Alpine;
-
 Alpine.start();

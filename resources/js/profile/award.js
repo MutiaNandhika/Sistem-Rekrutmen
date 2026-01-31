@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('modalPenghargaan');
     const editIdInput = document.getElementById('achievementEditId');
 
-    // jika bukan halaman profile → STOP
+    // bukan halaman profile → STOP
     if (!modal || !editIdInput) return;
 
     function csrfToken() {
@@ -25,7 +25,12 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         if (!payload.judul || !payload.penyelenggara || !payload.tahun) {
-            alert('Lengkapi data wajib');
+            showAlert({
+                icon: 'warning',
+                title: 'Periksa Data',
+                text: 'Lengkapi semua field wajib',
+                timer: null
+            });
             return;
         }
 
@@ -47,15 +52,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (!res.ok) {
                 console.error(data);
-                alert('Validasi gagal');
+                showAlert({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: 'Validasi gagal',
+                    timer: null
+                });
                 return;
             }
 
-            location.reload();
+            showAlert({
+                icon: 'success',
+                title: 'Berhasil',
+                text: id
+                    ? 'Penghargaan berhasil diperbarui'
+                    : 'Penghargaan berhasil ditambahkan'
+            });
+
+            // reload tetap dipertahankan (sesuai fitur lama)
+            setTimeout(() => {
+                location.reload();
+            }, 800);
         })
         .catch(err => {
             console.error(err);
-            alert('Request gagal');
+            showAlert({
+                icon: 'error',
+                title: 'Gagal',
+                text: 'Request gagal',
+                timer: null
+            });
         });
     };
 
@@ -73,24 +99,53 @@ document.addEventListener('DOMContentLoaded', () => {
     /* ================= DELETE ================= */
     window.deleteAchievement = function (id) {
 
-        if (!confirm('Yakin ingin menghapus penghargaan ini?')) return;
+        if (typeof Swal === 'undefined') {
+            if (!confirm('Yakin ingin menghapus penghargaan ini?')) return;
+            doDelete();
+            return;
+        }
 
-        fetch(`/pelamar/profile/achievements/${id}`, {
-            method: 'DELETE',
-            headers: {
-                'X-CSRF-TOKEN': csrfToken(),
-                'Accept': 'application/json'
-            }
-        })
-        .then(res => {
-            if (!res.ok) throw new Error();
-
-            const el = document.getElementById(`achievement-${id}`);
-            if (el) el.remove();
-        })
-        .catch(() => {
-            alert('Gagal menghapus penghargaan');
+        Swal.fire({
+            title: 'Yakin?',
+            text: 'Penghargaan akan dihapus',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, hapus',
+            cancelButtonText: 'Batal'
+        }).then(result => {
+            if (!result.isConfirmed) return;
+            doDelete();
         });
+
+        function doDelete() {
+            fetch(`/pelamar/profile/achievements/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken(),
+                    'Accept': 'application/json'
+                }
+            })
+            .then(res => {
+                if (!res.ok) throw new Error();
+
+                const el = document.getElementById(`achievement-${id}`);
+                if (el) el.remove();
+
+                showAlert({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: 'Penghargaan berhasil dihapus'
+                });
+            })
+            .catch(() => {
+                showAlert({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: 'Gagal menghapus penghargaan',
+                    timer: null
+                });
+            });
+        }
     };
 
     /* ================= RESET MODAL ================= */

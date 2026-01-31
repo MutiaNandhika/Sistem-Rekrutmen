@@ -18,13 +18,23 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!file) return;
 
         if (file.type !== 'application/pdf') {
-            alert('Resume harus PDF');
+            showAlert({
+                icon: 'warning',
+                title: 'Format Salah',
+                text: 'Resume harus berupa file PDF',
+                timer: null
+            });
             input.value = '';
             return;
         }
 
         if (file.size > 5 * 1024 * 1024) {
-            alert('Maksimal 5 MB');
+            showAlert({
+                icon: 'warning',
+                title: 'Ukuran Terlalu Besar',
+                text: 'Maksimal ukuran file 5 MB',
+                timer: null
+            });
             input.value = '';
             return;
         }
@@ -39,7 +49,12 @@ document.addEventListener('DOMContentLoaded', () => {
     window.saveResume = function () {
 
         if (!input.files.length) {
-            alert('Pilih file terlebih dahulu');
+            showAlert({
+                icon: 'warning',
+                title: 'Periksa File',
+                text: 'Pilih file resume terlebih dahulu',
+                timer: null
+            });
             return;
         }
 
@@ -55,28 +70,83 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(res => {
             if (!res.ok) throw new Error();
-            location.reload();
+            return res.json();
         })
-        .catch(() => alert('Gagal upload resume'));
+        .then(() => {
+
+            showAlert({
+                icon: 'success',
+                title: 'Berhasil',
+                text: 'Resume berhasil disimpan'
+            });
+
+            // reload tetap dipertahankan (sesuai flow lama)
+            setTimeout(() => {
+                location.reload();
+            }, 800);
+        })
+        .catch(() => {
+            showAlert({
+                icon: 'error',
+                title: 'Gagal',
+                text: 'Gagal upload resume',
+                timer: null
+            });
+        });
     };
 
     /* ================= DELETE ================= */
     window.deleteResume = function () {
 
-        if (!confirm('Yakin hapus resume?')) return;
+        if (typeof Swal === 'undefined') {
+            if (!confirm('Yakin hapus resume?')) return;
+            doDelete();
+            return;
+        }
 
-        fetch('/pelamar/profile/resume', {
-            method: 'DELETE',
-            headers: {
-                'X-CSRF-TOKEN': csrfToken(),
-                'Accept': 'application/json'
-            }
-        })
-        .then(res => {
-            if (!res.ok) throw new Error();
-            location.reload();
-        })
-        .catch(() => alert('Gagal hapus resume'));
+        Swal.fire({
+            title: 'Yakin?',
+            text: 'Resume akan dihapus',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, hapus',
+            cancelButtonText: 'Batal'
+        }).then(result => {
+            if (!result.isConfirmed) return;
+            doDelete();
+        });
+
+        function doDelete() {
+            fetch('/pelamar/profile/resume', {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken(),
+                    'Accept': 'application/json'
+                }
+            })
+            .then(res => {
+                if (!res.ok) throw new Error();
+
+                showAlert({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: 'Resume berhasil dihapus'
+                });
+
+                // reload tetap dipertahankan
+                setTimeout(() => {
+                    location.reload();
+                }, 800);
+            })
+            .catch(() => {
+                showAlert({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: 'Gagal hapus resume',
+                    timer: null
+                });
+            });
+        }
     };
 
 });

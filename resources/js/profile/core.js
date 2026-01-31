@@ -6,8 +6,30 @@ document.addEventListener('DOMContentLoaded', () => {
         return meta ? meta.getAttribute('content') : '';
     }
 
+    /* ================= SWEETALERT HELPER ================= */
+    window.showAlert = function ({
+        icon = 'success',
+        title = 'Berhasil',
+        text = '',
+        timer = 2000
+    }) {
+        if (typeof Swal === 'undefined') {
+            alert(text || title);
+            return;
+        }
+
+        Swal.fire({
+            icon,
+            title,
+            text,
+            timer,
+            showConfirmButton: timer ? false : true
+        });
+    };
+
     /* ================= DATA DIRI ================= */
     const form = document.getElementById('formDataDiri');
+    const modalEl = document.getElementById('modalDataDiri');
 
     if (form) {
         form.addEventListener('submit', function (e) {
@@ -21,18 +43,75 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: new FormData(this)
             })
             .then(res => {
-                if (!res.ok) throw new Error();
+                if (!res.ok) throw new Error('Response not OK');
                 return res.json();
             })
             .then(data => {
-                alert(data.message);
-                location.reload();
+
+                showAlert({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: data.message
+                });
+
+                /* ================= CLOSE MODAL (AMAN) ================= */
+                if (modalEl && window.bootstrap) {
+                    const modal =
+                        window.bootstrap.Modal.getInstance(modalEl)
+                        || new window.bootstrap.Modal(modalEl);
+
+                    modal.hide();
+                }
+
+                updateProfileView();
             })
             .catch(err => {
                 console.error(err);
-                alert('Gagal menyimpan data');
+                showAlert({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: 'Gagal menyimpan data',
+                    timer: null
+                });
             });
         });
+    }
+
+    /* ================= UPDATE PROFILE CARD ================= */
+    function updateProfileView() {
+        if (!form) return;
+
+        const name     = form.querySelector('[name="name"]').value;
+        const phone    = form.querySelector('[name="phone"]').value;
+        const location = form.querySelector('[name="location"]').value;
+        const age      = form.querySelector('[name="age"]').value;
+        const edu      = form.querySelector('[name="last_education"]').value;
+        const gender   = form.querySelector('[name="gender"]').value;
+
+        document.querySelectorAll('[data-profile-name]')
+            .forEach(el => el.innerText = name);
+
+        document.querySelectorAll('[data-profile-phone]')
+            .forEach(el => el.innerText = phone || '-');
+
+        document.querySelectorAll('[data-profile-location]')
+            .forEach(el => el.innerText = location || '-');
+
+        document.querySelectorAll('[data-profile-age]')
+            .forEach(el => el.innerText = age || '-');
+
+        document.querySelectorAll('[data-profile-education]')
+            .forEach(el => el.innerText = edu || '-');
+
+        document.querySelectorAll('[data-profile-gender]')
+            .forEach(el => el.innerText = gender || '-');
+
+        const preview = document.getElementById('photoPreview');
+        const avatar  = document.getElementById('profileAvatar');
+
+        if (preview && avatar) {
+            avatar.src = preview.src;
+        }
     }
 
     /* ================= FOTO PROFIL ================= */
@@ -56,11 +135,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (btnRemove && photoPreview && photoInput && removeInput) {
         btnRemove.addEventListener('click', () => {
-            if (!confirm('Hapus foto profil?')) return;
 
-            photoPreview.src = '/images/default-avatar.png';
-            photoInput.value = '';
-            removeInput.value = 1;
+            if (typeof Swal === 'undefined') {
+                if (!confirm('Hapus foto profil?')) return;
+                photoPreview.src = '/images/default-avatar.png';
+                photoInput.value = '';
+                removeInput.value = 1;
+                return;
+            }
+
+            Swal.fire({
+                title: 'Yakin?',
+                text: 'Foto profil akan dihapus',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, hapus',
+                cancelButtonText: 'Batal'
+            }).then(result => {
+                if (!result.isConfirmed) return;
+
+                photoPreview.src = '/images/default-avatar.png';
+                photoInput.value = '';
+                removeInput.value = 1;
+            });
         });
     }
 
@@ -98,12 +195,29 @@ document.addEventListener('DOMContentLoaded', () => {
             return res.json();
         })
         .then(data => {
-            output.innerText = data.tentang_saya
-                || 'Jelaskan secara singkat kelebihanmu sehingga perusahaan yakin untuk merekrutmu.';
+            output.innerText = data.tentang_saya || '';
+
+            showAlert({
+                icon: 'success',
+                title: 'Berhasil',
+                text: 'Tentang saya berhasil disimpan'
+            });
+
+            if (window.bootstrap) {
+                const modal = window.bootstrap.Modal.getInstance(
+                    document.getElementById('modalTentangSaya')
+                );
+                modal && modal.hide();
+            }
         })
         .catch(err => {
             console.error(err);
-            alert('Gagal menyimpan Tentang Saya');
+            showAlert({
+                icon: 'error',
+                title: 'Gagal',
+                text: 'Gagal menyimpan Tentang Saya',
+                timer: null
+            });
         });
     };
 

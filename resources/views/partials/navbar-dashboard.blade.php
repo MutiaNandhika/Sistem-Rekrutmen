@@ -81,7 +81,6 @@
                        role="button"
                        data-bs-toggle="dropdown"
                        aria-expanded="false">
-                        <i class="bi bi-person-circle fs-5"></i>
                         {{ Auth::user()->name }}
                     </a>
 
