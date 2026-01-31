@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Hrd;
 use App\Http\Controllers\Controller;
 use App\Models\Lowongan;
 use App\Models\Application;
-use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
@@ -17,24 +16,28 @@ class DashboardController extends Controller
     public function data()
     {
         $hrdId = auth()->id();
-
         $tahun = request('tahun', now()->year);
         $bulan = request('bulan', now()->month);
 
         /* =============================
-         * STAT CARD
-         * ============================= */
+           STAT CARD (FIXED)
+        ============================= */
         $lowonganAktif = Lowongan::where('hrd_id', $hrdId)
             ->where('status', 'aktif')
+            ->whereYear('created_at', $tahun)
+            ->whereMonth('created_at', $bulan)
             ->count();
 
         $totalPelamar = Application::whereHas('lowongan', fn ($q) =>
-            $q->where('hrd_id', $hrdId)
-        )->count();
+                $q->where('hrd_id', $hrdId)
+            )
+            ->whereYear('created_at', $tahun)
+            ->whereMonth('created_at', $bulan)
+            ->count();
 
         /* =============================
-         * LOWONGAN PER BULAN (12 BULAN)
-         * ============================= */
+           LOWONGAN PER BULAN
+        ============================= */
         $rawLowongan = Lowongan::where('hrd_id', $hrdId)
             ->whereYear('created_at', $tahun)
             ->selectRaw('MONTH(created_at) bulan, COUNT(*) total')
@@ -47,8 +50,8 @@ class DashboardController extends Controller
         }
 
         /* =============================
-         * FUNNEL
-         * ============================= */
+           FUNNEL
+        ============================= */
         $rawFunnel = Application::whereHas('lowongan', fn ($q) =>
                 $q->where('hrd_id', $hrdId)
             )
@@ -59,8 +62,8 @@ class DashboardController extends Controller
             ->pluck('total', 'status');
 
         /* =============================
-         * OFFER
-         * ============================= */
+           OFFER
+        ============================= */
         $rawOffer = Application::whereHas('lowongan', fn ($q) =>
                 $q->where('hrd_id', $hrdId)
             )
@@ -75,13 +78,15 @@ class DashboardController extends Controller
             )
             ->where('status', 'offer')
             ->whereNull('offer_response')
+            ->whereYear('created_at', $tahun)
+            ->whereMonth('created_at', $bulan)
             ->where('updated_at', '<', now()->subDays(7))
             ->count();
 
         return response()->json([
             'stat' => [
                 'lowongan_aktif' => $lowonganAktif,
-                'total_pelamar'  => $totalPelamar
+                'total_pelamar'  => $totalPelamar,
             ],
             'lowongan' => $lowongan,
             'funnel' => [

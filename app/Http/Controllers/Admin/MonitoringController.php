@@ -5,39 +5,37 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Lowongan;
 use App\Models\Application;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class MonitoringController extends Controller
 {
     public function index()
     {
-        // hanya render halaman
         return view('admin.monitoring');
     }
 
-    /* =============================
-       AJAX DATA
-    ============================= */
     public function data(Request $request)
     {
         $tahun = $request->get('tahun', now()->year);
         $bulan = $request->get('bulan', now()->month);
 
         /* =============================
-           STAT CARD
+           STAT CARD (FIXED)
         ============================= */
         $totalLowonganAktif = Lowongan::where('status', 'aktif')
             ->whereYear('created_at', $tahun)
+            ->whereMonth('created_at', $bulan)
             ->count();
 
-        $totalPelamar = Application::whereYear('created_at', $tahun)->count();
+        $totalPelamar = Application::whereYear('created_at', $tahun)
+            ->whereMonth('created_at', $bulan)
+            ->count();
 
         /* =============================
            LOWONGAN PER BULAN
         ============================= */
         $rawLowongan = Lowongan::whereYear('created_at', $tahun)
-            ->selectRaw('MONTH(created_at) as bulan, COUNT(*) as total')
+            ->selectRaw('MONTH(created_at) bulan, COUNT(*) total')
             ->groupBy('bulan')
             ->pluck('total', 'bulan');
 
@@ -51,7 +49,7 @@ class MonitoringController extends Controller
         ============================= */
         $rawFunnel = Application::whereYear('created_at', $tahun)
             ->whereMonth('created_at', $bulan)
-            ->selectRaw('status, COUNT(*) as total')
+            ->selectRaw('status, COUNT(*) total')
             ->groupBy('status')
             ->pluck('total', 'status');
 
@@ -60,12 +58,14 @@ class MonitoringController extends Controller
         ============================= */
         $rawOffer = Application::whereYear('created_at', $tahun)
             ->whereMonth('created_at', $bulan)
-            ->selectRaw('offer_response, COUNT(*) as total')
+            ->selectRaw('offer_response, COUNT(*) total')
             ->groupBy('offer_response')
             ->pluck('total', 'offer_response');
 
         $tidakRespon = Application::where('status', 'offer')
             ->whereNull('offer_response')
+            ->whereYear('created_at', $tahun)
+            ->whereMonth('created_at', $bulan)
             ->where('updated_at', '<', now()->subDays(7))
             ->count();
 
