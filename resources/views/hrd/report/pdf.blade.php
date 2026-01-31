@@ -43,23 +43,30 @@
 <table>
     <thead>
         <tr>
-            <th>Total Pelamar</th>
+            <th>Total</th>
+            <th>Screening</th>
             <th>Seleksi (SAW)</th>
             <th>Interview</th>
-            <th>Hired</th>
+            <th>Offer</th>
+            <th>Diterima</th>
+            <th>Ditolak</th>
             <th>Lolos (%)</th>
         </tr>
     </thead>
     <tbody>
         <tr>
             <td>{{ $totalPelamar }}</td>
-            <td>{{ $seleksi }}</td>
+            <td>{{ $screening }}</td>
+            <td>{{ $seleksiSaw }}</td>
             <td>{{ $interview }}</td>
-            <td>{{ $hired }}</td>
+            <td>{{ $offer }}</td>
+            <td>{{ $diterima }}</td>
+            <td>{{ $ditolak }}</td>
             <td>{{ $persenLolos }}%</td>
         </tr>
     </tbody>
 </table>
+
 
 </body>
 </html>

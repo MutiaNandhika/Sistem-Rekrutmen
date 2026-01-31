@@ -22,10 +22,6 @@
                    value="{{ old('name') }}"
                    required>
 
-            @error('name')
-                <div class="login-alert">{{ $message }}</div>
-            @enderror
-
             {{-- EMAIL --}}
             <label>Email</label>
             <input type="email"
@@ -34,10 +30,6 @@
                    placeholder="Masukkan email"
                    value="{{ old('email') }}"
                    required>
-
-            @error('email')
-                <div class="login-alert">{{ $message }}</div>
-            @enderror
 
             {{-- PASSWORD --}}
             <label>Password</label>
@@ -54,10 +46,6 @@
                     <i class="bi bi-eye"></i>
                 </span>
             </div>
-
-            @error('password')
-                <div class="login-alert">{{ $message }}</div>
-            @enderror
 
             {{-- CONFIRM PASSWORD --}}
             <label>Konfirmasi Password</label>

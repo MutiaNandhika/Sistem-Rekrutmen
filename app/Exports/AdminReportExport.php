@@ -13,11 +13,11 @@ class AdminReportExport implements FromCollection, WithHeadings
     protected $to;
     protected $lowonganId;
 
-    public function __construct($from = null, $to = null, $lowonganId = null)
+    public function __construct($from, $to, $lowonganId)
     {
-        $this->from        = $from;
-        $this->to          = $to;
-        $this->lowonganId  = $lowonganId;
+        $this->from       = $from;
+        $this->to         = $to;
+        $this->lowonganId = $lowonganId;
     }
 
     public function collection(): Collection
@@ -26,8 +26,8 @@ class AdminReportExport implements FromCollection, WithHeadings
 
         if ($this->from && $this->to) {
             $query->whereBetween('created_at', [
-                $this->from.' 00:00:00',
-                $this->to.' 23:59:59'
+                $this->from . ' 00:00:00',
+                $this->to   . ' 23:59:59'
             ]);
         }
 
@@ -39,27 +39,31 @@ class AdminReportExport implements FromCollection, WithHeadings
 
         $totalPelamar = $apps->count();
         $screening    = $apps->where('status', 'screening')->count();
-        $seleksi      = $apps->whereNotNull('saw_score')->count();
+        $seleksi      = $apps->where('status', 'seleksi')->count();
         $interview    = $apps->where('status', 'interview')->count();
-        $hired        = $apps->where('offer_response', 'diterima')->count();
+        $offer        = $apps->where('status', 'offer')->count();
+        $diterima     = $apps->where('offer_response', 'diterima')->count();
+        $ditolak      = $apps->where('offer_response', 'ditolak')->count();
 
         $persenLolos = $totalPelamar > 0
-            ? round(($hired / $totalPelamar) * 100, 2)
+            ? round(($diterima / $totalPelamar) * 100, 2)
             : 0;
 
-        return collect([
-            [
-                'Periode'        => ($this->from && $this->to)
-                    ? $this->from.' s/d '.$this->to
-                    : 'Semua',
-                'Total Pelamar'  => $totalPelamar,
-                'Screening'      => $screening,
-                'Seleksi (SAW)'  => $seleksi,
-                'Interview'      => $interview,
-                'Hired'          => $hired,
-                'Lolos (%)'      => $persenLolos,
-            ]
-        ]);
+        $periode = ($this->from && $this->to)
+            ? "{$this->from} s/d {$this->to}"
+            : 'Semua Periode';
+
+        return collect([[
+            $periode,
+            (string) $totalPelamar,
+            (string) $screening,
+            (string) $seleksi,
+            (string) $interview,
+            (string) $offer,
+            (string) $diterima,
+            (string) $ditolak,
+            (string) $persenLolos,
+        ]]);
     }
 
     public function headings(): array
@@ -70,8 +74,10 @@ class AdminReportExport implements FromCollection, WithHeadings
             'Screening',
             'Seleksi (SAW)',
             'Interview',
-            'Hired',
-            'Lolos (%)',
+            'Offer',
+            'Selesai - Diterima',
+            'Selesai - Ditolak',
+            'Persentase Lolos (%)',
         ];
     }
 }

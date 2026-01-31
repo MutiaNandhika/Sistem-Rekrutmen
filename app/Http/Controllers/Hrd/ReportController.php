@@ -12,28 +12,26 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
 {
-    /**
-     * =====================================================
-     * HALAMAN REPORT HRD
-     * =====================================================
-     */
     public function index(Request $request)
     {
         $hrdId = auth()->id();
 
-        $from        = $request->from;
-        $to          = $request->to;
-        $lowonganId  = $request->lowongan_id;
+        $from       = $request->from;
+        $to         = $request->to;
+        $lowonganId = $request->lowongan_id;
 
-        // 🔹 Dropdown lowongan milik HRD
+        // ==========================
+        // LOWONGAN MILIK HRD
+        // ==========================
         $lowongans = Lowongan::where('hrd_id', $hrdId)->get();
 
-        // 🔹 Query utama aplikasi
+        // ==========================
+        // QUERY UTAMA
+        // ==========================
         $query = Application::whereHas('lowongan', function ($q) use ($hrdId) {
             $q->where('hrd_id', $hrdId);
         });
 
-        // 🔹 Filter tanggal
         if ($from && $to) {
             $query->whereBetween('created_at', [
                 $from . ' 00:00:00',
@@ -41,43 +39,55 @@ class ReportController extends Controller
             ]);
         }
 
-        // 🔹 Filter lowongan (opsional)
         if ($lowonganId) {
             $query->where('lowongan_id', $lowonganId);
         }
 
         $apps = $query->get();
 
-        // =============================
-        // HITUNG STATISTIK
-        // =============================
+        // ==========================
+        // STATISTIK (SESUAI DEFINISI BARU)
+        // ==========================
         $totalPelamar = $apps->count();
-        $seleksi      = $apps->whereNotNull('saw_score')->count();
-        $interview    = $apps->where('status', 'interview')->count();
-        $hired        = $apps->where('offer_response', 'diterima')->count();
 
+        $screening = $apps->where('status', 'screening')->count();
+
+        // sebelum dihitung SAW
+        $seleksiSaw = $apps->where('status', 'seleksi')->count();
+
+        $interview = $apps->where('status', 'interview')->count();
+
+        $offer = $apps->where('status', 'offer')->count();
+
+        $diterima = $apps->where('offer_response', 'diterima')->count();
+        $ditolak  = $apps->where('offer_response', 'ditolak')->count();
+
+        // ==========================
+        // PERSENTASE LOLOS
+        // ==========================
         $persenLolos = $totalPelamar > 0
-            ? round(($hired / $totalPelamar) * 100, 2)
+            ? round(($diterima / $totalPelamar) * 100, 2)
             : 0;
 
-        return view('hrd.report.index', [
-            'from'          => $from,
-            'to'            => $to,
-            'lowonganId'    => $lowonganId,
-            'lowongans'     => $lowongans,
-            'totalPelamar'  => $totalPelamar,
-            'seleksi'       => $seleksi,
-            'interview'     => $interview,
-            'hired'         => $hired,
-            'persenLolos'   => $persenLolos,
-        ]);
+        return view('hrd.report.index', compact(
+            'from',
+            'to',
+            'lowonganId',
+            'lowongans',
+            'totalPelamar',
+            'screening',
+            'seleksiSaw',
+            'interview',
+            'offer',
+            'diterima',
+            'ditolak',
+            'persenLolos'
+        ));
     }
 
-    /**
-     * =====================================================
-     * EXPORT PDF
-     * =====================================================
-     */
+    // ==========================
+    // EXPORT PDF
+    // ==========================
     public function exportPdf(Request $request)
     {
         $data = $this->index($request)->getData();
@@ -87,11 +97,9 @@ class ReportController extends Controller
             ->stream('laporan-rekrutmen-hrd.pdf');
     }
 
-    /**
-     * =====================================================
-     * EXPORT EXCEL
-     * =====================================================
-     */
+    // ==========================
+    // EXPORT EXCEL
+    // ==========================
     public function exportExcel(Request $request)
     {
         return Excel::download(

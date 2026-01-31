@@ -46,6 +46,6 @@ function togglePassword(inputId, el) {
     }
 }
 </script>
-
+@include('partials.alert')
 </body>
 </html>

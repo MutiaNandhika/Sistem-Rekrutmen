@@ -55,14 +55,16 @@
         $stats = [
             'Total Pelamar' => $totalPelamar,
             'Screening' => $screening,
-            'SAW' => $seleksi,
+            'Seleksi (SAW)' => $seleksi,
             'Interview' => $interview,
-            'Hired' => $hired,
+            'Offer' => $offer,
+            'Selesai - Diterima' => $diterima,
+            'Selesai - Ditolak' => $ditolak,
         ];
     @endphp
 
     @foreach ($stats as $label => $value)
-        <div class="col-md">
+        <div class="col-md-3">
             <div class="card text-center">
                 <div class="card-body">
                     <div class="text-muted small">{{ $label }}</div>
@@ -72,7 +74,7 @@
         </div>
     @endforeach
 
-    <div class="col-md">
+    <div class="col-md-3">
         <div class="card text-center border-success">
             <div class="card-body">
                 <div class="text-muted small">Persentase Lolos</div>
@@ -83,17 +85,16 @@
 
 </div>
 
-{{-- ================= EXPORT ================= --}}
 <div class="d-flex gap-2">
     <a href="{{ route('admin.report.pdf', request()->query()) }}"
        target="_blank"
        class="btn btn-danger">
-        <i class="bi bi-file-earmark-pdf"></i> Export PDF
+        Export PDF
     </a>
 
     <a href="{{ route('admin.report.excel', request()->query()) }}"
        class="btn btn-success">
-        <i class="bi bi-file-earmark-excel"></i> Export Excel
+        Export Excel
     </a>
 </div>
 

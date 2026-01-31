@@ -33,5 +33,7 @@
 @include('partials.footer')
 
 @stack('scripts')
+@include('partials.alert')
+
 </body>
 </html>

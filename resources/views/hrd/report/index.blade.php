@@ -51,52 +51,42 @@
 {{-- ================= STATISTIK ================= --}}
 <div class="row g-3 mb-4">
 
-    <div class="col-md">
-        <div class="card text-center">
-            <div class="card-body">
-                <div class="text-muted small">Total Pelamar</div>
-                <h5 class="fw-bold">{{ $totalPelamar }}</h5>
+    @php
+        $stats = [
+            ['Total Pelamar', $totalPelamar],
+            ['Screening', $screening],
+            ['Seleksi (SAW)', $seleksiSaw],
+            ['Interview', $interview],
+            ['Offer', $offer],
+            ['Selesai - Diterima', $diterima],
+            ['Selesai - Ditolak', $ditolak],
+        ];
+    @endphp
+
+    @foreach ($stats as [$label, $value])
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <div class="text-muted small">{{ $label }}</div>
+                    <h5 class="fw-bold">{{ $value }}</h5>
+                </div>
             </div>
         </div>
-    </div>
+    @endforeach
 
-    <div class="col-md">
-        <div class="card text-center">
-            <div class="card-body">
-                <div class="text-muted small">Seleksi (SAW)</div>
-                <h5 class="fw-bold">{{ $seleksi }}</h5>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md">
-        <div class="card text-center">
-            <div class="card-body">
-                <div class="text-muted small">Interview</div>
-                <h5 class="fw-bold">{{ $interview }}</h5>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md">
-        <div class="card text-center">
-            <div class="card-body">
-                <div class="text-muted small">Hired</div>
-                <h5 class="fw-bold">{{ $hired }}</h5>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md">
+    <div class="col-md-3">
         <div class="card text-center border-success">
             <div class="card-body">
                 <div class="text-muted small">Persentase Lolos</div>
-                <h5 class="fw-bold text-success">{{ $persenLolos }}%</h5>
+                <h5 class="fw-bold text-success">
+                    {{ $persenLolos }}%
+                </h5>
             </div>
         </div>
     </div>
 
 </div>
+
 
 {{-- ================= EXPORT ================= --}}
 <div class="d-flex gap-2">

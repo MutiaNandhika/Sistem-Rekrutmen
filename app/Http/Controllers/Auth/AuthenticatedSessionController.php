@@ -29,24 +29,31 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      */
-    public function store(LoginRequest $request): RedirectResponse
+public function store(LoginRequest $request): RedirectResponse
 {
-    $request->authenticate();
+    try {
+        $request->authenticate();
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        return back()
+            ->with('error', 'Email atau password salah!')
+            ->withInput();
+    }
+
     $request->session()->regenerate();
 
-    // PRIORITAS: BALIK KE HALAMAN YANG DIMINTA
+    session()->flash('success', 'Login berhasil! Selamat datang kembali 👋');
+
     if ($request->session()->has('url.intended')) {
         return redirect()->intended();
     }
 
-    // 🔹 LOGIN NORMAL (TANPA DETAIL LOWONGAN)
     $user = $request->user();
 
     return match ($user->role) {
-        'admin' => redirect()->intended('/admin/dashboard'),
-        'hrd'   => redirect()->intended('/hrd/dashboard'),
-        'pelamar' => redirect()->intended('/pelamar/profile'),
-        default => redirect()->intended('/'),
+        'admin'   => redirect('/admin/dashboard'),
+        'hrd'     => redirect('/hrd/dashboard'),
+        'pelamar' => redirect('/pelamar/profile'),
+        default   => redirect('/'),
     };
 }
 

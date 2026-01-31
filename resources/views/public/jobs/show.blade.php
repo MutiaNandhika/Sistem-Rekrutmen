@@ -89,12 +89,18 @@
 
                         @else
                             {{-- BOLEH MELAMAR --}}
-                            <form method="POST" action="{{ route('pelamar.lamar.store', $lowongan->id) }}">
+                            <form method="POST"
+                                action="{{ route('pelamar.lamar.store', $lowongan->id) }}"
+                                id="applyForm">
                                 @csrf
-                                <button class="btn btn-primary">
+                                <button type="button"
+                                        class="btn btn-primary"
+                                        id="applyBtn"
+                                        onclick="confirmApply()">
                                     Lamar
                                 </button>
                             </form>
+
                         @endif
 
                     @endguest
@@ -154,3 +160,29 @@
     </div>
 </section>
 @endsection
+@push('scripts')
+<script>
+function confirmApply() {
+    Swal.fire({
+        title: 'Yakin ingin melamar?',
+        text: 'Pastikan data profil kamu sudah benar sebelum melamar.',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, Lamar',
+        cancelButtonText: 'Batal',
+        reverseButtons: true,
+        allowOutsideClick: false,
+        allowEscapeKey: false
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const btn = document.getElementById('applyBtn');
+            btn.disabled = true;
+            btn.innerText = 'Mengirim lamaran...';
+
+            document.getElementById('applyForm').submit();
+        }
+    });
+}
+</script>
+@endpush
+

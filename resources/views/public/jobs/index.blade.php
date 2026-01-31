@@ -60,21 +60,20 @@
                     </select>
                 </div>
 
-                <div class="col-md-3 d-flex gap-2">
-                <button type="submit" class="btn btn-jobs-search w-100">
-                    <i class="bi bi-search me-2"></i> Search
-                </button>
+<div class="col-md-3 d-flex align-items-stretch gap-2">
+    <button type="submit" class="btn btn-jobs-search flex-fill">
+        <i class="bi bi-search me-2"></i>
+        Search
+    </button>
 
-                <a href="{{ route('jobs.index') }}"
-                class="btn btn-outline-secondary w-100">
-                    Reset
-                </a>
-            </div>
+    <a href="{{ route('jobs.index') }}"
+       class="btn btn-jobs-reset d-flex align-items-center justify-content-center">
+        <i class="bi bi-arrow-counterclockwise"></i>
+    </a>
+</div>
 
             </div>
         </form>
-
-        @if(request()->query()) <div class="alert alert-info small"> Menampilkan hasil pencarian <a href="{{ route('jobs.index') }}" class="ms-2">Reset filter</a> </div> @endif
 
         {{-- JOB LIST --}}
         <div class="row g-4">

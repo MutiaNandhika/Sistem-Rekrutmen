@@ -46,11 +46,12 @@ class RegisteredUserController extends Controller
 
     Auth::login($user);
 
-    // 🔑 REDIRECT BERDASARKAN ROLE
+    session()->flash('success', 'Registrasi berhasil! Selamat datang');
+
     return match ($user->role) {
-        'admin' => redirect('/admin/dashboard'),
-        'hrd' => redirect('/hrd/dashboard'),
-        default => redirect('/pelamar/profile'),
-    };
-}
+            'admin' => redirect('/admin/dashboard'),
+            'hrd' => redirect('/hrd/dashboard'),
+            default => redirect('/pelamar/profile'),
+        };
+    }
 }

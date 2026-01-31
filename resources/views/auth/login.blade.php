@@ -8,13 +8,6 @@
     {{-- LEFT --}}
     <div class="login-left">
 
-        {{-- NOTIFIKASI DARI REDIRECT --}}
-        @if(request('reason') === 'job_detail')
-            <div class="login-alert">
-                Silakan login terlebih dahulu untuk melihat detail lowongan.
-            </div>
-        @endif
-
         <h1 class="login-title">Selamat Datang Kembali!</h1>
 
         <form method="POST" action="{{ route('login') }}">
