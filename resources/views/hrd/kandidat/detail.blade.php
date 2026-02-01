@@ -295,7 +295,11 @@
                 <strong>1. DIPROSES</strong>
 
                 @if($isOwner && $application->status === 'diproses')
-                    <form method="POST" action="{{ route('hrd.lamaran.update', $application) }}">
+                    <form method="POST"
+                        action="{{ route('hrd.lamaran.update', $application) }}"
+                        class="form-tracking-confirm"
+                        data-title="Proses ke Screening?"
+                        data-text="Kandidat akan masuk ke tahap screening administrasi.">
                         @csrf
                         @method('PUT')
                         <input type="hidden" name="status" value="screening">
@@ -325,9 +329,12 @@
 
                         {{-- ❌ TOLAK ADMIN --}}
                         <form
-                            action="{{ route('hrd.kandidat.tolak_administrasi', [$lowongan->id, $application->id]) }}"
-                            method="POST"
-                        >
+                        action="{{ route('hrd.kandidat.tolak_administrasi', [$lowongan->id, $application->id]) }}"
+                        method="POST"
+                        class="form-tracking-confirm"
+                        data-title="Tolak Administrasi?"
+                        data-text="Kandidat akan ditolak pada tahap administrasi.">
+
                             @csrf
                             @method('PUT')
                             <button class="btn btn-danger btn-sm">
@@ -337,9 +344,12 @@
 
                         {{-- ✅ LOLOS ADMIN --}}
                         <form
-                            action="{{ route('hrd.kandidat.lolos_administrasi', [$lowongan->id, $application->id]) }}"
-                            method="POST"
-                        >
+                        action="{{ route('hrd.kandidat.lolos_administrasi', [$lowongan->id, $application->id]) }}"
+                        method="POST"
+                        class="form-tracking-confirm"
+                        data-title="Lolos Administrasi?"
+                        data-text="Kandidat akan masuk ke tahap seleksi (SAW).">
+
                             @csrf
                             @method('PUT')
                             <button class="btn btn-success btn-sm">
@@ -432,7 +442,11 @@
 
                 {{-- ❌ TIDAK LOLOS --}}
                 <form method="POST"
-                      action="{{ route('hrd.lamaran.update', $application) }}">
+                    action="{{ route('hrd.lamaran.update', $application) }}"
+                    class="form-tracking-confirm"
+                    data-title="Tidak Lolos Interview?"
+                    data-text="Kandidat akan ditolak pada tahap interview.">
+
                     @csrf
                     @method('PUT')
                     <input type="hidden" name="status" value="ditolak">
@@ -443,8 +457,12 @@
 
                 {{-- ✅ KIRIM OFFER --}}
                 <form method="POST"
-                      action="{{ route('hrd.lamaran.offer.upload', $application) }}"
-                      class="w-100 mt-2">
+                    action="{{ route('hrd.lamaran.offer.upload', $application) }}"
+                    class="form-tracking-confirm"
+                    data-title="Kirim Offer?"
+                    data-text="Offer akan dikirim ke kandidat. Pastikan link sudah benar."
+                    class="w-100 mt-2">
+
                     @csrf
 
                     <input type="url"
@@ -637,3 +655,35 @@
 @endif
 
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    document.querySelectorAll('.form-tracking-confirm').forEach(form => {
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const title = form.dataset.title || 'Yakin melanjutkan?';
+            const text  = form.dataset.text  || 'Aksi ini akan memproses status kandidat.';
+
+            Swal.fire({
+                title: title,
+                text: text,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, lanjutkan',
+                cancelButtonText: 'Batal',
+                confirmButtonColor: '#0d6efd',
+                cancelButtonColor: '#6c757d'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit(); // ✅ SUBMIT ASLI
+                }
+            });
+        });
+    });
+
+});
+</script>
+@endpush

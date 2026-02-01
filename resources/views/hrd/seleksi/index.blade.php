@@ -32,8 +32,8 @@
 
     @if($sawDone)
         <form method="POST"
-              action="{{ route('hrd.seleksi.reset', $lowongan) }}"
-              onsubmit="return confirm('Yakin ingin reset hasil SAW?')">
+        action="{{ route('hrd.seleksi.reset', $lowongan) }}"
+        class="form-reset-saw">
             @csrf
             @method('PUT')
             <button class="btn btn-outline-danger">Reset SAW</button>
@@ -125,6 +125,32 @@ $(document).ready(function () {
             }
         }
     });
+});
+
+$(document).ready(function () {
+
+    // 🔥 CONFIRM RESET SAW (SweetAlert)
+    $('.form-reset-saw').on('submit', function (e) {
+        e.preventDefault();
+
+        const form = this;
+
+        Swal.fire({
+            title: 'Reset hasil SAW?',
+            text: 'Semua hasil perhitungan SAW akan dihapus.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, reset',
+            cancelButtonText: 'Batal',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6c757d'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit(); // 🚀 submit asli
+            }
+        });
+    });
+
 });
 </script>
 @endpush

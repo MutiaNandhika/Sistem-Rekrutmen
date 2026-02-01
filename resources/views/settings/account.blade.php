@@ -85,6 +85,15 @@
                 <div class="row g-3">
 
                     <div class="col-md-6">
+                        <label class="form-label">Kata Sandi Lama</label>
+                        <input type="password"
+                            name="current_password"
+                            class="form-control"
+                            placeholder="Masukkan kata sandi lama"
+                            required>
+                    </div>
+
+                    <div class="col-md-6">
                         <label class="form-label">Kata Sandi Baru</label>
                         <input type="password"
                                name="password"

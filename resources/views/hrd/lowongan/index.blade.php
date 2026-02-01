@@ -222,37 +222,67 @@
 
 @push('scripts')
 <script>
-    /* ================= DELETE (REAL DB) ================= */
+/* ================= DELETE (REAL DB) ================= */
 function deleteLowongan(id, btn) {
-    if (!confirm('Apakah anda yakin ingin menghapus lowongan ini?')) {
-        return;
-    }
 
-    fetch(`/hrd/lowongan/${id}`, {
-        method: 'DELETE',
-        headers: {
-            'X-CSRF-TOKEN': document
-                .querySelector('meta[name="csrf-token"]')
-                .getAttribute('content'),
-            'Accept': 'application/json'
-        }
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Gagal menghapus data');
-        }
-        return response.json();
-    })
-    .then(() => {
-        const card = btn.closest('.lowongan-card');
-        if (card) {
-            card.remove();
-            updateCounters();
-        }
-    })
-    .catch(err => {
-        console.error(err);
-        alert('Terjadi kesalahan saat menghapus data');
+    // 🔥 SWEETALERT CONFIRM
+    Swal.fire({
+        title: 'Yakin ingin menghapus?',
+        text: 'Lowongan yang dihapus tidak dapat dikembalikan.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, hapus',
+        cancelButtonText: 'Batal',
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#6c757d'
+    }).then((result) => {
+
+        if (!result.isConfirmed) return;
+
+        // 🚀 PROSES DELETE (TETAP SAMA)
+        fetch(`/hrd/lowongan/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': document
+                    .querySelector('meta[name="csrf-token"]')
+                    .getAttribute('content'),
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Gagal menghapus data');
+            }
+            return response.json();
+        })
+        .then(() => {
+
+            const card = btn.closest('.lowongan-card');
+            if (card) {
+                card.remove();
+                updateCounters();
+            }
+
+            // ✅ POPUP BERHASIL
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: 'Lowongan berhasil dihapus',
+                timer: 2000,
+                showConfirmButton: false
+            });
+
+        })
+        .catch(err => {
+            console.error(err);
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal',
+                text: 'Terjadi kesalahan saat menghapus data'
+            });
+        });
+
     });
 }
 
@@ -387,30 +417,72 @@ function renderDropdown(card) {
 }
 
 /* ================= STATUS CHANGE (FRONTEND ONLY) ================= */
+function confirmStatusChange({ title, text, onConfirm }) {
+    Swal.fire({
+        title,
+        text,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya',
+        cancelButtonText: 'Batal',
+        confirmButtonColor: '#0d6efd',
+        cancelButtonColor: '#6c757d'
+    }).then(result => {
+        if (result.isConfirmed) {
+            onConfirm();
+        }
+    });
+}
 
 function publishLowongan(btn) {
-    if (!confirm('Publish lowongan ini?')) return;
-    updateStatus(btn.closest('.lowongan-card'), 'aktif');
+    confirmStatusChange({
+        title: 'Publish lowongan?',
+        text: 'Lowongan akan mulai ditampilkan ke pelamar.',
+        onConfirm: () => {
+            updateStatus(btn.closest('.lowongan-card'), 'aktif');
+        }
+    });
 }
 
 function deactivateLowongan(btn) {
-    if (!confirm('Nonaktifkan lowongan ini?')) return;
-    updateStatus(btn.closest('.lowongan-card'), 'nonaktif');
+    confirmStatusChange({
+        title: 'Nonaktifkan lowongan?',
+        text: 'Lowongan ini tidak akan tampil ke pelamar.',
+        onConfirm: () => {
+            updateStatus(btn.closest('.lowongan-card'), 'nonaktif');
+        }
+    });
 }
 
 function activateLowongan(btn) {
-    if (!confirm('Aktifkan kembali lowongan ini?')) return;
-    updateStatus(btn.closest('.lowongan-card'), 'aktif');
+    confirmStatusChange({
+        title: 'Aktifkan kembali?',
+        text: 'Lowongan akan aktif kembali.',
+        onConfirm: () => {
+            updateStatus(btn.closest('.lowongan-card'), 'aktif');
+        }
+    });
 }
 
+
 function archiveLowongan(btn) {
-    if (!confirm('Arsipkan lowongan ini?')) return;
-    updateStatus(btn.closest('.lowongan-card'), 'arsip');
+    confirmStatusChange({
+        title: 'Arsipkan lowongan?',
+        text: 'Lowongan akan dipindahkan ke arsip.',
+        onConfirm: () => {
+            updateStatus(btn.closest('.lowongan-card'), 'arsip');
+        }
+    });
 }
 
 function restoreLowongan(btn) {
-    if (!confirm('Kembalikan lowongan ini ke Draft?')) return;
-    updateStatus(btn.closest('.lowongan-card'), 'draft');
+    confirmStatusChange({
+        title: 'Kembalikan ke draft?',
+        text: 'Lowongan akan kembali ke status draft.',
+        onConfirm: () => {
+            updateStatus(btn.closest('.lowongan-card'), 'draft');
+        }
+    });
 }
 
 function updateStatus(card, status) {
@@ -452,11 +524,31 @@ function updateStatus(card, status) {
         document
             .querySelector('.lowongan-tabs .nav-link.active')
             ?.click();
+        
+            if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                icon: 'success',
+                title: 'Status Diperbarui',
+                text: 'Status lowongan berhasil diubah',
+                timer: 1800,
+                showConfirmButton: false
+            });
+        }
+
     })
     .catch(err => {
-        console.error(err);
+    console.error(err);
+    if (typeof Swal !== 'undefined') {
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal',
+            text: 'Gagal memperbarui status lowongan'
+        });
+    } else {
         alert('Gagal memperbarui status lowongan');
-    });
+    }
+});
+
 }
 
 /* ================= INIT ================= */
