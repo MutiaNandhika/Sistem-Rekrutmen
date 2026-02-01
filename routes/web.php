@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\ManajemenAkunController;
 use App\Http\Controllers\Admin\UsersPdfController;
 use App\Http\Controllers\Admin\MonitoringController;
 use App\Http\Controllers\Admin\ReportController;
+use App\Http\Controllers\Admin\LowonganMonitoringController;
 use App\Http\Controllers\Hrd\AkunHrdController;
 use App\Http\Controllers\Hrd\LowonganController;
 use App\Http\Controllers\Hrd\LamaranHrdController;
@@ -370,6 +371,15 @@ Route::middleware(['auth', 'role:admin'])
 
         Route::get('/report/excel', [ReportController::class, 'exportExcel'])
             ->name('report.excel');
+
+        Route::get('/monitoring/lowongan',
+            [LowonganMonitoringController::class, 'index']
+        )->name('monitoring.lowongan');
+
+        Route::get('/monitoring/lowongan/{lowongan}',
+            [LowonganMonitoringController::class, 'show']
+        )->name('monitoring.lowongan.detail');
+
 
     });
 

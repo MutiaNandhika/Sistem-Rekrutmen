@@ -8,85 +8,101 @@
         </a>
 
         {{-- TOGGLER --}}
-        <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarDashboard">
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarDashboard">
             <span class="navbar-toggler-icon"></span>
         </button>
 
         <div class="collapse navbar-collapse" id="navbarDashboard">
 
-            {{-- MENU KIRI --}}
+            {{-- ================= MENU KIRI ================= --}}
             <ul class="navbar-nav me-auto mb-2 mb-md-0 gap-md-3">
 
-                {{-- HRD --}}
+                {{-- ================= HRD ================= --}}
                 @if (Auth::user()->role === 'hrd')
+
                     <li class="nav-item">
                         <a class="nav-link {{ request()->is('hrd/dashboard') ? 'active fw-semibold' : '' }}"
-                           href="{{ url('/hrd/dashboard') }}">
+                           href="{{ route('hrd.dashboard') }}">
                             Dashboard
                         </a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->is('hrd/lowongan') ? 'active fw-semibold' : '' }}"
-                           href="{{ url('/hrd/lowongan') }}">
+                        <a class="nav-link {{ request()->is('hrd/lowongan*') ? 'active fw-semibold' : '' }}"
+                           href="{{ route('hrd.lowongan.index') }}">
                             Lowongan
                         </a>
                     </li>
+
                     <li class="nav-item">
                         <a class="nav-link {{ request()->is('hrd/report*') ? 'active fw-semibold' : '' }}"
-                        href="{{ route('hrd.report.index') }}">
+                           href="{{ route('hrd.report.index') }}">
                             Report
                         </a>
                     </li>
+
                 @endif
 
-                {{-- ADMIN --}}
+                {{-- ================= ADMIN ================= --}}
                 @if (Auth::user()->role === 'admin')
+
                     <li class="nav-item">
                         <a class="nav-link {{ request()->is('admin/dashboard') ? 'active fw-semibold' : '' }}"
-                           href="{{ url('/admin/dashboard') }}">
+                           href="{{ route('admin.dashboard') }}">
                             Dashboard
                         </a>
                     </li>
 
+                    {{-- 🔍 MONITORING KANDIDAT --}}
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->is('admin/manajemen-akun') ? 'active fw-semibold' : '' }}"
-                           href="{{ url('/admin/manajemen-akun') }}">
+                        <a class="nav-link {{ request()->is('admin/monitoring') ? 'active fw-semibold' : '' }}"
+                           href="{{ route('admin.monitoring') }}">
+                            Monitoring
+                        </a>
+                    </li>
+
+                    {{-- 🔍 MONITORING LOWONGAN --}}
+                    <li class="nav-item">
+                        <a class="nav-link
+                           {{ request()->is('admin/monitoring/lowongan*') ? 'active fw-semibold' : '' }}"
+                           href="{{ route('admin.monitoring.lowongan') }}">
+                            Monitoring Lowongan
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->is('admin/manajemen-akun*') ? 'active fw-semibold' : '' }}"
+                           href="{{ route('admin.akun.index') }}">
                             Manajemen Akun
                         </a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->is('admin/monitoring') ? 'active fw-semibold' : '' }}"
-                           href="{{ url('/admin/monitoring') }}">
-                            Monitoring
-                        </a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link {{ request()->is('admin/report*') ? 'active fw-semibold' : '' }}"
-                        href="{{ route('admin.report.index') }}">
+                           href="{{ route('admin.report.index') }}">
                             Report
                         </a>
                     </li>
 
                 @endif
+
             </ul>
 
-            {{-- USER DROPDOWN --}}
+            {{-- ================= USER DROPDOWN ================= --}}
             <ul class="navbar-nav">
                 <li class="nav-item dropdown">
 
                     <a class="nav-link dropdown-toggle fw-semibold d-flex align-items-center gap-2"
                        href="#"
                        role="button"
-                       data-bs-toggle="dropdown"
-                       aria-expanded="false">
+                       data-bs-toggle="dropdown">
                         {{ Auth::user()->name }}
                     </a>
 
                     <ul class="dropdown-menu dropdown-menu-end shadow-sm">
 
-                        {{-- PENGATURAN AKUN --}}
                         <li>
                             <a class="dropdown-item"
                                href="{{ route('account.settings') }}">
@@ -95,7 +111,6 @@
                             </a>
                         </li>
 
-                        {{-- BERANDA PUBLIC --}}
                         <li>
                             <a class="dropdown-item"
                                href="{{ route('public.home') }}">
@@ -109,7 +124,8 @@
                         <li>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
-                                <button type="submit" class="dropdown-item text-danger">
+                                <button type="submit"
+                                        class="dropdown-item text-danger">
                                     <i class="bi bi-box-arrow-right me-2"></i>
                                     Logout
                                 </button>

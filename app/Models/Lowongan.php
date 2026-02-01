@@ -62,4 +62,8 @@ public function isExpired()
         Carbon::parse($this->tanggal_selesai)
     );
 }
+public function applications()
+{
+    return $this->hasMany(\App\Models\Application::class);
+}
 }

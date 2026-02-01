@@ -25,6 +25,11 @@
 
     @include('partials.navbar-dashboard')
 
+    {{-- BREADCRUMB (OPTIONAL) --}}
+@hasSection('breadcrumb')
+    @yield('breadcrumb')
+@endif
+
     <main class="flex-fill container-fluid px-4 py-4">
         @yield('content')
     </main>
