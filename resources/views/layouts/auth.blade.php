@@ -46,6 +46,7 @@ function togglePassword(inputId, el) {
     }
 }
 </script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @include('partials.alert')
 </body>
 </html>

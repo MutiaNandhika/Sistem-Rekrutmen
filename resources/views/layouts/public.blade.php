@@ -31,7 +31,7 @@
 </main>
 
 @include('partials.footer')
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @stack('scripts')
 @include('partials.alert')
 

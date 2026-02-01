@@ -118,12 +118,55 @@ function openEdit(user){
     new bootstrap.Modal(document.getElementById('modalEdit')).show();
 }
 
-function hapus(id){
-    if(!confirm('Hapus akun ini?')) return;
-    fetch(`/admin/manajemen-akun/${id}`,{
-        method:'DELETE',
-        headers:{'X-CSRF-TOKEN':'{{ csrf_token() }}'}
-    }).then(()=>document.getElementById(`row-${id}`).remove());
+function hapus(id) {
+
+    Swal.fire({
+        title: 'Yakin ingin menghapus?',
+        text: 'Akun yang dihapus tidak dapat dikembalikan.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, hapus',
+        cancelButtonText: 'Batal',
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#6c757d'
+    }).then((result) => {
+
+        if (!result.isConfirmed) return;
+
+        fetch(`/admin/manajemen-akun/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Accept': 'application/json'
+            }
+        })
+        .then(res => {
+            if (!res.ok) throw new Error();
+            return res.json();
+        })
+        .then(() => {
+
+            // hapus baris tabel
+            document.getElementById(`row-${id}`)?.remove();
+
+            // popup sukses
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: 'Akun berhasil dihapus',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        })
+        .catch(() => {
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal',
+                text: 'Terjadi kesalahan saat menghapus akun'
+            });
+        });
+
+    });
 }
 
 $(document).ready(function () {
