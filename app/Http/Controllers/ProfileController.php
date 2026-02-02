@@ -11,6 +11,7 @@ use App\Models\PelamarCertificate;
 use App\Models\PelamarOrganization;
 use App\Models\PelamarAchievement;
 use App\Models\User;
+use App\Models\Skill;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -295,30 +296,43 @@ class ProfileController extends Controller
      *  SKILLS
      * =========================
      */
-    public function storeSkill(Request $request)
+public function storeSkill(Request $request)
 {
     $request->validate([
-        'nama_skill' => 'required|string|max:255',
+        'skill_id'   => 'nullable|exists:skills,id',
+        'nama_skill' => 'nullable|string|max:255',
     ]);
 
-    $skill = PelamarSkill::firstOrCreate([
-        'user_id' => Auth::id(),
-        'nama_skill' => trim($request->nama_skill),
+    if (!$request->skill_id && !$request->nama_skill) {
+        return response()->json(['message' => 'Skill tidak valid'], 422);
+    }
+
+    $skill = $request->skill_id
+        ? Skill::findOrFail($request->skill_id)
+        : Skill::firstOrCreate(['nama_skill' => trim($request->nama_skill)]);
+
+    $pelamarSkill = PelamarSkill::firstOrCreate([
+        'user_id'  => Auth::id(),
+        'skill_id' => $skill->id,
     ]);
 
     return response()->json([
-        'message' => 'Skill berhasil ditambahkan',
-        'data' => $skill,
+        'message' => 'Skill berhasil disimpan',
+        'data' => [
+            'id' => $pelamarSkill->id,
+            'nama_skill' => $skill->nama_skill
+        ]
     ]);
 }
 
+
 public function deleteSkill($id)
 {
-    $user = Auth::user();
+    $skill = PelamarSkill::where('id', $id)
+        ->where('user_id', auth()->id())
+        ->firstOrFail();
 
-    PelamarSkill::where('user_id', $user->id)
-        ->where('id', $id)
-        ->delete();
+    $skill->delete();
 
     return response()->json([
         'message' => 'Skill berhasil dihapus'

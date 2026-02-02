@@ -251,6 +251,7 @@ if ($cek) {
 {
     abort_if($lowongan->hrd_id !== auth()->id(), 403);
 
+    // ⬇️ SAMA DENGAN LAPORAN
     $apps = Application::with([
             'user.pelamarEducations',
             'user.pelamarExperiences',
@@ -258,31 +259,32 @@ if ($cek) {
         ])
         ->where('lowongan_id', $lowongan->id)
         ->whereNotNull('saw_score')
+        ->whereIn('status', ['interview', 'tidak_lolos_saw'])
         ->orderBy('saw_rank')
         ->get();
 
-    // 🔥 MATRIX DATA (C1, C2, C3)
+    // MATRIX DATA
     $matrix = [];
 
     foreach ($apps as $app) {
         $user = $app->user;
 
         $matrix[$app->id] = [
-    'nama'       => $user->name,
-    'pendidikan' => $user->nilaiPendidikanTerakhir(),
-    'pengalaman' => $user->totalPengalamanTahun(),
-    'skill'      => $user->pelamarSkills->count(),
-];
-
+            'nama'       => $user->name,
+            'pendidikan' => $user->nilaiPendidikanTerakhir(),
+            'pengalaman' => $user->totalPengalamanTahun(),
+            'skill'      => $user->pelamarSkills->count(),
+        ];
     }
 
     return Pdf::loadView(
-            'hrd.laporan.saw-pdf',
-            compact('lowongan', 'apps', 'matrix')
-        )
-        ->setPaper('A4', 'portrait')
-        ->stream('laporan-saw-' . $lowongan->id . '.pdf');
+        'hrd.laporan.saw-pdf',
+        compact('lowongan', 'apps', 'matrix')
+    )
+    ->setPaper('A4', 'portrait')
+    ->stream('laporan-saw-' . $lowongan->id . '.pdf');
 }
+
 public function exportExcel(Lowongan $lowongan)
 {
     abort_if($lowongan->hrd_id !== auth()->id(), 403);

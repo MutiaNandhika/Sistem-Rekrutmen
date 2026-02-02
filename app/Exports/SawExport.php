@@ -25,9 +25,11 @@ class SawExport implements FromCollection, WithHeadings, WithMapping
             ])
             ->where('lowongan_id', $this->lowonganId)
             ->whereNotNull('saw_score')
+            ->whereIn('status', ['interview', 'tidak_lolos_saw'])
             ->orderBy('saw_rank')
             ->get();
     }
+
 
     public function headings(): array
     {

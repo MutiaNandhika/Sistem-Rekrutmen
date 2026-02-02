@@ -59,7 +59,7 @@
                     <li class="nav-item">
                         <a class="nav-link {{ request()->is('admin/monitoring') ? 'active fw-semibold' : '' }}"
                            href="{{ route('admin.monitoring') }}">
-                            Monitoring
+                            Monitoring Kandidat
                         </a>
                     </li>
 

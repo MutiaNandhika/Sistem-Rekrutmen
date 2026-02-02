@@ -15,4 +15,9 @@ class Skill extends Model
             'lowongan_skill'
         );
     }
+    public function pelamarSkills()
+    {
+        return $this->hasMany(\App\Models\PelamarSkill::class);
+    }
+
 }

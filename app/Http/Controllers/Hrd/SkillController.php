@@ -14,40 +14,53 @@ class SkillController extends Controller
             'nama_skill' => 'required|string|max:100'
         ]);
 
-        $skill = Skill::firstOrCreate(
-            ['nama_skill' => trim($request->nama_skill)]
-        );
+        $skill = Skill::firstOrCreate([
+            'nama_skill' => trim($request->nama_skill)
+        ]);
 
         return response()->json($skill);
     }
 
-public function update(Request $request, Skill $skill)
-{
-    if ($skill->lowongans()->count() > 0) {
-        return response()->json([
-            'message' => 'Skill sudah digunakan, tidak bisa diedit'
-        ], 403);
+    public function update(Request $request, Skill $skill)
+    {
+        // ❌ tidak boleh edit jika sudah dipakai
+        if (
+            $skill->pelamarSkills()->exists() ||
+            $skill->lowongans()->exists()
+        ) {
+            return response()->json([
+                'message' => 'Skill sudah digunakan, tidak bisa diedit'
+            ], 403);
+        }
+
+        $request->validate([
+            'nama_skill' => 'required|string|max:100'
+        ]);
+
+        $skill->update([
+            'nama_skill' => trim($request->nama_skill)
+        ]);
+
+        return response()->json($skill);
     }
 
-    $skill->update([
-        'nama_skill' => $request->nama_skill
-    ]);
+    public function destroy(Skill $skill)
+    {
+        // ❌ tidak boleh hapus jika sudah dipakai
+        if (
+            $skill->pelamarSkills()->exists() ||
+            $skill->lowongans()->exists()
+        ) {
+            return response()->json([
+                'message' => 'Skill sudah digunakan oleh pelamar atau lowongan, tidak bisa dihapus'
+            ], 403);
+        }
 
-    return response()->json($skill);
-}
+        $skill->delete();
 
-
-public function destroy(Skill $skill)
-{
-    if ($skill->lowongans()->exists()) {
         return response()->json([
-            'message' => 'Skill sudah digunakan, tidak bisa dihapus'
-        ], 403);
+            'success' => true,
+            'message' => 'Skill berhasil dihapus'
+        ]);
     }
-
-    $skill->delete();
-    return response()->json(['success' => true]);
-}
-
-
 }

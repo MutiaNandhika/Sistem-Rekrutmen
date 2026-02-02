@@ -513,7 +513,7 @@ function deleteSkill() {
         }
     })
     .then(res => {
-        if (!res.ok) throw new Error('Skill sudah dipakai lowongan');
+        if (!res.ok) throw new Error('Skill sudah digunakan oleh pelamar atau lowongan, tidak bisa dihapus');
         return res.json();
     })
     .then(() => {

@@ -11,26 +11,27 @@
         </button>
     </div>
 
-<div id="skillsList" class="skills-wrapper">
+    <div id="skillsList" class="skills-wrapper">
 
-@if ($user->pelamarSkills->count())
-    @foreach ($user->pelamarSkills as $skill)
-        <span class="skill-chip readonly" id="skill-{{ $skill->id }}">
-            {{ $skill->nama_skill }}
-            <button
-                type="button"
-                class="skill-remove"
-                onclick="deleteSkill({{ $skill->id }})">
-                &times;
-            </button>
-        </span>
-    @endforeach
-@else
-    <span class="skill-chip readonly">Belum ada skill</span>
-@endif
+        @if ($user->pelamarSkills->count())
+            @foreach ($user->pelamarSkills as $pelamarSkill)
+                <span class="skill-chip readonly" id="skill-{{ $pelamarSkill->id }}">
+                    {{ $pelamarSkill->skill->nama_skill }}
 
-</div>
+                    <button type="button"
+                            class="skill-remove"
+                            onclick="deleteSkill({{ $pelamarSkill->id }})">
+                        &times;
+                    </button>
+                </span>
+            @endforeach
+        @else
+            <span class="skill-chip readonly">
+                Belum ada skill
+            </span>
+        @endif
 
+    </div>
 
     <hr>
 </div>
