@@ -413,25 +413,32 @@ method="POST">
 
 @push('scripts')
 <script>
+/* ================= SELECT2 ================= */
 $(function () {
     $('.select-skill').select2({
         placeholder: 'Cari & pilih skill',
         width: '100%'
     });
+
+    $('.select-bidang-kerja').select2({
+        placeholder: 'Pilih bidang kerja',
+        width: '100%'
+    });
 });
 
+/* ================= SKILL ================= */
 function saveSkill() {
     const name = document.getElementById('skillName').value.trim();
+
     if (!name) {
-        alert('Nama skill wajib diisi');
+        Swal.fire('Oops', 'Nama skill wajib diisi', 'warning');
         return;
     }
 
     fetch('/hrd/skills', {
         method: 'POST',
         headers: {
-            'X-CSRF-TOKEN': document
-                .querySelector('meta[name="csrf-token"]').content,
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
             'Content-Type': 'application/json',
             'Accept': 'application/json'
         },
@@ -442,102 +449,131 @@ function saveSkill() {
         return res.json();
     })
     .then(skill => {
-
-        // 🔥 Tambahkan langsung ke select
-        const option = new Option(
-            skill.nama_skill,
-            skill.id,
-            true,
-            true
-        );
-
+        const option = new Option(skill.nama_skill, skill.id, true, true);
         $('.select-skill').append(option).trigger('change');
 
         document.getElementById('skillName').value = '';
-        bootstrap.Modal.getInstance(
-            document.getElementById('modalSkill')
-        ).hide();
+        bootstrap.Modal.getInstance(document.getElementById('modalSkill')).hide();
+
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil',
+            text: 'Skill berhasil ditambahkan',
+            timer: 2000,
+            showConfirmButton: false
+        });
     })
-    .catch(err => alert(err.message));
+    .catch(err => Swal.fire('Gagal', err.message, 'error'));
 }
 
+/* ================= EDIT SKILL ================= */
 $('.select-skill').on('select2:select', function (e) {
     const data = e.params.data;
-
     document.getElementById('editSkillId').value = data.id;
-    document.getElementById('editSkillName').value =
-        data.element.textContent.trim();
+    document.getElementById('editSkillName').value = data.text.trim();
 
-    new bootstrap.Modal(
-        document.getElementById('modalEditSkill')
-    ).show();
+    new bootstrap.Modal(document.getElementById('modalEditSkill')).show();
 });
 
 function updateSkill() {
-    const id = document.getElementById('editSkillId').value;
+    const id   = document.getElementById('editSkillId').value;
     const name = document.getElementById('editSkillName').value.trim();
 
+    if (!name) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Oops',
+            text: 'Nama skill wajib diisi'
+        });
+        return;
+    }
+
     fetch(`/hrd/skills/${id}`, {
-        method: 'PUT',
+        method: 'POST', // ⬅️ PENTING
         headers: {
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
         },
-        body: JSON.stringify({ nama_skill: name })
+        body: JSON.stringify({
+            _method: 'PUT',       // ⬅️ METHOD SPOOFING
+            nama_skill: name
+        })
     })
     .then(res => {
-        if (!res.ok) throw new Error('Gagal update');
+        if (!res.ok) throw new Error('Gagal update skill');
         return res.json();
     })
     .then(skill => {
-        const option = new Option(skill.nama_skill, skill.id, true, true);
-        $('.select-skill option[value="'+skill.id+'"]').replaceWith(option);
-        $('.select-skill').trigger('change');
 
-        bootstrap.Modal.getInstance(
-            document.getElementById('modalEditSkill')
-        ).hide();
+        // ✅ update text option saja
+        const option = $('.select-skill option[value="' + skill.id + '"]');
+        option.text(skill.nama_skill);
+
+        $('.select-skill').trigger('change.select2');
+
+        bootstrap.Modal
+            .getInstance(document.getElementById('modalEditSkill'))
+            .hide();
+
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil',
+            text: 'Skill berhasil diperbarui',
+            timer: 2000,
+            showConfirmButton: false
+        });
     })
-    .catch(err => alert(err.message));
+    .catch(err => {
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal',
+            text: err.message
+        });
+    });
 }
 
 function deleteSkill() {
     const id = document.getElementById('editSkillId').value;
 
-    if (!confirm('Yakin hapus skill ini?')) return;
+    Swal.fire({
+        title: 'Yakin hapus skill?',
+        text: 'Skill yang sudah dipakai tidak bisa dihapus',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, hapus',
+        cancelButtonText: 'Batal'
+    }).then(result => {
+        if (!result.isConfirmed) return;
 
-    fetch(`/hrd/skills/${id}`, {
-        method: 'DELETE',
-        headers: {
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-        }
-    })
-    .then(res => {
-        if (!res.ok) throw new Error('Skill sudah digunakan oleh pelamar atau lowongan, tidak bisa dihapus');
-        return res.json();
-    })
-    .then(() => {
-        $('.select-skill option[value="'+id+'"]').remove();
-        $('.select-skill').trigger('change');
+        fetch(`/hrd/skills/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            }
+        })
+        .then(res => {
+            if (!res.ok) throw new Error('Skill masih digunakan');
+            return res.json();
+        })
+        .then(() => {
+            $('.select-skill option[value="'+id+'"]').remove();
+            $('.select-skill').trigger('change');
 
-        bootstrap.Modal.getInstance(
-            document.getElementById('modalEditSkill')
-        ).hide();
-    })
-    .catch(err => alert(err.message));
-}
-$(function () {
-    $('.select-bidang-kerja').select2({
-        placeholder: 'Pilih bidang kerja',
-        width: '100%'
+            bootstrap.Modal.getInstance(document.getElementById('modalEditSkill')).hide();
+
+            Swal.fire('Berhasil', 'Skill berhasil dihapus', 'success');
+        })
+        .catch(err => Swal.fire('Gagal', err.message, 'error'));
     });
-});
+}
 
-/* ================= SAVE ================= */
+/* ================= BIDANG KERJA ================= */
 function saveBidangKerja() {
     const name = document.getElementById('bidangKerjaName').value.trim();
+
     if (!name) {
-        alert('Nama bidang kerja wajib diisi');
+        Swal.fire('Oops', 'Nama bidang kerja wajib diisi', 'warning');
         return;
     }
 
@@ -559,29 +595,30 @@ function saveBidangKerja() {
         $('.select-bidang-kerja').append(option).trigger('change');
 
         document.getElementById('bidangKerjaName').value = '';
-        bootstrap.Modal.getInstance(
-            document.getElementById('modalBidangKerja')
-        ).hide();
+        bootstrap.Modal.getInstance(document.getElementById('modalBidangKerja')).hide();
+
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil',
+            text: 'Bidang kerja berhasil ditambahkan',
+            timer: 2000,
+            showConfirmButton: false
+        });
     })
-    .catch(err => alert(err.message));
+    .catch(err => Swal.fire('Gagal', err.message, 'error'));
 }
 
-/* ================= OPEN EDIT ================= */
 $('.select-bidang-kerja').on('select2:select', function (e) {
     const data = e.params.data;
 
     document.getElementById('editBidangKerjaId').value = data.id;
-    document.getElementById('editBidangKerjaName').value =
-        data.element.textContent.trim();
+    document.getElementById('editBidangKerjaName').value = data.text.trim();
 
-    new bootstrap.Modal(
-        document.getElementById('modalEditBidangKerja')
-    ).show();
+    new bootstrap.Modal(document.getElementById('modalEditBidangKerja')).show();
 });
 
-/* ================= UPDATE ================= */
 function updateBidangKerja() {
-    const id = document.getElementById('editBidangKerjaId').value;
+    const id   = document.getElementById('editBidangKerjaId').value;
     const name = document.getElementById('editBidangKerjaName').value.trim();
 
     fetch(`/hrd/bidang-kerja/${id}`, {
@@ -593,7 +630,7 @@ function updateBidangKerja() {
         body: JSON.stringify({ nama: name })
     })
     .then(res => {
-        if (!res.ok) throw new Error('Gagal update');
+        if (!res.ok) throw new Error('Gagal update bidang kerja');
         return res.json();
     })
     .then(bidang => {
@@ -601,38 +638,52 @@ function updateBidangKerja() {
         $('.select-bidang-kerja option[value="'+bidang.id+'"]').replaceWith(option);
         $('.select-bidang-kerja').trigger('change');
 
-        bootstrap.Modal.getInstance(
-            document.getElementById('modalEditBidangKerja')
-        ).hide();
+        bootstrap.Modal.getInstance(document.getElementById('modalEditBidangKerja')).hide();
+
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil',
+            text: 'Bidang kerja berhasil diperbarui',
+            timer: 2000,
+            showConfirmButton: false
+        });
     })
-    .catch(err => alert(err.message));
+    .catch(err => Swal.fire('Gagal', err.message, 'error'));
 }
 
-/* ================= DELETE ================= */
 function deleteBidangKerja() {
     const id = document.getElementById('editBidangKerjaId').value;
 
-    if (!confirm('Yakin hapus bidang kerja ini?')) return;
+    Swal.fire({
+        title: 'Yakin hapus bidang kerja?',
+        text: 'Bidang kerja yang masih dipakai tidak bisa dihapus',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, hapus',
+        cancelButtonText: 'Batal'
+    }).then(result => {
+        if (!result.isConfirmed) return;
 
-    fetch(`/hrd/bidang-kerja/${id}`, {
-        method: 'DELETE',
-        headers: {
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-        }
-    })
-    .then(res => {
-        if (!res.ok) throw new Error('Bidang kerja masih dipakai lowongan');
-        return res.json();
-    })
-    .then(() => {
-        $('.select-bidang-kerja option[value="'+id+'"]').remove();
-        $('.select-bidang-kerja').trigger('change');
+        fetch(`/hrd/bidang-kerja/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            }
+        })
+        .then(res => {
+            if (!res.ok) throw new Error('Bidang kerja masih dipakai lowongan');
+            return res.json();
+        })
+        .then(() => {
+            $('.select-bidang-kerja option[value="'+id+'"]').remove();
+            $('.select-bidang-kerja').trigger('change');
 
-        bootstrap.Modal.getInstance(
-            document.getElementById('modalEditBidangKerja')
-        ).hide();
-    })
-    .catch(err => alert(err.message));
+            bootstrap.Modal.getInstance(document.getElementById('modalEditBidangKerja')).hide();
+
+            Swal.fire('Berhasil', 'Bidang kerja berhasil dihapus', 'success');
+        })
+        .catch(err => Swal.fire('Gagal', err.message, 'error'));
+    });
 }
 </script>
 @endpush

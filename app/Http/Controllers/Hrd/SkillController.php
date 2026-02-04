@@ -22,27 +22,18 @@ class SkillController extends Controller
     }
 
     public function update(Request $request, Skill $skill)
-    {
-        // ❌ tidak boleh edit jika sudah dipakai
-        if (
-            $skill->pelamarSkills()->exists() ||
-            $skill->lowongans()->exists()
-        ) {
-            return response()->json([
-                'message' => 'Skill sudah digunakan, tidak bisa diedit'
-            ], 403);
+        {
+            $request->validate([
+                'nama_skill' => 'required|string|max:100'
+            ]);
+
+            $skill->update([
+                'nama_skill' => trim($request->nama_skill)
+            ]);
+
+            return response()->json($skill);
         }
 
-        $request->validate([
-            'nama_skill' => 'required|string|max:100'
-        ]);
-
-        $skill->update([
-            'nama_skill' => trim($request->nama_skill)
-        ]);
-
-        return response()->json($skill);
-    }
 
     public function destroy(Skill $skill)
     {

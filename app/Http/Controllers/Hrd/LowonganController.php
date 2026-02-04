@@ -94,7 +94,9 @@ class LowonganController extends Controller
         }
 
         return redirect()
-            ->route('hrd.lowongan.deskripsi.create', $lowongan->id);
+        ->route('hrd.lowongan.deskripsi.create', $lowongan->id);
+
+
     }
 
     /* ======================================================
@@ -152,6 +154,8 @@ class LowonganController extends Controller
 
         return redirect()
             ->route('hrd.lowongan.deskripsi.create', $lowongan->id);
+
+
     }
 
     /* ======================================================
