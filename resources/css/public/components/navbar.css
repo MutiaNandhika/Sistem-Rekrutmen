@@ -1,5 +1,5 @@
 /* ==================================================
-   GLOBAL NAVBAR (PUBLIC & DASHBOARD)
+   GLOBAL NAVBAR (PUBLIC)
 ================================================== */
 
 .navbar {
@@ -22,7 +22,6 @@
     color: #f04e23;
 }
 
-/* ACTIVE LINK */
 .navbar .nav-link.active {
     font-weight: 600;
 }
@@ -42,12 +41,12 @@
 
 .navbar .btn {
     border-radius: 999px;
-    padding: 6px 18px;
+    padding: 8px 18px;
     font-size: 14px;
     white-space: nowrap;
 }
 
-/* ORANGE BUTTON */
+/* PRIMARY */
 .navbar .btn-orange {
     background-color: #f04e23;
     color: #fff;
@@ -58,7 +57,7 @@
     color: #fff;
 }
 
-/* OUTLINE BUTTON */
+/* SECONDARY */
 .navbar .btn-outline-orange {
     background: transparent;
     border: 1.5px solid #f04e23;
@@ -70,12 +69,18 @@
     color: #fff;
 }
 
-/* ================= DROPDOWN ================= */
+/* ================= AUTH AREA (DESKTOP) ================= */
+/* 🔥 INI KUNCINYA */
 
-.navbar .dropdown-toggle {
-    font-weight: 500;
-    font-size: 15px;
+@media (min-width: 768px) {
+    .navbar .navbar-nav:last-child {
+        display: flex;
+        gap: 1px;              /* 🔥 JARAK LOGIN & REGISTER */
+        align-items: center;
+    }
 }
+
+/* ================= DROPDOWN ================= */
 
 .dropdown-menu {
     border-radius: 14px;
@@ -93,4 +98,37 @@
 
 .dropdown-item.text-danger:hover {
     background-color: #fff1f1;
+}
+
+/* ==================================================
+   MOBILE IMPROVEMENT
+================================================== */
+
+@media (max-width: 767px) {
+
+    .navbar-collapse {
+        padding-top: 16px;
+    }
+
+    .navbar-nav {
+        gap: 0;
+    }
+
+    .navbar-nav .nav-link {
+        padding: 12px 0;
+        font-size: 16px;
+    }
+
+    /* AUTH BUTTON GROUP (MOBILE) */
+    .navbar .navbar-nav:last-child {
+        margin-top: 16px;
+        gap: 12px;
+    }
+
+    .navbar .navbar-nav:last-child .btn {
+        width: 100%;
+        padding: 12px 0;
+        font-size: 15px;
+        text-align: center;
+    }
 }

@@ -4,6 +4,8 @@
 
 @section('content')
 
+<div class="page-monitoring-kandidat"><!-- 🔑 WRAPPER SCOPING -->
+
 <div class="d-flex justify-content-between mb-4">
     <h4 class="fw-bold">Monitoring & Statistik Rekrutmen</h4>
 
@@ -31,7 +33,7 @@
 <div class="row g-4 mb-4">
     <div class="col-md-3">
         <div class="dashboard-stat-card">
-            <div class="stat-title">Lowongan Aktif</div>
+            <div class="stat-title">Lowongan Dibuat</div>
             <div class="stat-value" id="statLowongan">0</div>
         </div>
     </div>
@@ -74,6 +76,7 @@
     </div>
 </div>
 
+</div> {{-- END WRAPPER --}}
 @endsection
 
 @push('scripts')

@@ -1,100 +1,118 @@
-/* ==============================
-   TABLE STYLE – KONSISTEN HRD
-============================== */
+/* ==================================================
+   MANAJEMEN AKUN – SCOPED CSS
+================================================== */
 
-.dataTables_wrapper {
+.page-manajemen-akun .dataTables_wrapper {
     font-size: 14px;
+    width: 100%;
+    overflow-x: auto;
+}
+
+/* TABLE BASE */
+.page-manajemen-akun table.dataTable {
+    width: 100% !important;
+    min-width: 600px;
 }
 
 /* HEADER */
-table.dataTable thead th {
-    background: #0f172a; /* hitam kebiruan */
+.page-manajemen-akun table.dataTable thead th {
+    background: #0f172a;
     color: #ffffff;
     font-weight: 600;
     padding: 12px 14px;
     border-bottom: none;
-    position: relative;
+    white-space: nowrap;
 }
 
 /* SORT ICON */
-table.dataTable thead th.sorting::after,
-table.dataTable thead th.sorting_asc::after,
-table.dataTable thead th.sorting_desc::after {
+.page-manajemen-akun table.dataTable thead th.sorting::after,
+.page-manajemen-akun table.dataTable thead th.sorting_asc::after,
+.page-manajemen-akun table.dataTable thead th.sorting_desc::after {
     color: #94a3b8;
     opacity: 1;
 }
 
 /* BODY */
-table.dataTable tbody td {
+.page-manajemen-akun table.dataTable tbody td {
     padding: 12px 14px;
     vertical-align: middle;
+    white-space: nowrap;
 }
 
 /* ROW BORDER */
-table.dataTable tbody tr {
+.page-manajemen-akun table.dataTable tbody tr {
     border-bottom: 1px solid #e5e7eb;
 }
 
 /* PAGINATION */
-.dataTables_paginate .paginate_button {
+.page-manajemen-akun .dataTables_paginate .paginate_button {
     border-radius: 6px !important;
     padding: 4px 10px !important;
 }
 
-.dataTables_paginate .paginate_button.current {
+.page-manajemen-akun .dataTables_paginate .paginate_button.current {
     background: #2563eb !important;
     color: #fff !important;
     border: none !important;
 }
 
 /* INFO */
-.dataTables_info {
+.page-manajemen-akun .dataTables_info {
     font-size: 13px;
     color: #374151;
 }
 
 /* SEARCH */
-.dataTables_filter input {
+.page-manajemen-akun .dataTables_filter {
+    margin-bottom: 12px;
+}
+
+.page-manajemen-akun .dataTables_filter input {
     border-radius: 6px;
     border: 1px solid #d1d5db;
     padding: 6px 10px;
 }
 
-/* ==============================
-   BADGE
-============================== */
-
-.badge-status {
+/* BADGE */
+.page-manajemen-akun .badge {
     font-size: 12px;
     padding: 4px 10px;
     border-radius: 999px;
     font-weight: 600;
 }
 
-.badge-proses {
-    background: #facc15;
-    color: #000;
-}
+/* ==================================================
+   MOBILE OPTIMIZATION (TABEL, BUKAN CARD)
+================================================== */
 
-.badge-diterima {
-    background: #22c55e;
-    color: #fff;
-}
+@media (max-width: 768px) {
 
-.badge-score {
-    background: #06b6d4;
-    color: #fff;
-    font-weight: 600;
-    padding: 4px 10px;
-    border-radius: 8px;
-    font-size: 12px;
-}
+    .page-manajemen-akun .dataTables_wrapper {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
 
-.badge-rank {
-    background: #2563eb;
-    color: #fff;
-    font-weight: 600;
-    padding: 4px 10px;
-    border-radius: 8px;
-    font-size: 12px;
+    .page-manajemen-akun table.dataTable {
+        min-width: 720px;
+    }
+
+    .page-manajemen-akun table.dataTable thead th {
+        font-size: 13px;
+        padding: 10px 12px;
+    }
+
+    .page-manajemen-akun table.dataTable tbody td {
+        font-size: 13px;
+        padding: 10px 12px;
+    }
+
+    /* KOLOM AKSI */
+    .page-manajemen-akun table.dataTable tbody td:last-child {
+        text-align: center;
+    }
+
+    .page-manajemen-akun table.dataTable tbody td:last-child .btn {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
 }

@@ -1,19 +1,26 @@
+/* ==================================================
+   MONITORING KANDIDAT – SCOPED CSS
+================================================== */
+
 /* ===============================
-   GLOBAL RESET
+   PAGE BACKGROUND (ONLY THIS PAGE)
 =============================== */
 
-body,
-main {
-    background-color: #ffffff !important;
+.page-monitoring-kandidat {
+    background-color: #ffffff;
+}
+
+.page-monitoring-kandidat main {
+    background-color: #ffffff;
 }
 
 /* ===============================
    STAT CARD (TOP SUMMARY)
 =============================== */
 
-.dashboard-stat-card {
+.page-monitoring-kandidat .dashboard-stat-card {
     background-color: #ffffff;
-    border: 2px solid #f04e23; /* ORANGE MDA */
+    border: 2px solid #f04e23;
     border-radius: 14px;
     padding: 24px;
     height: 100%;
@@ -23,18 +30,18 @@ main {
     transition: all 0.2s ease-in-out;
 }
 
-.dashboard-stat-card:hover {
+.page-monitoring-kandidat .dashboard-stat-card:hover {
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
 }
 
-.dashboard-stat-card .stat-title {
+.page-monitoring-kandidat .dashboard-stat-card .stat-title {
     font-size: 15px;
     font-weight: 600;
     color: #6c757d;
     margin-bottom: 10px;
 }
 
-.dashboard-stat-card .stat-value {
+.page-monitoring-kandidat .dashboard-stat-card .stat-value {
     font-size: 36px;
     font-weight: 700;
     color: #212529;
@@ -44,7 +51,7 @@ main {
    DASHBOARD CARD (CHART)
 =============================== */
 
-.dashboard-card {
+.page-monitoring-kandidat .dashboard-card {
     background-color: #f8f9fa;
     border-radius: 12px;
     border: 1px solid #dee2e6;
@@ -53,7 +60,7 @@ main {
     flex-direction: column;
 }
 
-.dashboard-card-header {
+.page-monitoring-kandidat .dashboard-card-header {
     padding: 14px 18px;
     font-weight: 600;
     font-size: 15px;
@@ -63,7 +70,7 @@ main {
     justify-content: space-between;
 }
 
-.dashboard-card-body {
+.page-monitoring-kandidat .dashboard-card-body {
     padding: 16px;
 }
 
@@ -71,8 +78,8 @@ main {
    SELECT (DROPDOWN)
 =============================== */
 
-.dashboard-card-header select,
-form select {
+.page-monitoring-kandidat .dashboard-card-header select,
+.page-monitoring-kandidat form select {
     font-size: 13px;
     padding: 4px 10px;
 }
@@ -83,15 +90,15 @@ form select {
 
 @media (max-width: 768px) {
 
-    .dashboard-stat-card {
+    .page-monitoring-kandidat .dashboard-stat-card {
         padding: 18px;
     }
 
-    .dashboard-stat-card .stat-value {
+    .page-monitoring-kandidat .dashboard-stat-card .stat-value {
         font-size: 28px;
     }
 
-    .dashboard-card-header {
+    .page-monitoring-kandidat .dashboard-card-header {
         font-size: 14px;
     }
 }

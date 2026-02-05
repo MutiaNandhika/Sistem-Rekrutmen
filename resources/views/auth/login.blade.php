@@ -8,51 +8,60 @@
     {{-- LEFT --}}
     <div class="login-left">
 
-        <h1 class="login-title">Selamat Datang Kembali!</h1>
+        <div class="login-box">
+            <h1 class="login-title">Selamat Datang Kembali!</h1>
 
-        <form method="POST" action="{{ route('login') }}">
-            @csrf
+            <form method="POST" action="{{ route('login') }}">
+                @csrf
 
-            <label>Email</label>
-            <input type="email"
-                   name="email"
-                   class="login-input"
-                   placeholder="Masukkan email Anda"
-                   required>
-
-            <label>Password</label>
-            <div class="password-wrapper">
-                <input type="password"
-                       name="password"
-                       id="loginPassword"
+                <label>Email</label>
+                <input type="email"
+                       name="email"
                        class="login-input"
-                       placeholder="Masukkan password"
+                       placeholder="Masukkan email Anda"
                        required>
 
-                <span class="toggle-password"
-                      onclick="togglePassword('loginPassword', this)">
-                    <i class="bi bi-eye"></i>
-                </span>
+                <label>Password</label>
+                <div class="password-wrapper">
+                    <input type="password"
+                           name="password"
+                           id="loginPassword"
+                           class="login-input"
+                           placeholder="Masukkan password"
+                           required>
+
+                    <span class="toggle-password"
+                          onclick="togglePassword('loginPassword', this)">
+                        <i class="bi bi-eye"></i>
+                    </span>
+                </div>
+
+                <div class="login-options">
+                    <label>
+                        <input type="checkbox" name="remember">
+                        <span>Remember me</span>
+                    </label>
+
+                    <a href="{{ route('password.request') }}" class="forgot-link">
+                        Lupa password?
+                    </a>
+                </div>
+
+                <button class="btn-login">
+                    Masuk
+                </button>
+            </form>
+
+            {{-- MOBILE ONLY SWITCH --}}
+            <div class="auth-switch">
+                Belum punya akun?
+                <a href="{{ route('register') }}">Daftar di sini</a>
             </div>
+        </div>
 
-            <div style="margin-bottom:20px;">
-                <label>
-                    <input type="checkbox" name="remember">
-                    <span style="margin-left:6px;">Remember me</span>
-                </label>
-
-                <a href="{{ route('password.request') }}" class="forgot-link">
-                    Lupa password?
-                </a>
-            </div>
-
-            <button class="btn-login">
-                Masuk
-            </button>
-        </form>
     </div>
 
-    {{-- RIGHT --}}
+    {{-- RIGHT (DESKTOP ONLY) --}}
     <div class="login-right">
         <div>
             <h2>Hallo!</h2>

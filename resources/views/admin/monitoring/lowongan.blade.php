@@ -4,6 +4,8 @@
 
 @section('content')
 
+<div class="page-monitoring-lowongan"><!-- 🔑 WRAPPER SCOPING -->
+
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
         <h4 class="fw-bold mb-1">Monitoring Lowongan</h4>
@@ -61,7 +63,7 @@
                 <tbody>
                     @foreach ($lowongans as $lowongan)
                         <tr>
-                            <td></td> {{-- nomor otomatis DataTables --}}
+                            <td></td>
 
                             <td>
                                 <strong>{{ $lowongan->nama_lowongan }}</strong><br>
@@ -74,10 +76,8 @@
                                 {{ $lowongan->bidangKerja->nama ?? '-' }}
                             </td>
 
-                            {{-- 🔑 KOLOM FILTER HRD --}}
                             <td>
-                                {{ $lowongan->hrd->name ?? '-' }}
-                                <br>
+                                {{ $lowongan->hrd->name ?? '-' }}<br>
                                 <small class="text-muted">
                                     {{ $lowongan->hrd->email ?? '' }}
                                 </small>
@@ -103,10 +103,10 @@
                                 @php
                                     $count = $lowongan->applications_count;
                                     $badgePelamar = match (true) {
-                                        $count === 0      => 'bg-light text-dark border',
-                                        $count < 5        => 'bg-info',
-                                        $count < 10       => 'bg-primary',
-                                        default           => 'bg-warning',
+                                        $count === 0 => 'bg-light text-dark border',
+                                        $count < 5   => 'bg-info',
+                                        $count < 10  => 'bg-primary',
+                                        default      => 'bg-warning',
                                     };
                                 @endphp
 
@@ -139,6 +139,7 @@
     </div>
 </div>
 
+</div> {{-- END WRAPPER --}}
 @endsection
 
 {{-- ================= SCRIPT ================= --}}

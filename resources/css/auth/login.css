@@ -13,6 +13,7 @@
     flex: 1;
     display: flex;
     justify-content: center;
+    align-items: center;
     padding: 60px 20px 40px;
 }
 
@@ -22,15 +23,14 @@
 ================================================== */
 
 .login-wrapper {
-    max-width: 960px;              /* 🔽 diperkecil */
     width: 100%;
-    min-height: 560px;             /* 🔑 kunci tinggi */
+    max-width: 960px;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    background: #fff;
+    background: #ffffff;
     border-radius: 18px;
     overflow: hidden;
-    box-shadow: 0 16px 48px rgba(0,0,0,0.08);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.08);
 }
 
 
@@ -39,54 +39,129 @@
 ================================================== */
 
 .login-left {
-    padding: 56px;                 /* 🔽 dari 80px */
+    padding: 56px;
     display: flex;
     flex-direction: column;
     justify-content: center;
 }
 
 .login-title {
-    font-size: 32px;               /* 🔽 dari 42px */
+    font-size: 32px;
     font-weight: 800;
     margin-bottom: 28px;
+    color: #111827;
 }
 
 
-/* FORM ELEMENT */
+/* ==================================================
+   FORM LABEL & INPUT
+================================================== */
 
 .login-left label {
     display: block;
+    font-size: 14px;
     font-weight: 600;
-    margin-bottom: 6px;
-    margin-top: 14px;
+    margin: 14px 0 6px;
+    color: #374151;
 }
+
 .login-input {
     width: 100%;
-    padding: 12px 44px 12px 14px; /* ruang kanan untuk icon */
+    padding: 12px 44px 12px 14px;
     border-radius: 12px;
     border: 1px solid #d1d5db;
-    font-size: 0.95rem;
+    font-size: 14px;
     background-color: #eef4ff;
+    transition: all 0.2s ease;
 }
 
 .login-input:focus {
     outline: none;
     border-color: #f04e23;
-    background-color: #fff;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(240, 78, 35, 0.12);
 }
 
-/* BUTTON */
+
+/* ==================================================
+   PASSWORD FIELD
+================================================== */
+
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-bottom: 18px; /* 🔥 JARAK KE REMEMBER */
+}
+
+.toggle-password {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #9ca3af;
+    font-size: 1.15rem;
+    line-height: 1;
+    transition: color 0.2s ease;
+}
+
+.toggle-password:hover {
+    color: #f04e23;
+}
+
+
+/* ==================================================
+   REMEMBER & FORGOT
+================================================== */
+
+.login-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 22px; /* 🔥 JARAK KE BUTTON */
+    font-size: 14px;
+}
+
+/* checkbox alignment */
+.login-options label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    font-weight: 500;
+    color: #374151;
+}
+
+.login-options input[type="checkbox"] {
+    transform: translateY(1px);
+}
+
+.forgot-link {
+    font-weight: 600;
+    color: #f04e23;
+    text-decoration: none;
+}
+
+.forgot-link:hover {
+    text-decoration: underline;
+}
+
+
+/* ==================================================
+   BUTTON LOGIN
+================================================== */
 
 .btn-login {
     width: 100%;
-    height: 48px;                  /* 🔽 dari 54px */
+    height: 48px;
+    margin-top: 4px;
     border-radius: 12px;
     background: linear-gradient(135deg, #ff6a00, #f04e23);
-    color: #fff;
+    color: #ffffff;
     font-size: 15px;
     font-weight: 700;
     border: none;
-    margin-top: 12px;
     cursor: pointer;
     transition: all 0.25s ease;
 }
@@ -97,7 +172,9 @@
 }
 
 
-/* ALERT */
+/* ==================================================
+   ALERT
+================================================== */
 
 .login-alert {
     background: #fff3cd;
@@ -120,12 +197,12 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-    color: #fff;
+    color: #ffffff;
     padding: 48px;
 }
 
 .login-right h2 {
-    font-size: 32px;               /* 🔽 */
+    font-size: 32px;
     font-weight: 800;
     margin-bottom: 12px;
 }
@@ -133,25 +210,28 @@
 .login-right p {
     font-size: 15px;
     margin-bottom: 24px;
+    line-height: 1.6;
 }
 
 
-/* REGISTER / LOGIN BUTTON */
+/* ==================================================
+   BUTTON REGISTER
+================================================== */
 
 .btn-register {
     display: inline-block;
     padding: 12px 36px;
     border-radius: 999px;
-    border: 2px solid #fff;
-    color: #fff;
+    border: 2px solid #ffffff;
+    color: #ffffff;
     font-weight: 700;
-    text-decoration: none;
     font-size: 14px;
+    text-decoration: none;
     transition: all 0.25s ease;
 }
 
 .btn-register:hover {
-    background: #fff;
+    background: #ffffff;
     color: #f04e23;
 }
 
@@ -163,7 +243,6 @@
 @media (max-width: 992px) {
     .login-wrapper {
         grid-template-columns: 1fr;
-        min-height: auto;
     }
 
     .login-right {
@@ -172,6 +251,11 @@
 
     .login-left {
         padding: 40px 32px;
+    }
+
+    .login-title {
+        font-size: 24px;
+        text-align: center;
     }
 }
 
@@ -184,56 +268,43 @@
     text-align: center;
     padding: 20px 16px;
     font-size: 13px;
-    color: #aaa;
+    color: #9ca3af;
 }
 
-/* REMEMBER & FORGOT PASSWORD */
 
-.login-options {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
+/* ==================================================
+   SWITCH LOGIN / REGISTER (MOBILE ONLY)
+================================================== */
+
+.auth-switch {
+    display: none;
+    margin-top: 22px;
+    text-align: center;
+    font-size: 13px;
+    color: #6b7280;
 }
 
-.login-options .remember {
-    font-size: 14px;
-    font-weight: 500;
-}
-
-.forgot-link {
-    font-size: 14px;
-    font-weight: 600;
+.auth-switch a {
     color: #f04e23;
+    font-weight: 600;
     text-decoration: none;
 }
 
-.forgot-link:hover {
+.auth-switch a:hover {
     text-decoration: underline;
 }
 
-.password-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
+@media (max-width: 992px) {
+    .auth-switch {
+        display: block;
+    }
 }
 
-.toggle-password {
-    position: absolute;
-    right: 14px;
-    top: 50%;
-    transform: translateY(-50%);
-    cursor: pointer;
-    color: #9ca3af;
-    font-size: 1.15rem;
-    line-height: 1;
-}
 
-.toggle-password:hover {
-    color: #f04e23;
-}
+/* ==================================================
+   HIDE BROWSER PASSWORD ICON
+================================================== */
 
-/* HILANGKAN ICON PASSWORD BAWAAN BROWSER */
 input[type="password"]::-ms-reveal,
 input[type="password"]::-ms-clear {
     display: none;

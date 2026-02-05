@@ -15,5 +15,7 @@
 @import "./pages/lowongan.css";
 @import "./pages/hrd-lowongan-create.css";
 @import "./pages/kandidat.css";
+@import "./pages/seleksi-kandidat.css";
 @import "./pages/manajemen-akun.css";
-@import "./pages/monitoring.css";
+@import "./pages/monitoring-kandidat.css";
+@import "./pages/monitoring-lowongan.css";

@@ -14,6 +14,8 @@
 
 @section('content')
 
+<div class="page-seleksi-kandidat"><!-- 🔥 SCOPING WRAPPER -->
+
 <h4 class="fw-bold mb-3">Seleksi Kandidat (Metode SAW)</h4>
 
 {{-- ================= ACTION BUTTON ================= --}}
@@ -32,8 +34,8 @@
 
     @if($sawDone)
         <form method="POST"
-        action="{{ route('hrd.seleksi.reset', $lowongan) }}"
-        class="form-reset-saw">
+              action="{{ route('hrd.seleksi.reset', $lowongan) }}"
+              class="form-reset-saw">
             @csrf
             @method('PUT')
             <button class="btn btn-outline-danger">Reset SAW</button>
@@ -46,13 +48,13 @@
     </a>
 </div>
 
-{{-- ================= CARD TABLE (DISAMAKAN DENGAN KELOLA KANDIDAT) ================= --}}
 <div class="card">
     <div class="card-body">
 
         <div class="table-responsive">
-            <table id="table-saw" class="table table-bordered align-middle w-100">
-                <thead class="table-light">
+            <table id="table-saw"
+                   class="table kandidat-table align-middle w-100">
+                <thead>
                 <tr>
                     <th>Nama Kandidat</th>
                     <th>Pendidikan</th>
@@ -73,22 +75,13 @@
                         <td>{{ $app->user->pelamarSkills->count() }}</td>
                         <td>{{ $app->saw_score ?? '-' }}</td>
                         <td>{{ $app->saw_rank ?? '-' }}</td>
-                        {{-- STATUS BADGE --}}
                         <td>
                             @if ($app->status === 'seleksi')
-                                <span class="badge bg-secondary">
-                                    Menunggu SAW
-                                </span>
-
+                                <span class="badge bg-secondary">Menunggu SAW</span>
                             @elseif ($app->status === 'interview')
-                                <span class="badge bg-success">
-                                    Lolos SAW (Interview)
-                                </span>
-
+                                <span class="badge bg-success">Lolos SAW (Interview)</span>
                             @elseif ($app->status === 'tidak_lolos_saw')
-                                <span class="badge bg-danger">
-                                    Tidak Lolos SAW
-                                </span>
+                                <span class="badge bg-danger">Tidak Lolos SAW</span>
                             @endif
                         </td>
                     </tr>
@@ -99,6 +92,8 @@
         </div>
 
     </div>
+</div>
+
 </div>
 
 @endsection

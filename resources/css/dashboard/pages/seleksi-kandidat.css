@@ -1,0 +1,92 @@
+/* ==================================================
+   SELEKSI KANDIDAT (SAW) – SCOPED & FLAT TABLE
+================================================== */
+
+.page-seleksi-kandidat .kandidat-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* HEADER */
+.page-seleksi-kandidat .kandidat-table thead th {
+    background: #111827;
+    color: #ffffff;
+    font-weight: 600;
+    padding: 14px;
+    font-size: 14px;
+    white-space: nowrap;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+/* ROW */
+.page-seleksi-kandidat .kandidat-table tbody tr {
+    background: #ffffff;
+    border-bottom: 1px solid #e5e7eb; /* 🔥 GARIS TIPIS */
+}
+
+.page-seleksi-kandidat .kandidat-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.page-seleksi-kandidat .kandidat-table tbody td {
+    padding: 14px;
+    font-size: 14px;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+/* =============================
+   DATATABLES (SCOPED)
+============================= */
+
+.page-seleksi-kandidat .dataTables_wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.page-seleksi-kandidat .dataTables_filter {
+    margin-bottom: 16px;
+}
+
+.page-seleksi-kandidat .dataTables_filter input {
+    margin-left: 8px;
+    border-radius: 8px;
+    padding: 6px 10px;
+    border: 1px solid #d1d5db;
+}
+
+.page-seleksi-kandidat .dataTables_paginate .paginate_button {
+    border-radius: 6px !important;
+}
+
+.page-seleksi-kandidat .dataTables_paginate .paginate_button.current {
+    background: #2563eb !important;
+    color: #ffffff !important;
+    border: none !important;
+}
+
+/* =============================
+   MOBILE (TETAP TABLE)
+============================= */
+
+@media (max-width: 768px) {
+
+    .page-seleksi-kandidat .kandidat-table {
+        min-width: 900px; /* kolom banyak */
+    }
+
+    .page-seleksi-kandidat .kandidat-table thead th {
+        font-size: 13px;
+        padding: 10px 12px;
+    }
+
+    .page-seleksi-kandidat .kandidat-table tbody td {
+        font-size: 13px;
+        padding: 10px 12px;
+    }
+
+    .page-seleksi-kandidat .kandidat-table tbody td:last-child {
+        text-align: center;
+    }
+}

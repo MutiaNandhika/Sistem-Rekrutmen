@@ -1,14 +1,16 @@
-/* =======================
-   GLOBAL
-======================= */
-body {
+/* ==================================================
+   HRD DASHBOARD – SCOPED CSS
+================================================== */
+
+.page-hrd-dashboard {
     font-family: 'Inter', sans-serif;
 }
 
 /* =======================
    DASHBOARD CARD
 ======================= */
-.dashboard-card {
+
+.page-hrd-dashboard .dashboard-card {
     background: #f8f9fb;
     border: 1px solid #d0d5dd;
     border-radius: 10px;
@@ -17,7 +19,7 @@ body {
     flex-direction: column;
 }
 
-.dashboard-card-header {
+.page-hrd-dashboard .dashboard-card-header {
     padding: 12px 16px;
     font-weight: 600;
     background: #f3f4f6;
@@ -25,24 +27,61 @@ body {
     border-radius: 10px 10px 0 0;
 }
 
-.dashboard-card-body {
+.page-hrd-dashboard .dashboard-card-body {
     padding: 16px;
 }
 
-.timeline {
+/* =======================
+   STAT CARD
+======================= */
+
+.page-hrd-dashboard .dashboard-stat-card {
+    background-color: #ffffff;
+    border: 2px solid #f04e23;
+    border-radius: 14px;
+    padding: 24px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transition: all 0.2s ease-in-out;
+}
+
+.page-hrd-dashboard .dashboard-stat-card:hover {
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+
+.page-hrd-dashboard .stat-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #6c757d;
+    margin-bottom: 10px;
+}
+
+.page-hrd-dashboard .stat-value {
+    font-size: 36px;
+    font-weight: 700;
+    color: #212529;
+}
+
+/* =======================
+   TIMELINE (JIKA ADA)
+======================= */
+
+.page-hrd-dashboard .timeline {
     list-style: none;
     padding-left: 0;
     position: relative;
 }
 
-.timeline li {
+.page-hrd-dashboard .timeline li {
     display: flex;
     gap: 16px;
     margin-bottom: 28px;
     position: relative;
 }
 
-.timeline .step {
+.page-hrd-dashboard .timeline .step {
     width: 28px;
     height: 28px;
     border-radius: 50%;
@@ -54,12 +93,12 @@ body {
     font-weight: bold;
 }
 
-.timeline li.active .step {
+.page-hrd-dashboard .timeline li.active .step {
     background: #28a745;
     color: #fff;
 }
 
-.timeline li::before {
+.page-hrd-dashboard .timeline li::before {
     content: '';
     position: absolute;
     left: 13px;
@@ -69,20 +108,43 @@ body {
     background: #dee2e6;
 }
 
-.timeline li:last-child::before {
+.page-hrd-dashboard .timeline li:last-child::before {
     display: none;
 }
 
-.modal-content {
+/* =======================
+   MODAL (KHUSUS HRD)
+======================= */
+
+.page-hrd-dashboard .modal-content {
     box-shadow: 0 10px 30px rgba(0,0,0,.15);
 }
 
-.modal .form-control,
-.modal .form-select {
+.page-hrd-dashboard .modal .form-control,
+.page-hrd-dashboard .modal .form-select {
     border-radius: 10px;
     padding: 10px 14px;
 }
 
-.modal h5 {
+.page-hrd-dashboard .modal h5 {
     font-size: 20px;
+}
+
+/* =======================
+   RESPONSIVE
+======================= */
+
+@media (max-width: 768px) {
+
+    .page-hrd-dashboard .dashboard-stat-card {
+        padding: 18px;
+    }
+
+    .page-hrd-dashboard .stat-value {
+        font-size: 28px;
+    }
+
+    .page-hrd-dashboard .dashboard-card-header {
+        font-size: 14px;
+    }
 }

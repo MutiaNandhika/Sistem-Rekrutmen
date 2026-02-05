@@ -1,105 +1,102 @@
+/* ==================================================
+   KELOLA KANDIDAT – FLAT TABLE (SCOPED)
+   MIRIP MANAJEMEN AKUN
+================================================== */
+
+.page-kelola-kandidat .kandidat-table {
+    width: 100%;
+    border-collapse: collapse; /* 🔥 penting */
+}
+
 /* =============================
-   KANDIDAT TABLE UI
+   HEADER
 ============================= */
 
-.kandidat-table {
-    border-collapse: separate;
-    border-spacing: 0 10px;
-}
-
-.kandidat-table thead th {
-    background: #111827;
-    color: #fff;
+.page-kelola-kandidat .kandidat-table thead th {
+    background: #0f172a;
+    color: #ffffff;
     font-weight: 600;
-    border: none;
-    padding: 14px;
+    padding: 12px 14px;
     font-size: 14px;
+    white-space: nowrap;
 }
 
-.kandidat-table tbody tr {
+/* =============================
+   ROW & CELL
+============================= */
+
+.page-kelola-kandidat .kandidat-table tbody tr {
     background: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    border-bottom: 1px solid #e5e7eb; /* ✅ garis tipis */
 }
 
-.kandidat-table tbody td {
-    padding: 14px;
-    border-top: none;
-    border-bottom: none;
+.page-kelola-kandidat .kandidat-table tbody td {
+    padding: 12px 14px;
     font-size: 14px;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+/* ❌ PASTIKAN TIDAK ADA CARD EFFECT */
+.page-kelola-kandidat .kandidat-table,
+.page-kelola-kandidat .kandidat-table tbody tr {
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    border-spacing: 0 !important;
 }
 
 /* =============================
-   STATUS PILL
+   DATATABLES (SCOPED)
 ============================= */
-.status-pill {
-    padding: 6px 14px;
-    border-radius: 999px;
-    font-size: 12px;
-    font-weight: 600;
-    display: inline-block;
+
+.page-kelola-kandidat .dataTables_wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
-.status-pill.diproses {
-    background: #facc15;
-    color: #78350f;
+.page-kelola-kandidat .dataTables_filter {
+    margin-bottom: 16px;
 }
 
-.status-pill.diterima {
-    background: #22c55e;
-    color: #064e3b;
-}
-
-/* =============================
-   SCORE & RANK
-============================= */
-.score-pill {
-    background: #e0f2fe;
-    color: #0369a1;
-    padding: 6px 12px;
-    border-radius: 8px;
-    font-weight: 600;
-}
-
-.rank-pill {
-    background: #ede9fe;
-    color: #5b21b6;
-    padding: 6px 12px;
-    border-radius: 8px;
-    font-weight: 600;
-}
-
-/* =============================
-   DATATABLES TWEAK
-============================= */
-.dataTables_filter input {
-    border-radius: 8px;
+.page-kelola-kandidat .dataTables_filter input {
+    border-radius: 6px;
     padding: 6px 10px;
     border: 1px solid #d1d5db;
 }
 
-.dataTables_paginate .paginate_button {
+.page-kelola-kandidat .dataTables_paginate .paginate_button {
     border-radius: 6px !important;
 }
 
-.dataTables_paginate .paginate_button.current {
+.page-kelola-kandidat .dataTables_paginate .paginate_button.current {
     background: #2563eb !important;
     color: #fff !important;
     border: none !important;
 }
 
-/* =============================
-   DATATABLE SEARCH SPACING
-============================= */
-.dataTables_filter {
-    margin-bottom: 16px; /* jarak ke tabel */
-}
+/* =================================================
+   MOBILE – TETAP TABLE (HORIZONTAL SCROLL)
+================================================= */
 
-.dataTables_filter label {
-    font-weight: 500;
-    color: #374151;
-}
+@media (max-width: 768px) {
 
-.dataTables_filter input {
-    margin-left: 8px;
+    .page-kelola-kandidat .kandidat-table {
+        min-width: 720px;
+    }
+
+    .page-kelola-kandidat .kandidat-table thead th,
+    .page-kelola-kandidat .kandidat-table tbody td {
+        font-size: 13px;
+        padding: 10px 12px;
+    }
+
+    .page-kelola-kandidat .kandidat-table tbody td:last-child {
+        text-align: center;
+    }
+
+    .page-kelola-kandidat .kandidat-table tbody td:last-child .btn {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
 }

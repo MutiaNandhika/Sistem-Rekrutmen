@@ -3,6 +3,8 @@
 
 @section('content')
 
+<div class="page-manajemen-akun"><!-- 🔒 SCOPING WRAPPER -->
+
 {{-- ================= HEADER ================= --}}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
@@ -15,10 +17,9 @@
     <button class="btn btn-primary d-flex align-items-center gap-2"
         data-bs-toggle="modal"
         data-bs-target="#modalTambah">
-    <i class="bi bi-plus-circle"></i>
-    Tambah Akun
-</button>
-
+        <i class="bi bi-plus-circle"></i>
+        Tambah Akun
+    </button>
 </div>
 
 {{-- ================= FILTER & EXPORT ================= --}}
@@ -55,7 +56,7 @@
 
             <a href="{{ url('/admin/manajemen-akun/excel?role='.request('role')) }}"
                class="btn btn-success btn-sm d-flex align-items-center gap-1">
-            <i class="bi bi-file-earmark-excel"></i>
+                <i class="bi bi-file-earmark-excel"></i>
                 Export Excel
             </a>
         </div>
@@ -109,7 +110,6 @@
                                 <i class="bi bi-trash"></i>
                                 Hapus
                             </button>
-
                         </td>
                     </tr>
                 @endforeach
@@ -120,7 +120,6 @@
 
     </div>
 </div>
-
 {{-- ================= MODAL TAMBAH ================= --}}
 <div class="modal fade" id="modalTambah">
     <div class="modal-dialog modal-dialog-centered">
