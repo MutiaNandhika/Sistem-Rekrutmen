@@ -157,43 +157,62 @@
                     </div>
                 </div>
 
-                {{-- 4. INTERVIEW --}}
-                <div class="timeline-item {{ $currentStep >= 4 ? 'active' : '' }}">
-                    <div class="timeline-dot">4</div>
-                    <div class="timeline-content">
-                        <h6>INTERVIEW</h6>
+                {{-- ================= 4. INTERVIEW ================= --}}
+<div class="timeline-item {{ $currentStep >= 4 ? 'active' : '' }}">
+    <div class="timeline-dot">4</div>
+    <div class="timeline-content">
+        <h6>INTERVIEW</h6>
 
-                        @if($currentStep < 4)
-                            {{-- tidak ada keterangan --}}
-                        @elseif($status === 'ditolak')
-                            <div class="timeline-info text-danger">
-                                Tidak lolos interview.
-                            </div>
-                        @elseif(in_array($status, ['ditolak_administrasi','tidak_lolos_saw']))
-                            <div class="timeline-info text-muted">
-                                Tahap interview tidak dilanjutkan.
-                            </div>
-                        @elseif($application->interview_at)
-                            <div class="timeline-box">
-                                <strong>Metode:</strong> {{ ucfirst($application->interview_method) }}<br>
-                                <strong>Tanggal:</strong>
-                                {{ $application->interview_at->translatedFormat('d F Y H:i') }}
+        {{-- BELUM SAMPAI INTERVIEW --}}
+        @if($currentStep < 4)
+            {{-- tidak ada keterangan --}}
 
-                                @if($application->interview_link)
-                                    <br>
-                                    <strong>Link:</strong>
-                                    <a href="{{ $application->interview_link }}" target="_blank">
-                                        {{ $application->interview_link }}
-                                    </a>
-                                @endif
-                            </div>
-                        @else
-                            <div class="timeline-info">
-                                Interview telah dilalui.
-                            </div>
-                        @endif
-                    </div>
+        {{-- GAGAL SEBELUM INTERVIEW --}}
+        @elseif(in_array($status, ['ditolak_administrasi', 'tidak_lolos_saw']))
+            <div class="timeline-info text-muted">
+                Tahap interview tidak dilanjutkan.
+            </div>
+
+        {{-- TIDAK LOLOS INTERVIEW --}}
+        @elseif($status === 'ditolak')
+            <div class="timeline-info text-danger">
+                Tidak lolos interview.
+            </div>
+
+        {{-- SEDANG / AKAN INTERVIEW --}}
+        @elseif($status === 'interview')
+
+            @if($application->interview_at)
+                <div class="timeline-box">
+                    <strong>Interview sedang berlangsung / dijadwalkan</strong><br><br>
+
+                    <strong>Metode:</strong> {{ ucfirst($application->interview_method) }}<br>
+                    <strong>Tanggal:</strong>
+                    {{ $application->interview_at->translatedFormat('d F Y H:i') }}
+
+                    @if($application->interview_link)
+                        <br>
+                        <strong>Link:</strong>
+                        <a href="{{ $application->interview_link }}" target="_blank">
+                            {{ $application->interview_link }}
+                        </a>
+                    @endif
                 </div>
+            @else
+                <div class="timeline-info">
+                    Menunggu penjadwalan interview dari perusahaan.
+                </div>
+            @endif
+
+        {{-- INTERVIEW SUDAH DILALUI --}}
+        @else
+            <div class="timeline-info">
+                Interview telah dilalui.
+            </div>
+        @endif
+
+    </div>
+</div>
 
                 {{-- 5. OFFER --}}
                 <div class="timeline-item {{ $currentStep >= 5 ? 'active' : '' }}">

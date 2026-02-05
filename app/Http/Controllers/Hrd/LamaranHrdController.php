@@ -7,6 +7,7 @@ use App\Models\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\OfferLetterMail;
+use App\Mail\StatusLamaranMail;
 
 class LamaranHrdController extends Controller
 {
@@ -22,26 +23,43 @@ class LamaranHrdController extends Controller
         return view('hrd.lamaran', compact('applications'));
     }
 
-    public function update(Request $request, Application $application)
-{
-    abort_if($application->lowongan->hrd_id !== auth()->id(), 403);
+public function update(Request $request, Application $application)
+    {
+        abort_if($application->lowongan->hrd_id !== auth()->id(), 403);
 
-    $request->validate([
-        'status' => 'required|in:diproses,screening,diterima,ditolak'
-    ]);
+        $request->validate([
+            'status' => 'required|in:diproses,screening,seleksi,interview,diterima,ditolak'
+        ]);
 
-    // ❗ Cegah timpa hasil SAW / Interview
-    if (in_array($application->status, ['interview', 'offer']) &&
-        in_array($request->status, ['screening', 'seleksi'])) {
-        return back()->with('error', 'Status tidak valid.');
+        // simpan status lama
+        $oldStatus = $application->status;
+
+        // ❗ cegah status ilegal
+        if (
+            in_array($oldStatus, ['interview','offer']) &&
+            in_array($request->status, ['screening','seleksi'])
+        ) {
+            return back()->with('error', 'Perubahan status tidak valid.');
+        }
+
+        // update status
+        $application->update([
+            'status' => $request->status
+        ]);
+
+        /**
+         * 📧 KIRIM EMAIL JIKA STATUS BERUBAH
+         */
+        if ($oldStatus !== $request->status) {
+            Mail::to($application->user->email)
+            ->queue(
+                (new StatusLamaranMail($application))
+                    ->delay(now()->addSeconds(3))
+            );
+        }
+
+        return back()->with('success', 'Status lamaran diperbarui & email terkirim.');
     }
-
-    $application->update([
-        'status' => $request->status
-    ]);
-
-    return back()->with('success', 'Status lamaran diperbarui');
-}
 
     public function setInterview(Request $request, Application $application)
 {
@@ -106,9 +124,12 @@ class LamaranHrdController extends Controller
             'status'     => 'offer',
         ]);
 
-        // 📧 KIRIM EMAIL (LOG MODE)
-    Mail::to($application->user->email)
-        ->send(new OfferLetterMail($application));
+        Mail::to($application->user->email)
+            ->queue(
+                (new StatusLamaranMail($application))
+                    ->delay(now()->addSeconds(3))
+            );
+
 
     logger()->info('EMAIL OFFER DITULIS KE LOG');
 

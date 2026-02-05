@@ -8,6 +8,8 @@ use App\Models\Lowongan;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Exports\SawExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\StatusLamaranMail;
 
 class SawController extends Controller
 {
@@ -149,16 +151,36 @@ if ($cek) {
 
         foreach ($skorAkhir as $appId => $score) {
 
-            Application::where('id', $appId)->update([
-                'saw_score' => round($score, 3),
-                'saw_rank'  => $rank,
-                'status'    => $rank <= $limitInterview
-                    ? 'interview'
-                    : 'tidak_lolos_saw'
-            ]);
+        $application = Application::with(['user', 'lowongan'])->find($appId);
 
+        if (!$application) {
             $rank++;
+            continue;
         }
+
+        $newStatus = $rank <= $limitInterview
+            ? 'interview'
+            : 'tidak_lolos_saw';
+
+        $oldStatus = $application->status;
+
+        $application->update([
+            'saw_score' => round($score, 3),
+            'saw_rank'  => $rank,
+            'status'    => $newStatus,
+        ]);
+
+        // 📧 KIRIM EMAIL JIKA STATUS BERUBAH
+        if ($oldStatus !== $newStatus) {
+            Mail::to($application->user->email)
+            ->queue(
+                (new StatusLamaranMail($application))
+                    ->delay(now()->addSeconds(5))
+            );
+        }
+
+        $rank++;
+    }
 
         return back()->with('success', 'Perhitungan SAW & seleksi kandidat berhasil');
     }

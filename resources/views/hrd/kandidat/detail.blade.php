@@ -277,14 +277,15 @@
 | RIGHT : TRACKING LAMARAN
 ====================================================== --}}
 
-@if (!$isOwner)
+<div class="col-lg-5">
+
+    @if (!$isOwner)
     <div class="alert alert-info small">
         Anda sedang melihat kandidat ini sebagai <strong>viewer</strong>.
         Aksi seleksi hanya dapat dilakukan oleh HRD pembuat lowongan.
     </div>
 @endif
 
-<div class="col-lg-5">
     <div class="card shadow-sm">
         <div class="card-body">
 
@@ -380,19 +381,21 @@
 <div class="mb-4">
     <strong>4. INTERVIEW</strong>
 
-    {{-- ❌ GAGAL ADMIN --}}
+    {{-- ================= KONDISI GLOBAL ================= --}}
+
+    {{-- ❌ GAGAL ADMINISTRASI --}}
     @if($application->status === 'ditolak_administrasi')
         <p class="text-danger small mt-2">
             Proses berhenti. Kandidat tidak lolos tahap administrasi.
         </p>
 
-    {{-- ⏳ BELUM SAW --}}
+    {{-- ⏳ BELUM MASUK SAW --}}
     @elseif(is_null($application->saw_score))
         <p class="text-muted small mt-2">
             Tahap interview akan tersedia setelah proses seleksi (SAW) selesai.
         </p>
 
-    {{-- ❌ TIDAK LOLOS SAW --}}
+    {{-- ❌ TIDAK LOLOS SELEKSI (SAW) --}}
     @elseif($application->status === 'tidak_lolos_saw')
         <p class="text-danger small mt-2">
             Kandidat tidak lolos seleksi (SAW).
@@ -404,21 +407,27 @@
             Kandidat tidak lolos tahap interview.
         </p>
 
-    {{-- ✅ MASUK INTERVIEW --}}
+    {{-- ================= MASUK INTERVIEW ================= --}}
     @elseif($application->status === 'interview')
 
         {{-- INFO JADWAL --}}
         @if($application->interview_at)
             <div class="alert alert-warning small mt-2">
-                <strong>Metode:</strong> {{ ucfirst($application->interview_method) }}<br>
-                <strong>Tanggal:</strong>
-                {{ $application->interview_at->translatedFormat('d F Y H:i') }}<br>
+                <div class="mb-1">
+                    <strong>Metode:</strong> {{ ucfirst($application->interview_method) }}
+                </div>
+                <div class="mb-1">
+                    <strong>Tanggal:</strong>
+                    {{ $application->interview_at->translatedFormat('d F Y H:i') }}
+                </div>
 
                 @if($application->interview_link)
-                    <strong>Link:</strong>
-                    <a href="{{ $application->interview_link }}" target="_blank">
-                        {{ $application->interview_link }}
-                    </a>
+                    <div>
+                        <strong>Link:</strong>
+                        <a href="{{ $application->interview_link }}" target="_blank">
+                            {{ $application->interview_link }}
+                        </a>
+                    </div>
                 @endif
             </div>
         @else
@@ -427,41 +436,41 @@
             </p>
         @endif
 
-        {{-- AKSI HRD --}}
+        {{-- ================= AKSI HRD ================= --}}
         @if($isOwner)
-            <div class="d-flex flex-wrap gap-2 mt-2">
+            <div class="d-flex flex-column gap-2 mt-3">
 
-                {{-- 🗓️ ATUR / EDIT JADWAL --}}
+                {{-- 🗓️ ATUR JADWAL --}}
                 <button
-                    class="btn btn-outline-primary btn-sm"
+                    class="btn btn-outline-primary btn-sm align-self-start"
                     data-bs-toggle="modal"
                     data-bs-target="#modalInterview">
                     <i class="bi bi-calendar-event"></i>
                     Atur Jadwal Interview
                 </button>
 
-                {{-- ❌ TIDAK LOLOS --}}
+                {{-- ❌ TIDAK LOLOS INTERVIEW --}}
                 <form method="POST"
-                    action="{{ route('hrd.lamaran.update', $application) }}"
-                    class="form-tracking-confirm"
-                    data-title="Tidak Lolos Interview?"
-                    data-text="Kandidat akan ditolak pada tahap interview.">
+                      action="{{ route('hrd.lamaran.update', $application) }}"
+                      class="form-tracking-confirm"
+                      data-title="Tidak Lolos Interview?"
+                      data-text="Kandidat akan ditolak pada tahap interview.">
 
                     @csrf
                     @method('PUT')
                     <input type="hidden" name="status" value="ditolak">
+
                     <button class="btn btn-danger btn-sm">
-                        Tidak Lolos
+                        Tidak Lolos Interview
                     </button>
                 </form>
 
                 {{-- ✅ KIRIM OFFER --}}
                 <form method="POST"
-                    action="{{ route('hrd.lamaran.offer.upload', $application) }}"
-                    class="form-tracking-confirm"
-                    data-title="Kirim Offer?"
-                    data-text="Offer akan dikirim ke kandidat. Pastikan link sudah benar."
-                    class="w-100 mt-2">
+                      action="{{ route('hrd.lamaran.offer.upload', $application) }}"
+                      class="form-tracking-confirm"
+                      data-title="Kirim Offer?"
+                      data-text="Offer akan dikirim ke kandidat. Pastikan link sudah benar.">
 
                     @csrf
 
@@ -532,7 +541,7 @@
             <span class="badge bg-secondary">MENUNGGU</span>
         </p>
 
-    {{-- 🚫 OFFER DITOLAK OLEH PELAMAR --}}
+    {{-- 🚫 OFFER DITOLAK PELAMAR --}}
     @elseif($application->status === 'offer_ditolak')
         <div class="alert alert-warning small mt-2">
             ⚠️ Kandidat <strong>MENOLAK OFFER</strong> yang diberikan perusahaan.
