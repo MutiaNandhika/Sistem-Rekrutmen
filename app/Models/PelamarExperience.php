@@ -15,6 +15,7 @@ class PelamarExperience extends Model
         'tanggal_selesai',
         'masih_bekerja',
         'deskripsi',
+        'file_bukti',
     ];
 
     protected $casts = [

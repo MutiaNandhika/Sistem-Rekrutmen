@@ -109,166 +109,212 @@
         <p class="text-muted">{{ $profile->tentang_saya ?? '-' }}</p>
     </div>
 
-    {{-- PENGALAMAN KERJA --}}
-    <div class="mb-4">
-        <h6 class="fw-bold text-uppercase small">Pengalaman Kerja</h6>
-        <hr class="my-2">
+{{-- =========================
+| PENGALAMAN KERJA
+========================= --}}
+<div class="mb-4">
+<h6 class="fw-bold text-uppercase small">Pengalaman Kerja</h6>
+<hr class="my-2">
 
-            @forelse ($user->pelamarExperiences as $exp)
-        <div class="mb-3">
-            <strong>{{ $exp->posisi }}</strong> – {{ $exp->perusahaan }}<br>
-            <span class="text-muted small">
-                {{ Carbon::parse($exp->tanggal_mulai)->translatedFormat('F Y') }}
-                –
-                {{ $exp->masih_bekerja
-                    ? 'Sekarang'
-                    : Carbon::parse($exp->tanggal_selesai)->translatedFormat('F Y') }}
-            </span>
+@forelse ($user->pelamarExperiences as $exp)
+<div class="mb-3">
+    <strong>{{ $exp->posisi }}</strong> – {{ $exp->perusahaan }}<br>
+    <span class="text-muted small">
+        {{ Carbon::parse($exp->tanggal_mulai)->translatedFormat('F Y') }} –
+        {{ $exp->masih_bekerja ? 'Sekarang' : Carbon::parse($exp->tanggal_selesai)->translatedFormat('F Y') }}
+    </span>
 
-            @if($exp->deskripsi)
-                <p class="text-muted mt-1">{{ $exp->deskripsi }}</p>
+    @if($exp->deskripsi)
+        <p class="text-muted mt-1">{{ $exp->deskripsi }}</p>
+    @endif
+            @if($exp->file_bukti)
+                <div>
+                    <a href="{{ asset('storage/'.$exp->file_bukti) }}"
+                       target="_blank"
+                       class="btn btn-outline-primary btn-sm">
+                        <i class="bi bi-paperclip"></i> Lihat File
+                    </a>
+                </div>
             @endif
-        </div>
+    </div>
     @empty
-        <p class="text-muted">Tidak ada pengalaman kerja.</p>
+    <p class="text-muted">Tidak ada pengalaman kerja.</p>
     @endforelse
-
     </div>
 
-    {{-- PENDIDIKAN --}}
-    <div class="mb-4">
-        <h6 class="fw-bold text-uppercase small">Pendidikan</h6>
-        <hr class="my-2">
+{{-- =========================
+| PENDIDIKAN
+========================= --}}
+<div class="mb-4">
+<h6 class="fw-bold text-uppercase small">Pendidikan</h6>
+<hr class="my-2">
 
-        @forelse ($user->pelamarEducations as $edu)
-    <div class="mb-3">
-        <strong>{{ $edu->nama_sekolah }}</strong><br>
-        <span class="text-muted">
-            {{ $edu->tingkat }} – {{ $edu->bidang_studi }}
-        </span><br>
+@forelse ($user->pelamarEducations as $edu)
+<div class="mb-3">
+    <strong>{{ $edu->nama_sekolah }}</strong><br>
+    <span class="text-muted">{{ $edu->tingkat }} – {{ $edu->bidang_studi }}</span><br>
+    <span class="text-muted small">
+        {{ bulan($edu->mulai_bulan) }} {{ $edu->mulai_tahun }} –
+        {{ bulan($edu->selesai_bulan) }} {{ $edu->selesai_tahun }}
+    </span>
 
-        <span class="text-muted small">
-            {{ bulan($edu->mulai_bulan) }} {{ $edu->mulai_tahun }}
-            –
-            {{ bulan($edu->selesai_bulan) }} {{ $edu->selesai_tahun }}
-        </span>
+    @if($edu->informasi_tambahan)
+        <p class="text-muted mt-1">{{ $edu->informasi_tambahan }}</p>
+    @endif
 
-        @if($edu->informasi_tambahan)
-            <p class="text-muted mt-1">{{ $edu->informasi_tambahan }}</p>
-        @endif
-    </div>
-@empty
-    <p class="text-muted">Data pendidikan belum tersedia.</p>
-@endforelse
-
-    </div>
-
-    {{-- SKILLS --}}
-    <div class="mb-4">
-        <h6 class="fw-bold text-uppercase small">Skills</h6>
-        <hr class="my-2">
-
-        @if ($user->pelamarSkills->count())
-            <div class="d-flex flex-wrap gap-2">
-                @foreach ($user->pelamarSkills as $skill)
-                    <span class="badge bg-light text-dark border">{{ $skill->nama_skill }}</span>
-                @endforeach
-            </div>
-        @else
-            <p class="text-muted">Tidak ada skill.</p>
-        @endif
-    </div>
-
-    {{-- RESUME --}}
-    <div class="mb-4">
-        <h6 class="fw-bold text-uppercase small">Resume</h6>
-        <hr class="my-2">
-
-        @if ($user->pelamarResume)
-            <a href="{{ asset('storage/'.$user->pelamarResume->file_path) }}"
-               target="_blank"
-               class="btn btn-outline-primary btn-sm">
-                <i class="bi bi-file-earmark-text"></i> Lihat Resume
+    @if($edu->file_bukti)
+        <div class="mt-2">
+            <a href="{{ asset('storage/'.$edu->file_bukti) }}"
+            target="_blank"
+            class="btn btn-outline-primary btn-sm">
+                <i class="bi bi-file-earmark-text"></i> Lihat File
             </a>
-        @else
-            <p class="text-muted">Resume belum diunggah.</p>
-        @endif
-    </div>
+        </div>
+    @endif
 
-    {{-- PENGHARGAAN --}}
-    <div class="mb-4">
-        <h6 class="fw-bold text-uppercase small">Penghargaan</h6>
-        <hr class="my-2">
-
-        @forelse ($user->pelamarAchievements as $ach)
-            <p class="mb-1">
-                <strong>{{ $ach->judul }}</strong> – {{ $ach->tahun }}
-            </p>
-            <p class="text-muted small">{{ $ach->deskripsi }}</p>
-        @empty
-            <p class="text-muted">Tidak ada penghargaan.</p>
-        @endforelse
-    </div>
-
-    {{-- SERTIFIKAT --}}
-    <div class="mb-4">
-        <h6 class="fw-bold text-uppercase small">Sertifikat</h6>
-        <hr class="my-2">
-
-        @forelse ($user->pelamarCertificates as $cert)
-    <div class="mb-3">
-        <strong>{{ $cert->nama_sertifikat }}</strong><br>
-
-        <span class="text-muted small">
-            Terbit:
-            {{ bulan($cert->bulan_terbit) }} {{ $cert->tahun_terbit }}
-            ·
-            Berlaku sampai:
-            {{ $cert->tanpa_expired
-                ? 'Tidak ada batas waktu'
-                : bulan($cert->bulan_expired).' '.$cert->tahun_expired }}
-        </span>
-
-        @if($cert->informasi_tambahan)
-            <p class="text-muted mt-1">{{ $cert->informasi_tambahan }}</p>
-        @endif
-    </div>
+</div>
 @empty
-    <p class="text-muted">Tidak ada sertifikat.</p>
+<p class="text-muted">Data pendidikan belum tersedia.</p>
 @endforelse
+</div>
 
-    </div>
+{{-- SKILLS --}}
+<div class="mb-4">
+    <h6 class="fw-bold text-uppercase small">Skills</h6>
+    <hr class="my-2">
 
-    {{-- ORGANISASI & RELAWAN --}}
-    <div class="mb-4">
-        <h6 class="fw-bold text-uppercase small">Pengalaman Organisasi & Relawan</h6>
-        <hr class="my-2">
+    @if ($user->pelamarSkills->count())
+        <div class="d-flex flex-wrap gap-2">
+            @foreach ($user->pelamarSkills as $ps)
+                @if($ps->skill)
+                    <span class="badge bg-light text-dark border">
+                        {{ $ps->skill->nama_skill }}
+                    </span>
+                @endif
+            @endforeach
+        </div>
+    @else
+        <p class="text-muted">Tidak ada skill.</p>
+    @endif
+</div>
 
-        @forelse ($user->pelamarOrganizations as $org)
-    <div class="mb-3">
-        <strong>{{ $org->nama_organisasi }}</strong>
-        @if($org->posisi)
-            – {{ $org->posisi }}
-        @endif
-        <br>
 
-        <span class="text-muted small">
-            {{ bulan($org->mulai_bulan) }} {{ $org->mulai_tahun }}
-            –
-            {{ $org->masih_aktif
-                ? 'Sekarang'
-                : bulan($org->selesai_bulan).' '.$org->selesai_tahun }}
-        </span>
+{{-- =========================
+| RESUME
+========================= --}}
+<div class="mb-4">
+<h6 class="fw-bold text-uppercase small">Resume</h6>
+<hr class="my-2">
 
-        @if($org->informasi_tambahan)
-            <p class="text-muted mt-1">{{ $org->informasi_tambahan }}</p>
-        @endif
-    </div>
+@if ($user->pelamarResume)
+<a href="{{ asset('storage/'.$user->pelamarResume->file_path) }}"
+   target="_blank"
+   class="btn btn-outline-primary btn-sm">
+    <i class="bi bi-file-earmark-text"></i> Lihat Resume
+</a>
+@else
+<p class="text-muted">Resume belum diunggah.</p>
+@endif
+</div>
+
+{{-- =========================
+| PENGHARGAAN
+========================= --}}
+<div class="mb-4">
+<h6 class="fw-bold text-uppercase small">Penghargaan</h6>
+<hr class="my-2">
+
+@forelse ($user->pelamarAchievements as $ach)
+<div class="mb-3">
+    <strong>{{ $ach->judul }}</strong> – {{ $ach->tahun }}
+    @if($ach->deskripsi)
+        <p class="text-muted small">{{ $ach->deskripsi }}</p>
+    @endif
+
+    @if($ach->file_bukti)
+        <div class="mt-2">
+            <a href="{{ asset('storage/'.$ach->file_bukti) }}"
+            target="_blank"
+            class="btn btn-outline-primary btn-sm">
+                <i class="bi bi-award"></i> Lihat File
+            </a>
+        </div>
+    @endif
+
+</div>
 @empty
-    <p class="text-muted">Tidak ada pengalaman organisasi atau relawan.</p>
+<p class="text-muted">Tidak ada penghargaan.</p>
 @endforelse
+</div>
 
-    </div>
+{{-- =========================
+| SERTIFIKAT
+========================= --}}
+<div class="mb-4">
+<h6 class="fw-bold text-uppercase small">Sertifikat</h6>
+<hr class="my-2">
+
+@forelse ($user->pelamarCertificates as $cert)
+<div class="mb-3">
+    <strong>{{ $cert->nama_sertifikat }}</strong><br>
+    <span class="text-muted small">
+        Terbit: {{ bulan($cert->bulan_terbit) }} {{ $cert->tahun_terbit }} ·
+        Berlaku: {{ $cert->tanpa_expired ? 'Tidak ada batas waktu' : bulan($cert->bulan_expired).' '.$cert->tahun_expired }}
+    </span>
+
+    @if($cert->informasi_tambahan)
+        <p class="text-muted mt-1">{{ $cert->informasi_tambahan }}</p>
+    @endif
+
+    @if($cert->file_bukti)
+        <div class="mt-2">
+            <a href="{{ asset('storage/'.$cert->file_bukti) }}"
+            target="_blank"
+            class="btn btn-outline-primary btn-sm">
+                <i class="bi bi-patch-check"></i> Lihat File
+            </a>
+        </div>
+    @endif
+
+</div>
+@empty
+<p class="text-muted">Tidak ada sertifikat.</p>
+@endforelse
+</div>
+
+{{-- =========================
+| ORGANISASI
+========================= --}}
+<div class="mb-4">
+<h6 class="fw-bold text-uppercase small">Organisasi & Relawan</h6>
+<hr class="my-2">
+
+@forelse ($user->pelamarOrganizations as $org)
+<div class="mb-3">
+    <strong>{{ $org->nama_organisasi }}</strong> – {{ $org->posisi ?? '-' }}<br>
+    <span class="text-muted small">
+        {{ bulan($org->mulai_bulan) }} {{ $org->mulai_tahun }} –
+        {{ $org->masih_aktif ? 'Sekarang' : bulan($org->selesai_bulan).' '.$org->selesai_tahun }}
+    </span>
+
+    @if($org->informasi_tambahan)
+        <p class="text-muted mt-1">{{ $org->informasi_tambahan }}</p>
+    @endif
+
+            @if($org->file_bukti)
+                <div>
+                    <a href="{{ asset('storage/'.$org->file_bukti) }}"
+                       target="_blank"
+                       class="btn btn-outline-primary btn-sm">
+                        <i class="bi bi-paperclip"></i> Lihat File
+                    </a>
+                </div>
+            @endif
+</div>
+@empty
+<p class="text-muted">Tidak ada pengalaman organisasi.</p>
+@endforelse
+</div>
 
 </div>
 

@@ -104,36 +104,36 @@ method="POST">
 {{-- ================= PERIODE PENDAFTARAN ================= --}}
 <div class="card mb-4">
     <div class="card-header fw-semibold">
-        Periode Pendaftaran
+        Periode Pendaftaran <span class="text-danger">*</span>
     </div>
 
     <div class="card-body">
         <div class="row">
             <div class="col-md-6">
                 <label class="form-label fw-semibold">
-                    Tanggal Mulai Pendaftaran
+                    Tanggal Mulai Pendaftaran <span class="text-danger">*</span>
                 </label>
                 <input type="date"
                        name="tanggal_mulai"
                        class="form-control"
-                       value="{{ old('tanggal_mulai', $lowongan->tanggal_mulai ?? '') }}">
+                       value="{{ old('tanggal_mulai', $lowongan->tanggal_mulai ?? '') }}"
+                       required>
             </div>
 
             <div class="col-md-6">
                 <label class="form-label fw-semibold">
-                    Tanggal Selesai Pendaftaran
+                    Tanggal Selesai Pendaftaran <span class="text-danger">*</span>
                 </label>
                 <input type="date"
                        name="tanggal_selesai"
                        class="form-control"
-                       value="{{ old('tanggal_selesai', $lowongan->tanggal_selesai ?? '') }}">
-                <small class="text-muted">
-                    Kosongkan jika tidak ada batas waktu
-                </small>
+                       value="{{ old('tanggal_selesai', $lowongan->tanggal_selesai ?? '') }}"
+                       required>
             </div>
         </div>
     </div>
 </div>
+
 
 {{-- ================= LOKASI ================= --}}
 <div class="card mb-4">

@@ -1,15 +1,25 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    /* ================= GUARD ================= */
     const modal = document.getElementById('modalOrganisasi');
     const editIdInput = document.getElementById('orgEditId');
 
-    // bukan halaman profile → STOP
     if (!modal || !editIdInput) return;
 
+    const orgName       = document.getElementById('orgName');
+    const orgRole       = document.getElementById('orgRole');
+    const orgStartMonth = document.getElementById('orgStartMonth');
+    const orgStartYear  = document.getElementById('orgStartYear');
+    const orgEndMonth   = document.getElementById('orgEndMonth');
+    const orgEndYear    = document.getElementById('orgEndYear');
+    const orgOngoing    = document.getElementById('orgOngoing');
+    const orgDesc       = document.getElementById('orgDesc');
+    const orgFile       = document.getElementById('orgFile');
+
+    const previewBox  = document.getElementById('orgFilePreview');
+    const previewLink = document.getElementById('orgFileLink');
+
     function csrfToken() {
-        const meta = document.querySelector('meta[name="csrf-token"]');
-        return meta ? meta.getAttribute('content') : '';
+        return document.querySelector('meta[name="csrf-token"]')?.content;
     }
 
     /* ================= SIMPAN / UPDATE ================= */
@@ -17,24 +27,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const id = editIdInput.value;
 
-        const payload = {
-            nama_organisasi: document.getElementById('orgName').value.trim(),
-            posisi: document.getElementById('orgRole').value.trim(),
-            mulai_bulan: document.getElementById('orgStartMonth').value,
-            mulai_tahun: document.getElementById('orgStartYear').value,
-            selesai_bulan: document.getElementById('orgEndMonth').value,
-            selesai_tahun: document.getElementById('orgEndYear').value,
-            masih_aktif: document.getElementById('orgOngoing').checked,
-            informasi_tambahan: document.getElementById('orgDesc').value.trim(),
-        };
+        const nama  = orgName.value.trim();
+        const posisi = orgRole.value.trim();
+        const bulan  = orgStartMonth.value;
+        const tahun  = orgStartYear.value;
+        const file   = orgFile.files[0];
 
-        /* ===== VALIDASI WAJIB ===== */
-        if (
-            !payload.nama_organisasi ||
-            !payload.posisi ||
-            !payload.mulai_bulan ||
-            !payload.mulai_tahun
-        ) {
+        // ================= VALIDASI FIELD (SAMA SEPERTI SERTIFIKAT) =================
+        if (!nama || !posisi || !bulan || !tahun) {
             showAlert({
                 icon: 'warning',
                 title: 'Periksa Data',
@@ -44,25 +44,53 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        // ================= VALIDASI FILE (HANYA SAAT TAMBAH) =================
+        if (!id && !file) {
+            showAlert({
+                icon: 'warning',
+                title: 'File Wajib',
+                text: 'File bukti organisasi wajib diupload',
+                timer: null
+            });
+            return;
+        }
+
+        // ================= FORM DATA =================
+        const formData = new FormData();
+        formData.append('nama_organisasi', nama);
+        formData.append('posisi', posisi);
+        formData.append('mulai_bulan', bulan);
+        formData.append('mulai_tahun', tahun);
+        formData.append('masih_aktif', orgOngoing.checked ? 1 : 0);
+        formData.append('informasi_tambahan', orgDesc.value.trim());
+
+        if (!orgOngoing.checked) {
+            formData.append('selesai_bulan', orgEndMonth.value || '');
+            formData.append('selesai_tahun', orgEndYear.value || '');
+        }
+
+        if (file) {
+            formData.append('file_bukti', file);
+        }
+
         const BASE_URL = '/pelamar/profile/organizations';
         const url = id ? `${BASE_URL}/${id}` : BASE_URL;
-        const method = id ? 'PUT' : 'POST';
+
+        if (id) formData.append('_method', 'PUT');
 
         fetch(url, {
-            method,
+            method: 'POST',
             headers: {
                 'X-CSRF-TOKEN': csrfToken(),
-                'Content-Type': 'application/json',
                 'Accept': 'application/json'
             },
-            body: JSON.stringify(payload)
+            body: formData
         })
-        .then(async res => {
+        .then(res => {
             if (!res.ok) throw new Error();
             return res.json();
         })
         .then(() => {
-
             showAlert({
                 icon: 'success',
                 title: 'Berhasil',
@@ -71,16 +99,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     : 'Organisasi berhasil ditambahkan'
             });
 
-            // reload tetap dipertahankan (sesuai flow lama)
-            setTimeout(() => {
-                location.reload();
-            }, 800);
+            setTimeout(() => location.reload(), 800);
         })
         .catch(() => {
             showAlert({
                 icon: 'error',
                 title: 'Gagal',
-                text: 'Request gagal',
+                text: 'Gagal menyimpan data',
                 timer: null
             });
         });
@@ -91,25 +116,75 @@ document.addEventListener('DOMContentLoaded', () => {
 
         editIdInput.value = id;
 
-        document.getElementById('orgName').value = org.nama_organisasi;
-        document.getElementById('orgRole').value = org.posisi;
-        document.getElementById('orgDesc').value = org.informasi_tambahan ?? '';
-
-        document.getElementById('orgStartMonth').value = org.mulai_bulan;
-        document.getElementById('orgStartYear').value  = org.mulai_tahun;
-
-        document.getElementById('orgOngoing').checked = !!org.masih_aktif;
+        orgName.value       = org.nama_organisasi;
+        orgRole.value       = org.posisi;
+        orgDesc.value       = org.informasi_tambahan ?? '';
+        orgStartMonth.value = org.mulai_bulan;
+        orgStartYear.value  = org.mulai_tahun;
+        orgOngoing.checked = !!org.masih_aktif;
 
         if (!org.masih_aktif) {
-            document.getElementById('orgEndMonth').value = org.selesai_bulan;
-            document.getElementById('orgEndYear').value  = org.selesai_tahun;
+            orgEndMonth.value = org.selesai_bulan;
+            orgEndYear.value  = org.selesai_tahun;
         } else {
-            document.getElementById('orgEndMonth').value = '';
-            document.getElementById('orgEndYear').value  = '';
+            orgEndMonth.value = '';
+            orgEndYear.value  = '';
         }
 
-        // buka modal (tetap seperti fitur lama)
+        // preview file
+        if (org.file_bukti) {
+            previewBox.classList.remove('d-none');
+            previewLink.href = `/storage/${org.file_bukti}`;
+        } else {
+            previewBox.classList.add('d-none');
+            previewLink.href = '#';
+        }
+
+        orgFile.value = '';
+
         new bootstrap.Modal(modal).show();
+    };
+
+    /* ================= DELETE ================= */
+    window.deleteOrganization = function (id) {
+
+        Swal.fire({
+            title: 'Yakin?',
+            text: 'Data organisasi akan dihapus',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, hapus',
+            cancelButtonText: 'Batal'
+        }).then(result => {
+            if (!result.isConfirmed) return;
+
+            fetch(`/pelamar/profile/organizations/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken(),
+                    'Accept': 'application/json'
+                }
+            })
+            .then(res => {
+                if (!res.ok) throw new Error();
+
+                document.getElementById(`organization-${id}`)?.remove();
+
+                showAlert({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: 'Organisasi berhasil dihapus'
+                });
+            })
+            .catch(() => {
+                showAlert({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: 'Gagal menghapus data',
+                    timer: null
+                });
+            });
+        });
     };
 
     /* ================= DELETE ================= */

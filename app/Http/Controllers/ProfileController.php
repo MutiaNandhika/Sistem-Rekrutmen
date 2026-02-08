@@ -151,36 +151,40 @@ class ProfileController extends Controller
      * =========================
      */
     public function storeExperience(Request $request)
-    {
-        $data = $request->validate([
-            'posisi' => 'required|string|max:255',
-            'perusahaan' => 'required|string|max:255',
-            'tanggal_mulai' => 'required|date',
-            'tanggal_selesai' => 'nullable|date',
-            'masih_bekerja' => 'nullable|boolean',
-            'deskripsi' => 'nullable|string',
-        ]);
+{
+    $data = $request->validate([
+        'posisi' => 'required|string|max:255',
+        'perusahaan' => 'required|string|max:255',
+        'tanggal_mulai' => 'required|date',
+        'tanggal_selesai' => 'nullable|date',
+        'masih_bekerja' => 'nullable|boolean',
+        'deskripsi' => 'nullable|string',
+        'file_bukti' => 'required|file|mimes:pdf,jpg,jpeg,png|max:4096',
+    ]);
 
-        $data['user_id'] = Auth::id();
-        $data['masih_bekerja'] = $request->boolean('masih_bekerja');
+    $data['user_id'] = Auth::id();
+    $data['masih_bekerja'] = $request->boolean('masih_bekerja');
 
-        if ($data['masih_bekerja']) {
-            $data['tanggal_selesai'] = null;
-        }
-
-        PelamarExperience::create($data);
-
-        return response()->json([
-        'message' => 'Pengalaman berhasil ditambahkan'
-        ]);
+    if ($data['masih_bekerja']) {
+        $data['tanggal_selesai'] = null;
     }
 
+    // simpan file
+    $data['file_bukti'] = $request->file('file_bukti')
+        ->store('experience_files', 'public');
 
-    public function updateExperience(Request $request, $id)
+    PelamarExperience::create($data);
+
+    return response()->json([
+        'message' => 'Pengalaman berhasil ditambahkan'
+    ]);
+}
+
+
+
+public function updateExperience(Request $request, $id)
 {
-    $user = Auth::user();
-
-    $exp = PelamarExperience::where('user_id', $user->id)
+    $exp = PelamarExperience::where('user_id', Auth::id())
         ->where('id', $id)
         ->firstOrFail();
 
@@ -191,29 +195,41 @@ class ProfileController extends Controller
         'tanggal_selesai' => 'nullable|date',
         'masih_bekerja' => 'nullable|boolean',
         'deskripsi' => 'nullable|string',
+        'file_bukti' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:4096',
     ]);
 
-    $data['masih_bekerja'] = (bool)($data['masih_bekerja'] ?? false);
+    $data['masih_bekerja'] = $request->boolean('masih_bekerja');
 
     if ($data['masih_bekerja']) {
         $data['tanggal_selesai'] = null;
     }
 
+    if ($request->hasFile('file_bukti')) {
+        if ($exp->file_bukti && Storage::disk('public')->exists($exp->file_bukti)) {
+            Storage::disk('public')->delete($exp->file_bukti);
+        }
+
+        $data['file_bukti'] = $request->file('file_bukti')
+            ->store('experience_files', 'public');
+    }
+
     $exp->update($data);
 
     return response()->json([
-        'message' => 'Pengalaman kerja berhasil diperbarui',
-        'data' => $exp,
+        'message' => 'Pengalaman kerja berhasil diperbarui'
     ]);
 }
 
-    public function deleteExperience($id)
-{
-    $user = Auth::user();
 
-    $exp = PelamarExperience::where('user_id', $user->id)
+public function deleteExperience($id)
+{
+    $exp = PelamarExperience::where('user_id', Auth::id())
         ->where('id', $id)
         ->firstOrFail();
+
+    if ($exp->file_bukti && Storage::disk('public')->exists($exp->file_bukti)) {
+        Storage::disk('public')->delete($exp->file_bukti);
+    }
 
     $exp->delete();
 
@@ -228,7 +244,7 @@ class ProfileController extends Controller
      *  EDUCATION (CRUD)
      * =========================
      */
-   public function storeEducation(Request $request)
+public function storeEducation(Request $request)
 {
     $data = $request->validate([
         'tingkat' => 'required',
@@ -239,9 +255,12 @@ class ProfileController extends Controller
         'selesai_bulan' => 'required|integer|min:1|max:12',
         'selesai_tahun' => 'required|integer',
         'informasi_tambahan' => 'nullable|string',
+        'file_bukti' => 'required|file|mimes:pdf,jpg,jpeg,png|max:4096',
     ]);
 
     $data['user_id'] = Auth::id();
+    $data['file_bukti'] = $request->file('file_bukti')
+        ->store('education_files', 'public');
 
     PelamarEducation::create($data);
 
@@ -250,12 +269,14 @@ class ProfileController extends Controller
     ]);
 }
 
-    public function updateEducation(Request $request, $id)
-    {
-        $user = Auth::user();
-        $edu = PelamarEducation::where('user_id', $user->id)->where('id', $id)->firstOrFail();
 
-        $data = $request->validate([
+public function updateEducation(Request $request, $id)
+{
+    $edu = PelamarEducation::where('user_id', Auth::id())
+        ->where('id', $id)
+        ->firstOrFail();
+
+    $data = $request->validate([
         'tingkat' => 'required',
         'nama_sekolah' => 'required',
         'bidang_studi' => 'required',
@@ -264,24 +285,34 @@ class ProfileController extends Controller
         'selesai_bulan' => 'required|integer|min:1|max:12',
         'selesai_tahun' => 'required|integer',
         'informasi_tambahan' => 'nullable|string',
+        'file_bukti' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:4096',
     ]);
 
-        $edu->update($data);
+    if ($request->hasFile('file_bukti')) {
+        if ($edu->file_bukti && Storage::disk('public')->exists($edu->file_bukti)) {
+            Storage::disk('public')->delete($edu->file_bukti);
+        }
 
-        return response()->json([
-            'message' => 'Pendidikan berhasil diperbarui',
-            'data' => $edu,
-        ]);
-
+        $data['file_bukti'] = $request->file('file_bukti')
+            ->store('education_files', 'public');
     }
 
-    public function deleteEducation($id)
-{
-    $user = Auth::user();
+    $edu->update($data);
 
-    $edu = PelamarEducation::where('user_id', $user->id)
+    return response()->json([
+        'message' => 'Pendidikan berhasil diperbarui'
+    ]);
+}
+
+public function deleteEducation($id)
+{
+    $edu = PelamarEducation::where('user_id', Auth::id())
         ->where('id', $id)
         ->firstOrFail();
+
+    if ($edu->file_bukti && Storage::disk('public')->exists($edu->file_bukti)) {
+        Storage::disk('public')->delete($edu->file_bukti);
+    }
 
     $edu->delete();
 
@@ -289,7 +320,6 @@ class ProfileController extends Controller
         'message' => 'Pendidikan berhasil dihapus'
     ]);
 }
-
 
     /**
      * =========================
@@ -411,16 +441,19 @@ public function deleteResume()
      *  ACHIEVEMENT
      * =========================
      */
-    public function storeAchievement(Request $request)
+public function storeAchievement(Request $request)
 {
     $data = $request->validate([
         'judul' => 'required|string|max:255',
         'penyelenggara' => 'required|string|max:255',
         'tahun' => 'required|integer',
         'deskripsi' => 'nullable|string',
+        'file_bukti' => 'required|file|mimes:pdf,jpg,jpeg,png|max:4096',
     ]);
 
     $data['user_id'] = Auth::id();
+    $data['file_bukti'] = $request->file('file_bukti')
+        ->store('achievement_files', 'public');
 
     PelamarAchievement::create($data);
 
@@ -431,9 +464,7 @@ public function deleteResume()
 
 public function updateAchievement(Request $request, $id)
 {
-    $user = Auth::user();
-
-    $award = PelamarAchievement::where('user_id', $user->id)
+    $award = PelamarAchievement::where('user_id', Auth::id())
         ->where('id', $id)
         ->firstOrFail();
 
@@ -442,23 +473,34 @@ public function updateAchievement(Request $request, $id)
         'penyelenggara' => 'required|string|max:255',
         'tahun' => 'required|integer',
         'deskripsi' => 'nullable|string',
+        'file_bukti' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:4096',
     ]);
+
+    if ($request->hasFile('file_bukti')) {
+        if ($award->file_bukti && Storage::disk('public')->exists($award->file_bukti)) {
+            Storage::disk('public')->delete($award->file_bukti);
+        }
+
+        $data['file_bukti'] = $request->file('file_bukti')
+            ->store('achievement_files', 'public');
+    }
 
     $award->update($data);
 
     return response()->json([
-        'message' => 'Penghargaan berhasil diperbarui',
-        'data' => $award,
+        'message' => 'Penghargaan berhasil diperbarui'
     ]);
 }
 
 public function deleteAchievement($id)
 {
-    $user = Auth::user();
-
-    $award = PelamarAchievement::where('user_id', $user->id)
+    $award = PelamarAchievement::where('user_id', Auth::id())
         ->where('id', $id)
         ->firstOrFail();
+
+    if ($award->file_bukti && Storage::disk('public')->exists($award->file_bukti)) {
+        Storage::disk('public')->delete($award->file_bukti);
+    }
 
     $award->delete();
 
@@ -483,6 +525,7 @@ public function storeCertificate(Request $request)
         'bulan_expired' => 'nullable|integer|min:1|max:12',
         'tahun_expired' => 'nullable|integer',
         'informasi_tambahan' => 'nullable|string',
+        'file_bukti' => 'required|file|mimes:pdf,jpg,jpeg,png|max:4096',
     ]);
 
     $data['user_id'] = Auth::id();
@@ -493,6 +536,9 @@ public function storeCertificate(Request $request)
         $data['tahun_expired'] = null;
     }
 
+    $data['file_bukti'] = $request->file('file_bukti')
+        ->store('certificate_files', 'public');
+
     PelamarCertificate::create($data);
 
     return response()->json([
@@ -500,11 +546,10 @@ public function storeCertificate(Request $request)
     ]);
 }
 
+
 public function updateCertificate(Request $request, $id)
 {
-    $user = Auth::user();
-
-    $cert = PelamarCertificate::where('user_id', $user->id)
+    $cert = PelamarCertificate::where('user_id', Auth::id())
         ->where('id', $id)
         ->firstOrFail();
 
@@ -517,6 +562,7 @@ public function updateCertificate(Request $request, $id)
         'bulan_expired' => 'nullable|integer|min:1|max:12',
         'tahun_expired' => 'nullable|integer',
         'informasi_tambahan' => 'nullable|string',
+        'file_bukti' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:4096',
     ]);
 
     $data['tanpa_expired'] = $request->boolean('tanpa_expired');
@@ -526,14 +572,21 @@ public function updateCertificate(Request $request, $id)
         $data['tahun_expired'] = null;
     }
 
+    if ($request->hasFile('file_bukti')) {
+        if ($cert->file_bukti && Storage::disk('public')->exists($cert->file_bukti)) {
+            Storage::disk('public')->delete($cert->file_bukti);
+        }
+
+        $data['file_bukti'] = $request->file('file_bukti')
+            ->store('certificate_files', 'public');
+    }
+
     $cert->update($data);
 
     return response()->json([
-        'message' => 'Sertifikat berhasil diperbarui',
-        'data' => $cert,
+        'message' => 'Sertifikat berhasil diperbarui'
     ]);
 }
-
 
 public function deleteCertificate($id)
 {
@@ -560,22 +613,28 @@ public function storeOrganization(Request $request)
 {
     $data = $request->validate([
         'nama_organisasi' => 'required|string|max:255',
-        'posisi' => 'required|string|max:255',
-        'mulai_bulan' => 'required|integer|min:1|max:12',
-        'mulai_tahun' => 'required|integer',
-        'masih_aktif' => 'nullable|boolean',
-        'selesai_bulan' => 'nullable|integer|min:1|max:12',
-        'selesai_tahun' => 'nullable|integer',
+        'posisi'          => 'required|string|max:255',
+        'mulai_bulan'     => 'required|integer|min:1|max:12',
+        'mulai_tahun'     => 'required|integer',
+        'masih_aktif'     => 'nullable|boolean',
+        'selesai_bulan'   => 'nullable|integer|min:1|max:12',
+        'selesai_tahun'   => 'nullable|integer',
         'informasi_tambahan' => 'nullable|string',
+        'file_bukti'      => 'required|file|mimes:pdf,jpg,jpeg,png|max:4096',
     ]);
 
     $data['user_id'] = Auth::id();
     $data['masih_aktif'] = $request->boolean('masih_aktif');
 
+    // jika masih aktif, tanggal selesai null
     if ($data['masih_aktif']) {
         $data['selesai_bulan'] = null;
         $data['selesai_tahun'] = null;
     }
+
+    // simpan file bukti
+    $data['file_bukti'] = $request->file('file_bukti')
+        ->store('organization_files', 'public');
 
     PelamarOrganization::create($data);
 
@@ -592,13 +651,14 @@ public function updateOrganization(Request $request, $id)
 
     $data = $request->validate([
         'nama_organisasi' => 'required|string|max:255',
-        'posisi' => 'required|string|max:255',
-        'mulai_bulan' => 'required|integer|min:1|max:12',
-        'mulai_tahun' => 'required|integer',
-        'masih_aktif' => 'nullable|boolean',
-        'selesai_bulan' => 'nullable|integer|min:1|max:12',
-        'selesai_tahun' => 'nullable|integer',
+        'posisi'          => 'required|string|max:255',
+        'mulai_bulan'     => 'required|integer|min:1|max:12',
+        'mulai_tahun'     => 'required|integer',
+        'masih_aktif'     => 'nullable|boolean',
+        'selesai_bulan'   => 'nullable|integer|min:1|max:12',
+        'selesai_tahun'   => 'nullable|integer',
         'informasi_tambahan' => 'nullable|string',
+        'file_bukti'      => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:4096',
     ]);
 
     $data['masih_aktif'] = $request->boolean('masih_aktif');
@@ -608,11 +668,23 @@ public function updateOrganization(Request $request, $id)
         $data['selesai_tahun'] = null;
     }
 
+    // jika upload file baru
+    if ($request->hasFile('file_bukti')) {
+
+        // hapus file lama
+        if ($org->file_bukti && Storage::disk('public')->exists($org->file_bukti)) {
+            Storage::disk('public')->delete($org->file_bukti);
+        }
+
+        // simpan file baru
+        $data['file_bukti'] = $request->file('file_bukti')
+            ->store('organization_files', 'public');
+    }
+
     $org->update($data);
 
     return response()->json([
-        'message' => 'Organisasi berhasil diperbarui',
-        'data' => $org
+        'message' => 'Organisasi berhasil diperbarui'
     ]);
 }
 
@@ -622,13 +694,17 @@ public function deleteOrganization($id)
         ->where('id', $id)
         ->firstOrFail();
 
+    // hapus file bukti
+    if ($org->file_bukti && Storage::disk('public')->exists($org->file_bukti)) {
+        Storage::disk('public')->delete($org->file_bukti);
+    }
+
     $org->delete();
 
     return response()->json([
         'message' => 'Organisasi berhasil dihapus'
     ]);
 }
-
 
     /**
      * =========================

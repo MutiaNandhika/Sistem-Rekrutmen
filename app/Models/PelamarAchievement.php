@@ -13,6 +13,7 @@ class PelamarAchievement extends Model
         'penyelenggara',
         'tahun',
         'deskripsi',
+        'file_bukti',
     ];
 
     public function user()

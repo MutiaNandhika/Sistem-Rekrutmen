@@ -61,43 +61,42 @@ class LowonganController extends Controller
     /* ======================================================
     | STORE (STEP 1)
     ====================================================== */
-    public function store(Request $request)
-    {
-        $data = $request->validate([
-            'nama_lowongan'      => 'required|string',
-            'bidang_kerja_id'    => 'required|exists:bidang_kerja,id',
-            'tipe_kerja'         => 'required|string',
-            'sistem_kerja'       => 'required|string',
-            'lokasi'             => 'required|string',
-            'penempatan'         => 'nullable|string',
-            'gaji_min'           => 'nullable|numeric',
-            'gaji_max'           => 'nullable|numeric',
-            'jenis_kelamin'      => 'nullable|in:laki-laki,perempuan,semua',
-            'usia_min'           => 'nullable|numeric',
-            'usia_max'           => 'nullable|numeric',
-            'pendidikan_minimal' => 'nullable|string',
-            'pengalaman_kerja'   => 'nullable|string',
-            'tanggal_mulai'      => 'nullable|date',
-            'tanggal_selesai'    => 'nullable|date|after_or_equal:tanggal_mulai',
-            'jumlah_diterima' => 'required|integer|min:1',
-        ]);
+public function store(Request $request)
+{
+    $data = $request->validate([
+        'nama_lowongan'      => 'required|string',
+        'bidang_kerja_id'    => 'required|exists:bidang_kerja,id',
+        'tipe_kerja'         => 'required|string',
+        'sistem_kerja'       => 'required|string',
+        'lokasi'             => 'required|string',
+        'penempatan'         => 'nullable|string',
+        'gaji_min'           => 'nullable|numeric',
+        'gaji_max'           => 'nullable|numeric',
+        'jenis_kelamin'      => 'nullable|in:laki-laki,perempuan,semua',
+        'usia_min'           => 'nullable|numeric',
+        'usia_max'           => 'nullable|numeric',
+        'pendidikan_minimal' => 'nullable|string',
+        'pengalaman_kerja'   => 'nullable|string',
+        'tanggal_mulai'      => 'required|date',
+        'tanggal_selesai'    => 'required|date|after_or_equal:tanggal_mulai',
+        'jumlah_diterima'    => 'required|integer|min:1',
+    ]);
 
-        $lowongan = Lowongan::create([
-            ...$data,
-            'hrd_id'           => auth()->id(),
-            'tanpa_batas_usia' => $request->has('tanpa_batas_usia'),
-            'status'           => 'draft',
-        ]);
+    $lowongan = Lowongan::create([
+        ...$data,
+        'hrd_id'           => auth()->id(),
+        'tanpa_batas_usia' => $request->has('tanpa_batas_usia'),
+        'status'           => 'draft',
+    ]);
 
-        if ($request->filled('skills')) {
-            $lowongan->skills()->sync($request->skills);
-        }
-
-        return redirect()
-        ->route('hrd.lowongan.deskripsi.create', $lowongan->id);
-
-
+    if ($request->filled('skills')) {
+        $lowongan->skills()->sync($request->skills);
     }
+
+    return redirect()
+        ->route('hrd.lowongan.deskripsi.create', $lowongan->id);
+}
+
 
     /* ======================================================
     | EDIT (STEP 1)
@@ -119,44 +118,42 @@ class LowonganController extends Controller
     /* ======================================================
     | UPDATE (STEP 1)
     ====================================================== */
-    public function update(Request $request, Lowongan $lowongan)
-    {
-        $this->authorizeLowongan($lowongan);
+public function update(Request $request, Lowongan $lowongan)
+{
+    $this->authorizeLowongan($lowongan);
 
-        $data = $request->validate([
-            'nama_lowongan'      => 'required|string',
-            'bidang_kerja_id'    => 'required|exists:bidang_kerja,id',
-            'tipe_kerja'         => 'required|string',
-            'sistem_kerja'       => 'required|string',
-            'lokasi'             => 'required|string',
-            'penempatan'         => 'nullable|string',
-            'gaji_min'           => 'nullable|numeric',
-            'gaji_max'           => 'nullable|numeric',
-            'jenis_kelamin'      => 'nullable|in:laki-laki,perempuan,semua',
-            'usia_min'           => 'nullable|numeric',
-            'usia_max'           => 'nullable|numeric',
-            'pendidikan_minimal' => 'nullable|string',
-            'pengalaman_kerja'   => 'nullable|string',
-            'tanggal_mulai'      => 'nullable|date',
-            'tanggal_selesai'    => 'nullable|date|after_or_equal:tanggal_mulai',
-            'jumlah_diterima' => 'required|integer|min:1',
-        ]);
+    $data = $request->validate([
+        'nama_lowongan'      => 'required|string',
+        'bidang_kerja_id'    => 'required|exists:bidang_kerja,id',
+        'tipe_kerja'         => 'required|string',
+        'sistem_kerja'       => 'required|string',
+        'lokasi'             => 'required|string',
+        'penempatan'         => 'nullable|string',
+        'gaji_min'           => 'nullable|numeric',
+        'gaji_max'           => 'nullable|numeric',
+        'jenis_kelamin'      => 'nullable|in:laki-laki,perempuan,semua',
+        'usia_min'           => 'nullable|numeric',
+        'usia_max'           => 'nullable|numeric',
+        'pendidikan_minimal' => 'nullable|string',
+        'pengalaman_kerja'   => 'nullable|string',
+        'tanggal_mulai'      => 'required|date',
+        'tanggal_selesai'    => 'required|date|after_or_equal:tanggal_mulai',
+        'jumlah_diterima'    => 'required|integer|min:1',
+    ]);
 
-        $lowongan->update([
-            ...$data,
-            'tanpa_batas_usia' => $request->has('tanpa_batas_usia'),
-              'jumlah_diterima' => $request->jumlah_diterima
-        ]);
+    $lowongan->update([
+        ...$data,
+        'tanpa_batas_usia' => $request->has('tanpa_batas_usia'),
+    ]);
 
-        if ($request->filled('skills')) {
-            $lowongan->skills()->sync($request->skills);
-        }
-
-        return redirect()
-            ->route('hrd.lowongan.deskripsi.create', $lowongan->id);
-
-
+    if ($request->filled('skills')) {
+        $lowongan->skills()->sync($request->skills);
     }
+
+    return redirect()
+        ->route('hrd.lowongan.deskripsi.create', $lowongan->id);
+}
+
 
     /* ======================================================
     | DELETE

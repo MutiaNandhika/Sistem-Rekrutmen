@@ -14,17 +14,17 @@
                 <input type="hidden" id="orgEditId">
 
                 <div class="mb-3">
-                    <label class="form-label fw-semibold">Nama Organisasi *</label>
+                    <label class="form-label fw-semibold">Nama Organisasi <span class="text-danger">*</span></label>
                     <input id="orgName" class="form-control">
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label fw-semibold">Posisi *</label>
+                    <label class="form-label fw-semibold">Posisi <span class="text-danger">*</span></label>
                     <input id="orgRole" class="form-control">
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label fw-semibold">Mulai *</label>
+                    <label class="form-label fw-semibold">Mulai <span class="text-danger">*</span></label>
                     <div class="row g-2">
                         <div class="col-6">
                             <select id="orgStartMonth" class="form-select">
@@ -82,6 +82,38 @@
                     <label class="form-label fw-semibold">Informasi Tambahan</label>
                     <textarea id="orgDesc" class="form-control"></textarea>
                 </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">
+                        File Bukti Organisasi <span class="text-danger">*</span>
+                    </label>
+                    <input type="file"
+                        id="orgFile"
+                        class="form-control"
+                        accept=".pdf,.jpg,.jpeg,.png">
+                    <div class="small text-muted mt-1">
+                        Surat tugas / sertifikat / dokumentasi (PDF / JPG / PNG)
+                    </div>
+                </div>
+
+                {{-- PREVIEW FILE SAAT EDIT --}}
+                <div class="mb-3 d-none" id="orgFilePreview">
+                    <label class="form-label fw-semibold">File Saat Ini</label>
+
+                    <div>
+                        <a href="#"
+                        target="_blank"
+                        class="fw-semibold text-primary"
+                        id="orgFileLink">
+                            <i class="bi bi-paperclip"></i> Lihat File
+                        </a>
+                    </div>
+
+                    <small class="text-muted">
+                        Upload file baru jika ingin mengganti
+                    </small>
+                </div>
+
 
             </div>
 

@@ -6,26 +6,17 @@ function csrfToken() {
 /* ================= TAMBAH / UPDATE ================= */
 window.addExperience = function () {
 
-    const editIdEl = document.getElementById('experienceEditId');
-    if (!editIdEl) return; // bukan halaman profile
+    const editId = document.getElementById('experienceEditId').value;
+    const fileInput = document.getElementById('expFile');
 
-    const id = editIdEl.value;
+    const posisi     = expPosition.value.trim();
+    const perusahaan = expCompany.value.trim();
+    const start      = expStart.value;
+    const end        = expEnd.value;
+    const desc       = expDescription.value.trim();
 
-    const payload = {
-        posisi: document.getElementById('expPosition').value.trim(),
-        perusahaan: document.getElementById('expCompany').value.trim(),
-        tanggal_mulai: document.getElementById('expStart').value
-            ? document.getElementById('expStart').value + '-01'
-            : null,
-        tanggal_selesai: document.getElementById('expEnd').value
-            ? document.getElementById('expEnd').value + '-01'
-            : null,
-        masih_bekerja: document.getElementById('expEnd').value ? 0 : 1,
-        deskripsi: document.getElementById('expDescription').value.trim(),
-    };
-
-    /* ===== VALIDASI WAJIB ===== */
-    if (!payload.posisi || !payload.perusahaan || !payload.tanggal_mulai) {
+    // ================= VALIDASI FIELD (SAMA SEPERTI SERTIFIKAT) =================
+    if (!posisi || !perusahaan || !start) {
         showAlert({
             icon: 'warning',
             title: 'Periksa Data',
@@ -35,40 +26,72 @@ window.addExperience = function () {
         return;
     }
 
-    const BASE_URL = '/pelamar/profile/experiences';
-    const url = id ? `${BASE_URL}/${id}` : BASE_URL;
-    const method = id ? 'PUT' : 'POST';
+    // ================= VALIDASI FILE (HANYA SAAT TAMBAH) =================
+    if (!editId && !fileInput.files.length) {
+        showAlert({
+            icon: 'warning',
+            title: 'File Wajib',
+            text: 'File bukti pengalaman kerja wajib diupload',
+            timer: null
+        });
+        return;
+    }
+
+    // ================= FORM DATA =================
+    const formData = new FormData();
+    formData.append('posisi', posisi);
+    formData.append('perusahaan', perusahaan);
+    formData.append(
+        'tanggal_mulai',
+        start ? start + '-01' : ''
+    );
+
+    if (end) {
+        formData.append('tanggal_selesai', end + '-01');
+        formData.append('masih_bekerja', 0);
+    } else {
+        formData.append('masih_bekerja', 1);
+    }
+
+    formData.append('deskripsi', desc);
+
+    if (fileInput.files.length) {
+        formData.append('file_bukti', fileInput.files[0]);
+    }
+
+    // spoof PUT
+    if (editId) {
+        formData.append('_method', 'PUT');
+    }
+
+    const url = editId
+        ? `/pelamar/profile/experiences/${editId}`
+        : `/pelamar/profile/experiences`;
 
     fetch(url, {
-        method,
+        method: 'POST',
         headers: {
             'X-CSRF-TOKEN': csrfToken(),
-            'Content-Type': 'application/json',
             'Accept': 'application/json'
         },
-        body: JSON.stringify(payload)
+        body: formData
     })
     .then(res => {
-        if (!res.ok) throw new Error('Request gagal');
+        if (!res.ok) throw new Error();
         return res.json();
     })
     .then(() => {
-
         showAlert({
             icon: 'success',
             title: 'Berhasil',
-            text: id
+            text: editId
                 ? 'Pengalaman kerja berhasil diperbarui'
                 : 'Pengalaman kerja berhasil ditambahkan'
         });
 
-        // reload tetap dipertahankan (sesuai flow lama)
-        setTimeout(() => {
-            location.reload();
-        }, 800);
+        setTimeout(() => location.reload(), 800);
     })
-    .catch(err => {
-        console.error(err);
+    .catch(() => {
         showAlert({
             icon: 'error',
             title: 'Gagal',
@@ -95,16 +118,24 @@ window.editExperience = function (id, exp) {
         exp.tanggal_selesai ? exp.tanggal_selesai.slice(0, 7) : '';
     document.getElementById('expDescription').value =
         exp.deskripsi ?? '';
+
+    // ===== FILE PREVIEW =====
+    const preview = document.getElementById('expFilePreview');
+    const link = document.getElementById('expFileLink');
+
+    if (exp.file_bukti) {
+        preview.classList.remove('d-none');
+        link.href = `/storage/${exp.file_bukti}`;
+    } else {
+        preview.classList.add('d-none');
+        link.href = '#';
+    }
+
+    document.getElementById('expFile').value = '';
 };
 
 /* ================= DELETE ================= */
 window.deleteExperience = function (id) {
-
-    if (typeof Swal === 'undefined') {
-        if (!confirm('Yakin ingin menghapus pengalaman ini?')) return;
-        doDelete();
-        return;
-    }
 
     Swal.fire({
         title: 'Yakin?',
@@ -115,10 +146,7 @@ window.deleteExperience = function (id) {
         cancelButtonText: 'Batal'
     }).then(result => {
         if (!result.isConfirmed) return;
-        doDelete();
-    });
 
-    function doDelete() {
         fetch(`/pelamar/profile/experiences/${id}`, {
             method: 'DELETE',
             headers: {
@@ -145,14 +173,14 @@ window.deleteExperience = function (id) {
                 timer: null
             });
         });
-    }
+    });
 };
 
-/* ================= RESET MODAL (ANTI NULL ERROR) ================= */
+/* ================= RESET MODAL ================= */
 document.addEventListener('DOMContentLoaded', () => {
 
     const modal = document.getElementById('modalPengalamanKerja');
-    if (!modal) return; // halaman lain → STOP
+    if (!modal) return;
 
     modal.addEventListener('hidden.bs.modal', () => {
 
@@ -165,5 +193,9 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('expStart').value = '';
         document.getElementById('expEnd').value = '';
         document.getElementById('expDescription').value = '';
+
+        document.getElementById('expFilePreview').classList.add('d-none');
+        document.getElementById('expFileLink').href = '#';
+        document.getElementById('expFile').value = '';
     });
 });

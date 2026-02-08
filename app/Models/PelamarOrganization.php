@@ -17,6 +17,7 @@ class PelamarOrganization extends Model
         'selesai_bulan',
         'selesai_tahun',
         'informasi_tambahan',
+        'file_bukti',
     ];
 
     protected $casts = [

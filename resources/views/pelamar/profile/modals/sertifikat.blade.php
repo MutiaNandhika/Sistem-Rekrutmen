@@ -115,6 +115,35 @@
                               maxlength="2000"></textarea>
                 </div>
 
+                {{-- FILE BUKTI SERTIFIKAT --}}
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">
+                        File Bukti Sertifikat <span class="text-danger">*</span>
+                    </label>
+                    <input type="file"
+                        id="certFile"
+                        class="form-control"
+                        accept=".pdf,.jpg,.jpeg,.png">
+                    <small class="text-muted">
+                        Sertifikat (PDF / JPG / PNG)
+                    </small>
+                </div>
+
+                {{-- PREVIEW FILE SAAT EDIT --}}
+                <div class="mb-3 d-none" id="certFilePreview">
+                    <label class="form-label fw-semibold">File Saat Ini</label>
+                    <div>
+                        <a href="#"
+                        target="_blank"
+                        id="certFileLink"
+                        class="fw-semibold text-primary">
+                            <i class="bi bi-paperclip me-1"></i>Lihat File Sertifikat
+                        </a>
+                    </div>
+                    <small class="text-muted">
+                        Upload file baru jika ingin mengganti
+                    </small>
+                </div>
             </div>
 
             {{-- FOOTER --}}

@@ -23,11 +23,6 @@
     {{-- INFO --}}
     <div class="d-flex gap-3">
 
-        {{-- ICON --}}
-        <div class="timeline-dot">
-            <i class="bi bi-briefcase-fill"></i>
-        </div>
-
         {{-- CONTENT --}}
         <div>
             <h6 class="fw-bold mb-1">{{ $exp->posisi }}</h6>
@@ -46,6 +41,15 @@
                     {{ $exp->deskripsi }}
                 </p>
             @endif
+
+            @if ($exp->file_bukti)
+                <a href="{{ asset('storage/'.$exp->file_bukti) }}"
+                target="_blank"
+                class="small text-primary fw-semibold">
+                    <i class="bi bi-paperclip"></i> Lihat File
+                </a>
+            @endif
+
         </div>
     </div>
 

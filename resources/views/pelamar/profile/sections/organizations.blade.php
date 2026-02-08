@@ -48,6 +48,18 @@
                             {{ $org->informasi_tambahan }}
                         </p>
                     @endif
+
+                    @if ($org->file_bukti)
+                        <div class="mt-1">
+                            <a href="{{ asset('storage/' . $org->file_bukti) }}"
+                            target="_blank"
+                            class="text-primary small fw-semibold">
+                                <i class="bi bi-paperclip me-1"></i>
+                                Lihat File
+                            </a>
+                        </div>
+                    @endif
+
                 </div>
 
                 <div class="dropdown">

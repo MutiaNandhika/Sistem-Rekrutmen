@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('modalPenghargaan');
     const editIdInput = document.getElementById('achievementEditId');
 
-    // bukan halaman profile → STOP
     if (!modal || !editIdInput) return;
 
     function csrfToken() {
@@ -17,14 +16,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const id = editIdInput.value;
 
-        const payload = {
-            judul: document.getElementById('awardJudul').value.trim(),
-            penyelenggara: document.getElementById('awardPenyelenggara').value.trim(),
-            tahun: document.getElementById('awardTahun').value,
-            deskripsi: document.getElementById('awardDeskripsi').value.trim(),
-        };
+        const judul = awardJudul.value.trim();
+        const penyelenggara = awardPenyelenggara.value.trim();
+        const tahun = awardTahun.value;
+        const deskripsi = awardDeskripsi.value.trim();
+        const file = document.getElementById('awardFile').files[0];
 
-        if (!payload.judul || !payload.penyelenggara || !payload.tahun) {
+        // ================= VALIDASI FIELD (SAMA SEPERTI SERTIFIKAT) =================
+        if (!judul || !penyelenggara || !tahun) {
             showAlert({
                 icon: 'warning',
                 title: 'Periksa Data',
@@ -34,33 +33,49 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        const BASE_URL = '/pelamar/profile/achievements';
-        const url = id ? `${BASE_URL}/${id}` : BASE_URL;
-        const method = id ? 'PUT' : 'POST';
+        // ================= VALIDASI FILE (HANYA SAAT TAMBAH) =================
+        if (!id && !file) {
+            showAlert({
+                icon: 'warning',
+                title: 'File Wajib',
+                text: 'File bukti penghargaan wajib diupload',
+                timer: null
+            });
+            return;
+        }
+
+        // ================= FORM DATA =================
+        const formData = new FormData();
+        formData.append('judul', judul);
+        formData.append('penyelenggara', penyelenggara);
+        formData.append('tahun', tahun);
+        formData.append('deskripsi', deskripsi);
+
+        if (file) {
+            formData.append('file_bukti', file);
+        }
+
+        if (id) {
+            formData.append('_method', 'PUT');
+        }
+
+        const url = id
+            ? `/pelamar/profile/achievements/${id}`
+            : `/pelamar/profile/achievements`;
 
         fetch(url, {
-            method,
+            method: 'POST',
             headers: {
                 'X-CSRF-TOKEN': csrfToken(),
-                'Content-Type': 'application/json',
                 'Accept': 'application/json'
             },
-            body: JSON.stringify(payload)
+            body: formData
         })
-        .then(async res => {
-            const data = await res.json();
-
-            if (!res.ok) {
-                console.error(data);
-                showAlert({
-                    icon: 'error',
-                    title: 'Gagal',
-                    text: 'Validasi gagal',
-                    timer: null
-                });
-                return;
-            }
-
+        .then(res => {
+            if (!res.ok) throw new Error();
+            return res.json();
+        })
+        .then(() => {
             showAlert({
                 icon: 'success',
                 title: 'Berhasil',
@@ -69,17 +84,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     : 'Penghargaan berhasil ditambahkan'
             });
 
-            // reload tetap dipertahankan (sesuai fitur lama)
-            setTimeout(() => {
-                location.reload();
-            }, 800);
+            setTimeout(() => location.reload(), 800);
         })
-        .catch(err => {
-            console.error(err);
+        .catch(() => {
             showAlert({
                 icon: 'error',
                 title: 'Gagal',
-                text: 'Request gagal',
+                text: 'Gagal menyimpan penghargaan',
                 timer: null
             });
         });
@@ -90,20 +101,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
         editIdInput.value = id;
 
-        document.getElementById('awardJudul').value = award.judul;
-        document.getElementById('awardPenyelenggara').value = award.penyelenggara;
-        document.getElementById('awardTahun').value = award.tahun;
-        document.getElementById('awardDeskripsi').value = award.deskripsi ?? '';
+        awardJudul.value = award.judul ?? '';
+        awardPenyelenggara.value = award.penyelenggara ?? '';
+        awardTahun.value = award.tahun ?? '';
+        awardDeskripsi.value = award.deskripsi ?? '';
+
+        const preview = document.getElementById('awardFilePreview');
+        const link = document.getElementById('awardFileLink');
+
+        if (award.file_bukti) {
+            preview.classList.remove('d-none');
+            link.href = `/storage/${award.file_bukti}`;
+        } else {
+            preview.classList.add('d-none');
+            link.href = '#';
+        }
+
+        document.getElementById('awardFile').value = '';
     };
 
     /* ================= DELETE ================= */
     window.deleteAchievement = function (id) {
-
-        if (typeof Swal === 'undefined') {
-            if (!confirm('Yakin ingin menghapus penghargaan ini?')) return;
-            doDelete();
-            return;
-        }
 
         Swal.fire({
             title: 'Yakin?',
@@ -114,10 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
             cancelButtonText: 'Batal'
         }).then(result => {
             if (!result.isConfirmed) return;
-            doDelete();
-        });
 
-        function doDelete() {
             fetch(`/pelamar/profile/achievements/${id}`, {
                 method: 'DELETE',
                 headers: {
@@ -128,8 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(res => {
                 if (!res.ok) throw new Error();
 
-                const el = document.getElementById(`achievement-${id}`);
-                if (el) el.remove();
+                document.getElementById(`achievement-${id}`)?.remove();
 
                 showAlert({
                     icon: 'success',
@@ -145,13 +159,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     timer: null
                 });
             });
-        }
+        });
     };
 
     /* ================= RESET MODAL ================= */
     modal.addEventListener('hidden.bs.modal', () => {
 
         editIdInput.value = '';
+
+        document.getElementById('awardFilePreview').classList.add('d-none');
+        document.getElementById('awardFileLink').href = '#';
+        document.getElementById('awardFile').value = '';
 
         document.querySelectorAll(
             '#modalPenghargaan input, #modalPenghargaan textarea, #modalPenghargaan select'

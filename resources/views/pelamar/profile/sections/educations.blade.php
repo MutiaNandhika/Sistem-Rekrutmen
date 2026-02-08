@@ -54,6 +54,15 @@
                 {{ $edu->informasi_tambahan }}
             </p>
         @endif
+
+        @if ($edu->file_bukti)
+            <a href="{{ asset('storage/'.$edu->file_bukti) }}"
+            target="_blank"
+            class="small fw-semibold text-primary">
+                <i class="bi bi-paperclip"></i> Lihat File
+            </a>
+        @endif
+
     </div>
 
     {{-- ACTION --}}

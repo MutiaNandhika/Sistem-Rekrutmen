@@ -30,6 +30,15 @@
                 {{ $award->deskripsi }}
             </p>
         @endif
+
+        @if ($award->file_bukti)
+            <a href="{{ asset('storage/'.$award->file_bukti) }}"
+            target="_blank"
+            class="small fw-semibold text-primary">
+                <i class="bi bi-paperclip"></i> Lihat File
+            </a>
+        @endif
+
     </div>
 
     {{-- ACTION --}}

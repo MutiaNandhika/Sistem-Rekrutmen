@@ -11,17 +11,22 @@
                 <input type="hidden" id="achievementEditId">
 
                 <div class="mb-3">
-                    <label class="form-label fw-semibold">Judul *</label>
+                    <label class="form-label fw-semibold">
+                        Judul <span class="text-danger">*</span>
+                    </label>
                     <input id="awardJudul" class="form-control">
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label fw-semibold">Penyelenggara *</label>
+                    <label class="form-label fw-semibold">
+                        Penyelenggara <span class="text-danger">*</span>
+                    </label>
                     <input id="awardPenyelenggara" class="form-control">
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label fw-semibold">Tahun *</label>
+                    <label class="form-label fw-semibold">Tahun <span class="text-danger">*</span>
+                    </label>
                     <select id="awardTahun" class="form-select">
                         <option value="">Pilih tahun</option>
                         @for ($year = date('Y'); $year >= 1980; $year--)
@@ -34,6 +39,37 @@
                     <label class="form-label fw-semibold">Deskripsi</label>
                     <textarea id="awardDeskripsi" class="form-control"></textarea>
                 </div>
+
+                {{-- FILE BUKTI --}}
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">
+                        File Bukti Penghargaan <span class="text-danger">*</span>
+                    </label>
+                    <input type="file"
+                        id="awardFile"
+                        class="form-control"
+                        accept=".pdf,.jpg,.jpeg,.png">
+                    <small class="text-muted">
+                        Sertifikat / Piagam (PDF / JPG / PNG)
+                    </small>
+                </div>
+
+                {{-- PREVIEW FILE SAAT EDIT --}}
+                <div class="mb-3 d-none" id="awardFilePreview">
+                    <label class="form-label fw-semibold">File Saat Ini</label>
+                    <div>
+                        <a href="#"
+                        id="awardFileLink"
+                        target="_blank"
+                        class="fw-semibold text-primary">
+                            <i class="bi bi-paperclip"></i> Lihat File
+                        </a>
+                    </div>
+                    <small class="text-muted">
+                        Upload file baru jika ingin mengganti
+                    </small>
+                </div>
+
             </div>
 
             <div class="modal-footer border-0">

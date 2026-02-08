@@ -57,6 +57,34 @@
                     ></textarea>
                 </div>
 
+                {{-- FILE BUKTI --}}
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">
+                        File Bukti Pengalaman
+                        <span class="text-danger">*</span>
+                    </label>
+                    <input type="file"
+                        class="form-control"
+                        id="expFile"
+                        accept=".pdf,.jpg,.jpeg,.png">
+                    <small class="text-muted">
+                        Surat pengalaman kerja / kontrak / paklaring (PDF / JPG / PNG)
+                    </small>
+                </div>
+                {{-- FILE BUKTI (PREVIEW SAAT EDIT) --}}
+                <div class="mb-3 d-none" id="expFilePreview">
+                    <label class="form-label fw-semibold">File Saat Ini</label>
+                    <div>
+                        <a href="#" target="_blank"
+                        class="text-primary fw-semibold"
+                        id="expFileLink">
+                            <i class="bi bi-paperclip"></i> Lihat File
+                        </a>
+                    </div>
+                    <small class="text-muted">
+                        Upload file baru jika ingin mengganti
+                    </small>
+                </div>
             </div>
 
             {{-- FOOTER --}}

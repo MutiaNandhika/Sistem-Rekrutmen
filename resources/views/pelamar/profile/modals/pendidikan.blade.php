@@ -117,6 +117,35 @@
                     </div>
                 </div>
 
+                {{-- FILE BUKTI --}}
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">
+                        File Bukti Pendidikan <span class="text-danger">*</span>
+                    </label>
+                    <input type="file"
+                        id="eduFile"
+                        class="form-control"
+                        accept=".pdf,.jpg,.jpeg,.png">
+                    <small class="text-muted">
+                        Ijazah / Transkrip (PDF / JPG / PNG)
+                    </small>
+                </div>
+
+                {{-- PREVIEW FILE SAAT EDIT --}}
+                <div class="mb-3 d-none" id="eduFilePreview">
+                    <label class="form-label fw-semibold">File Saat Ini</label>
+                    <div>
+                        <a href="#" target="_blank"
+                        class="fw-semibold text-primary"
+                        id="eduFileLink">
+                            <i class="bi bi-paperclip"></i> Lihat File
+                        </a>
+                    </div>
+                    <small class="text-muted">
+                        Upload file baru jika ingin mengganti
+                    </small>
+                </div>
+
             </div>
 
             {{-- FOOTER --}}

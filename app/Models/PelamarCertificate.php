@@ -17,6 +17,7 @@ class PelamarCertificate extends Model
         'bulan_expired',
         'tahun_expired',
         'informasi_tambahan',
+        'file_bukti'
     ];
 
     protected $casts = [

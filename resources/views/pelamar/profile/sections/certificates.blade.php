@@ -29,27 +29,37 @@
         <h6 class="fw-bold mb-1">{{ $cert->nama_sertifikat }}</h6>
         <div class="text-muted small">
     {{-- TANGGAL TERBIT --}}
-    @if ($cert->bulan_terbit)
-        {{ $bulan[$cert->bulan_terbit] ?? '' }}
-    @endif
-    {{ $cert->tahun_terbit }}
+            @if ($cert->bulan_terbit)
+                {{ $bulan[$cert->bulan_terbit] ?? '' }}
+            @endif
+            {{ $cert->tahun_terbit }}
 
-    {{-- BATAS MASA AKTIF --}}
-    @if ($cert->tanpa_expired)
-        • Tidak kedaluwarsa
-    @elseif ($cert->bulan_expired && $cert->tahun_expired)
-        –
-        {{ $bulan[$cert->bulan_expired] ?? '' }}
-        {{ $cert->tahun_expired }}
-    @endif
-</div>
-
-
+            {{-- BATAS MASA AKTIF --}}
+            @if ($cert->tanpa_expired)
+                • Tidak kedaluwarsa
+            @elseif ($cert->bulan_expired && $cert->tahun_expired)
+                –
+                {{ $bulan[$cert->bulan_expired] ?? '' }}
+                {{ $cert->tahun_expired }}
+            @endif
+        </div>
         @if ($cert->informasi_tambahan)
             <p class="text-muted small mb-0">
                 {{ $cert->informasi_tambahan }}
             </p>
         @endif
+
+        @if ($cert->file_bukti)
+            <div class="mt-1">
+                <a href="{{ asset('storage/' . $cert->file_bukti) }}"
+                target="_blank"
+                class="text-primary small fw-semibold">
+                    <i class="bi bi-paperclip me-1"></i>
+                    Lihat File
+                </a>
+            </div>
+        @endif
+
     </div>
 
     <div class="dropdown">
