@@ -54,7 +54,7 @@ public function update(Request $request, Application $application)
             Mail::to($application->user->email)
             ->queue(
                 (new StatusLamaranMail($application))
-                    ->delay(now()->addSeconds(3))
+                    ->delay(now()->addSeconds(5))
             );
         }
 
@@ -127,7 +127,7 @@ public function update(Request $request, Application $application)
         Mail::to($application->user->email)
             ->queue(
                 (new StatusLamaranMail($application))
-                    ->delay(now()->addSeconds(3))
+                    ->delay(now()->addSeconds(5))
             );
 
 

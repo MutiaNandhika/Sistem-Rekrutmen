@@ -211,23 +211,34 @@ public function update(Request $request, Lowongan $lowongan)
     /* ======================================================
     | UPDATE STATUS (AJAX)
     ====================================================== */
-    public function updateStatus(Request $request, Lowongan $lowongan)
-    {
-        $this->authorizeLowongan($lowongan);
+public function updateStatus(Request $request, Lowongan $lowongan)
+{
+    $this->authorizeLowongan($lowongan);
 
-        $request->validate([
-            'status' => 'required|in:draft,aktif,nonaktif,arsip'
-        ]);
+    $request->validate([
+        'status' => 'required|in:draft,aktif,nonaktif,arsip'
+    ]);
 
-        $lowongan->update([
-            'status' => $request->status
-        ]);
-
+    // ❌ BLOKIR AKTIFKAN LOWONGAN YANG SUDAH EXPIRED
+    if (
+        $request->status === 'aktif' &&
+        $lowongan->isExpired()
+    ) {
         return response()->json([
-            'success' => true,
-            'status'  => $lowongan->status
-        ]);
+            'success' => false,
+            'message' => 'Lowongan sudah melewati batas pendaftaran. Silakan perpanjang tanggal terlebih dahulu.'
+        ], 422);
     }
+
+    $lowongan->update([
+        'status' => $request->status
+    ]);
+
+    return response()->json([
+        'success' => true,
+        'status'  => $lowongan->status
+    ]);
+}
 
     /* ======================================================
     | SHOW

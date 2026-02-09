@@ -6,6 +6,8 @@
 
     <title>@yield('title', 'Dashboard HRD')</title>
 
+    <link rel="icon" type="image/png" href="{{ asset('mda.png') }}">
+
     {{-- Bootstrap --}}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">

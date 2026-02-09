@@ -95,11 +95,11 @@
 {{-- LIST LOWONGAN --}}
 <div class="lowongan-list">
     @forelse ($lowongans as $lowongan)
-    <div class="lowongan-card {{ $lowongan->
-        status === 'aktif' ? 'active' : '' }}"
+    <div class="lowongan-card {{ $lowongan->status === 'aktif' ? 'active' : '' }}"
      data-id="{{ $lowongan->id }}"
      data-status="{{ $lowongan->status }}"
-     data-updated="{{ $lowongan->updated_at }}">
+     data-updated="{{ $lowongan->updated_at }}"
+     data-expired="{{ $lowongan->isExpired() ? 'true' : 'false' }}">
 
         {{-- HEADER --}}
         <div class="lowongan-header d-flex justify-content-between align-items-start">
@@ -349,6 +349,7 @@ function updateCounters() {
 
 function renderDropdown(card) {
     const status = card.dataset.status;
+    const expired = card.dataset.expired === 'true';
     const menu = card.querySelector('.action-menu');
 
     if (!menu) return;
@@ -357,54 +358,66 @@ function renderDropdown(card) {
 
     if (status === 'draft') {
         html = `
-    <li>
-        <button type="button" class="dropdown-item"
-                        onclick="publishLowongan(this)">
-            Publish
-        </button>
-    </li>
-    `;
+        <li>
+            <button type="button" class="dropdown-item"
+                    onclick="publishLowongan(this)">
+                Publish
+            </button>
+        </li>
+        `;
     }
 
     if (status === 'aktif') {
         html = `
-    <li>
-        <button type="button" class="dropdown-item text-warning"
-                        onclick="deactivateLowongan(this)">
-            Nonaktifkan
-        </button>
-    </li>
-    `;
+        <li>
+            <button type="button" class="dropdown-item text-warning"
+                    onclick="deactivateLowongan(this)">
+                Nonaktifkan
+            </button>
+        </li>
+        `;
     }
 
-    if (status === 'nonaktif') {
+    // ✅ HANYA BOLEH AKTIFKAN JIKA TIDAK EXPIRED
+    if (status === 'nonaktif' && !expired) {
         html = `
-    <li>
-        <button type="button" class="dropdown-item text-success"
-                        onclick="activateLowongan(this)">
-            Aktifkan
-        </button>
-    </li>
-    <li>
-        <button type="button" class="dropdown-item text-muted"
-                        onclick="archiveLowongan(this)">
-            Arsip
-        </button>
-    </li>
-    `;
+        <li>
+            <button type="button" class="dropdown-item text-success"
+                    onclick="activateLowongan(this)">
+                Aktifkan
+            </button>
+        </li>
+        <li>
+            <button type="button" class="dropdown-item text-muted"
+                    onclick="archiveLowongan(this)">
+                Arsip
+            </button>
+        </li>
+        `;
+    }
+
+    // ❌ JIKA EXPIRED → HANYA ARSIP
+    if (status === 'nonaktif' && expired) {
+        html = `
+        <li>
+            <button type="button" class="dropdown-item text-muted"
+                    onclick="archiveLowongan(this)">
+                Arsip
+            </button>
+        </li>
+        `;
     }
 
     if (status === 'arsip') {
-    html = `
-    <li>
-        <button type="button"
-                    class="dropdown-item text-success"
+        html = `
+        <li>
+            <button type="button" class="dropdown-item text-success"
                     onclick="restoreLowongan(this)">
-            Kembalikan ke Draft
-        </button>
-    </li>
-    `;
-}
+                Kembalikan ke Draft
+            </button>
+        </li>
+        `;
+    }
 
     menu.innerHTML = html;
 }

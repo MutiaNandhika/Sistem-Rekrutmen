@@ -130,8 +130,10 @@
     <tr>
         <td>
             <ul>
-                @foreach($user->pelamarSkills as $skill)
-                    <li>{{ $skill->nama_skill }}</li>
+                @foreach($user->pelamarSkills as $pelamarSkill)
+                    @if($pelamarSkill->skill)
+                        <li>{{ $pelamarSkill->skill->nama_skill }}</li>
+                    @endif
                 @endforeach
             </ul>
         </td>
