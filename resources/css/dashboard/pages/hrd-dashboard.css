@@ -1,14 +1,6 @@
-/* ==================================================
-   HRD DASHBOARD – SCOPED CSS
-================================================== */
-
 .page-hrd-dashboard {
     font-family: 'Inter', sans-serif;
 }
-
-/* =======================
-   DASHBOARD CARD
-======================= */
 
 .page-hrd-dashboard .dashboard-card {
     background: #f8f9fb;
@@ -30,10 +22,6 @@
 .page-hrd-dashboard .dashboard-card-body {
     padding: 16px;
 }
-
-/* =======================
-   STAT CARD
-======================= */
 
 .page-hrd-dashboard .dashboard-stat-card {
     background-color: #ffffff;
@@ -63,10 +51,6 @@
     font-weight: 700;
     color: #212529;
 }
-
-/* =======================
-   TIMELINE (JIKA ADA)
-======================= */
 
 .page-hrd-dashboard .timeline {
     list-style: none;
@@ -112,10 +96,6 @@
     display: none;
 }
 
-/* =======================
-   MODAL (KHUSUS HRD)
-======================= */
-
 .page-hrd-dashboard .modal-content {
     box-shadow: 0 10px 30px rgba(0,0,0,.15);
 }
@@ -129,10 +109,6 @@
 .page-hrd-dashboard .modal h5 {
     font-size: 20px;
 }
-
-/* =======================
-   RESPONSIVE
-======================= */
 
 @media (max-width: 768px) {
 

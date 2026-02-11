@@ -1,13 +1,8 @@
-/* ==================================================
-   SELEKSI KANDIDAT (SAW) – SCOPED & FLAT TABLE
-================================================== */
-
 .page-seleksi-kandidat .kandidat-table {
     width: 100%;
     border-collapse: collapse;
 }
 
-/* HEADER */
 .page-seleksi-kandidat .kandidat-table thead th {
     background: #111827;
     color: #ffffff;
@@ -18,7 +13,6 @@
     border-bottom: 1px solid #e5e7eb;
 }
 
-/* ROW */
 .page-seleksi-kandidat .kandidat-table tbody tr {
     background: #ffffff;
     border-bottom: 1px solid #e5e7eb; /* 🔥 GARIS TIPIS */
@@ -34,10 +28,6 @@
     white-space: nowrap;
     vertical-align: middle;
 }
-
-/* =============================
-   DATATABLES (SCOPED)
-============================= */
 
 .page-seleksi-kandidat .dataTables_wrapper {
     width: 100%;
@@ -66,14 +56,10 @@
     border: none !important;
 }
 
-/* =============================
-   MOBILE (TETAP TABLE)
-============================= */
-
 @media (max-width: 768px) {
 
     .page-seleksi-kandidat .kandidat-table {
-        min-width: 900px; /* kolom banyak */
+        min-width: 900px; 
     }
 
     .page-seleksi-kandidat .kandidat-table thead th {

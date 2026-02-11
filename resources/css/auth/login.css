@@ -1,7 +1,3 @@
-/* ==================================================
-   AUTH BASE LAYOUT
-================================================== */
-
 .auth-body {
     min-height: 100vh;
     display: flex;
@@ -17,11 +13,6 @@
     padding: 60px 20px 40px;
 }
 
-
-/* ==================================================
-   AUTH CARD (LOGIN & REGISTER)
-================================================== */
-
 .login-wrapper {
     width: 100%;
     max-width: 960px;
@@ -32,11 +23,6 @@
     overflow: hidden;
     box-shadow: 0 16px 48px rgba(0, 0, 0, 0.08);
 }
-
-
-/* ==================================================
-   LEFT SIDE (FORM)
-================================================== */
 
 .login-left {
     padding: 56px;
@@ -51,11 +37,6 @@
     margin-bottom: 28px;
     color: #111827;
 }
-
-
-/* ==================================================
-   FORM LABEL & INPUT
-================================================== */
 
 .login-left label {
     display: block;
@@ -82,11 +63,6 @@
     box-shadow: 0 0 0 3px rgba(240, 78, 35, 0.12);
 }
 
-
-/* ==================================================
-   PASSWORD FIELD
-================================================== */
-
 .password-wrapper {
     position: relative;
     display: flex;
@@ -110,11 +86,6 @@
     color: #f04e23;
 }
 
-
-/* ==================================================
-   REMEMBER & FORGOT
-================================================== */
-
 .login-options {
     display: flex;
     justify-content: space-between;
@@ -123,7 +94,6 @@
     font-size: 14px;
 }
 
-/* checkbox alignment */
 .login-options label {
     display: flex;
     align-items: center;
@@ -147,11 +117,6 @@
     text-decoration: underline;
 }
 
-
-/* ==================================================
-   BUTTON LOGIN
-================================================== */
-
 .btn-login {
     width: 100%;
     height: 48px;
@@ -171,11 +136,6 @@
     transform: translateY(-1px);
 }
 
-
-/* ==================================================
-   ALERT
-================================================== */
-
 .login-alert {
     background: #fff3cd;
     border: 1px solid #ffeeba;
@@ -185,11 +145,6 @@
     margin-bottom: 16px;
     font-size: 14px;
 }
-
-
-/* ==================================================
-   RIGHT SIDE (INFO PANEL)
-================================================== */
 
 .login-right {
     background: linear-gradient(135deg, #ff6a00, #f04e23);
@@ -213,11 +168,6 @@
     line-height: 1.6;
 }
 
-
-/* ==================================================
-   BUTTON REGISTER
-================================================== */
-
 .btn-register {
     display: inline-block;
     padding: 12px 36px;
@@ -234,11 +184,6 @@
     background: #ffffff;
     color: #f04e23;
 }
-
-
-/* ==================================================
-   RESPONSIVE
-================================================== */
 
 @media (max-width: 992px) {
     .login-wrapper {
@@ -259,22 +204,12 @@
     }
 }
 
-
-/* ==================================================
-   AUTH FOOTER
-================================================== */
-
 .auth-footer {
     text-align: center;
     padding: 20px 16px;
     font-size: 13px;
     color: #9ca3af;
 }
-
-
-/* ==================================================
-   SWITCH LOGIN / REGISTER (MOBILE ONLY)
-================================================== */
 
 .auth-switch {
     display: none;
@@ -299,11 +234,6 @@
         display: block;
     }
 }
-
-
-/* ==================================================
-   HIDE BROWSER PASSWORD ICON
-================================================== */
 
 input[type="password"]::-ms-reveal,
 input[type="password"]::-ms-clear {

@@ -1,19 +1,15 @@
-/* ===============================
-   ABOUT PAGE
-================================ */
+/* About Page Styles */
 
 .about-section {
     background: #ffffff;
 }
 
-/* TITLE */
 .about-title {
     font-weight: 800;
     font-size: clamp(32px, 4vw, 42px);
     color: #0f172a;
 }
 
-/* TEXT */
 .about-text {
     font-size: 16px;
     line-height: 1.8;
@@ -21,21 +17,15 @@
     margin-bottom: 18px;
 }
 
-/* LOGO */
 .about-logo {
     max-width: 360px;
     width: 100%;
 }
 
-/* ===============================
-   VISION & MISSION
-================================ */
-
 .vision-mission-section {
     background: #ffffff;
 }
 
-/* TITLE */
 .vm-title {
     font-weight: 800;
     font-size: 28px;
@@ -47,14 +37,12 @@
     color: #f04e23;
 }
 
-/* TEXT */
 .vm-text {
     font-size: 16px;
     line-height: 1.8;
     color: #475569;
 }
 
-/* LIST */
 .vm-list {
     padding-left: 20px;
 }
@@ -66,7 +54,6 @@
     margin-bottom: 10px;
 }
 
-/* IMAGE WRAPPER */
 .vm-image {
     width: 260px;
     height: 320px;

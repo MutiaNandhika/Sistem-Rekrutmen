@@ -1,8 +1,5 @@
-/* ===============================
-   JOBS PAGE
-================================ */
+/* Jobs Page Styles */
 
-/* TITLE */
 .jobs-title {
     font-weight: 700;
     font-size: 32px;
@@ -13,14 +10,12 @@
     color: #6c757d;
 }
 
-/* ================= FILTER ================= */
 .jobs-filter {
     background: #f4f6f8;
     padding: 28px;
     border-radius: 22px;
 }
 
-/* Input & Select */
 .jobs-input {
     height: 48px;
     border-radius: 12px;
@@ -32,10 +27,6 @@
     border-color: #f04e23;
     box-shadow: 0 0 0 0.15rem rgba(240, 78, 35, 0.15);
 }
-
-/* =========================
-   JOBS FILTER BUTTON
-========================= */
 
 .btn-jobs-search {
     background: linear-gradient(135deg, #f97316, #fb923c);
@@ -51,12 +42,11 @@
     color: #fff;
 }
 
-/* RESET BUTTON */
 .btn-jobs-reset {
     width: 52px;
     border-radius: 10px;
     border: 1.5px solid #e5e7eb;
-    background: #ffffff;
+    background: #fff;
     color: #6b7280;
     transition: all .2s ease;
 }
@@ -71,24 +61,18 @@
     border-color: #d1d5db;
 }
 
-/* ================= JOB CARD ================= */
 .job-card {
     background: #fff;
     border-radius: 20px;
     padding: 24px;
-
-    /* ORANGE STROKE */
     border: 1.5px solid rgba(240, 78, 35, 0.35);
-
     display: flex;
     flex-direction: column;
     gap: 14px;
     height: 100%;
-
     transition: all 0.25s ease;
 }
 
-/* Hover effect */
 .job-card:hover {
     border-color: #f04e23;
     box-shadow: 0 12px 30px rgba(240, 78, 35, 0.18);
@@ -100,7 +84,6 @@
     font-size: 18px;
 }
 
-/* Tags */
 .job-tags .badge {
     background: #e9ecef;
     color: #333;
@@ -108,7 +91,6 @@
     margin-right: 6px;
 }
 
-/* Meta */
 .job-meta {
     font-size: 14px;
     color: #6c757d;
@@ -118,26 +100,20 @@
     margin-right: 6px;
 }
 
-/* ================= DETAIL BUTTON ================= */
 .btn-job-detail {
     margin-top: auto;
     align-self: flex-end;
-
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 6px;
-
     background: linear-gradient(135deg, #ff6a00, #f04e23);
     color: #fff !important;
-
     border-radius: 999px;
     padding: 8px 22px;
-
     font-size: 13px;
     font-weight: 600;
     text-decoration: none;
-
     border: none;
     transition: all 0.25s ease;
 }

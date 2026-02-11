@@ -1,7 +1,3 @@
-/* ==============================
-   FORCE WHITE BACKGROUND
-============================== */
-
 body,
 main,
 .container-fluid,
@@ -9,19 +5,12 @@ main,
     background-color: #ffffff !important;
 }
 
-/* ==============================
-   ADMIN DASHBOARD LAYOUT
-============================== */
-
 .admin-dashboard {
-    padding-top: 70px;   /* JARAK AMAN DARI NAVBAR */
+    padding-top: 70px;
     padding-bottom: 50px;
     background-color: #ffffff;
 }
 
-/* ==============================
-   HEADER SECTION
-============================== */
 .admin-title {
     font-size: 26px;
     font-weight: 700;
@@ -29,22 +18,14 @@ main,
     margin: 0;
 }
 
-/* ==============================
-   LOGO
-============================== */
-
 .admin-logo-wrapper {
-    margin-top: 0; /* jangan pakai jarak kecil */
+    margin-top: 0;
 }
 
 .admin-logo {
     max-width: 300px;
     display: block;
 }
-
-/* ==============================
-   DESCRIPTION
-============================== */
 
 .admin-description {
     font-size: 15px;
@@ -55,10 +36,6 @@ main,
 .admin-description p {
     margin-bottom: 18px;
 }
-
-/* ==============================
-   RESPONSIVE
-============================== */
 
 @media (max-width: 768px) {
     .admin-dashboard {

@@ -1,19 +1,13 @@
-/* ========================
-   IMPORTS (WAJIB PALING ATAS)
-======================== */
+/* Imports */
 @import "./base/variables.css";
 @import "./dashboard/dashboard.css";
 
-/* ========================
-   TAILWIND
-======================== */
+/* Tailwind*/
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* ========================
-   GLOBAL CUSTOM
-======================== */
+/* Global Custom */
 body {
     font-family: var(--font-main);
     color: #111827;

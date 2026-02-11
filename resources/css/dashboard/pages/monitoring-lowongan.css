@@ -1,12 +1,6 @@
-/* ==================================================
-   MONITORING LOWONGAN – SCOPED CSS
-================================================== */
-
 .page-monitoring-lowongan .dataTables_wrapper {
     font-size: 14px;
 }
-
-/* ================= HEADER ================= */
 
 .page-monitoring-lowongan table.dataTable thead th {
     background: #0f172a;
@@ -18,15 +12,12 @@
     white-space: nowrap;
 }
 
-/* SORT ICON */
 .page-monitoring-lowongan table.dataTable thead th.sorting::after,
 .page-monitoring-lowongan table.dataTable thead th.sorting_asc::after,
 .page-monitoring-lowongan table.dataTable thead th.sorting_desc::after {
     color: #94a3b8;
     opacity: 1;
 }
-
-/* ================= BODY ================= */
 
 .page-monitoring-lowongan table.dataTable tbody td {
     padding: 12px 14px;
@@ -37,8 +28,6 @@
 .page-monitoring-lowongan table.dataTable tbody tr {
     border-bottom: 1px solid #e5e7eb;
 }
-
-/* ================= PAGINATION ================= */
 
 .page-monitoring-lowongan .dataTables_paginate .paginate_button {
     border-radius: 6px !important;
@@ -51,14 +40,10 @@
     border: none !important;
 }
 
-/* ================= INFO ================= */
-
 .page-monitoring-lowongan .dataTables_info {
     font-size: 13px;
     color: #374151;
 }
-
-/* ================= SEARCH ================= */
 
 .page-monitoring-lowongan .dataTables_filter input {
     border-radius: 6px;
@@ -66,16 +51,12 @@
     padding: 6px 10px;
 }
 
-/* ================= BADGE ================= */
-
 .page-monitoring-lowongan .badge {
     font-size: 12px;
     padding: 4px 10px;
     border-radius: 999px;
     font-weight: 600;
 }
-
-/* ================= MOBILE RAPIH (TABLE TETAP TABLE) ================= */
 
 @media (max-width: 768px) {
 

@@ -8,7 +8,6 @@
     overflow: hidden;
 }
 
-/* efek gelombang halus (opsional tapi mirip contoh) */
 .client-banner-inner::after {
     content: '';
     position: absolute;
@@ -20,12 +19,10 @@
     );
 }
 
-/* text helper */
 .text-white-75 {
     color: rgba(255,255,255,0.75);
 }
 
-/* CARD LOGO */
 .client-logo-dark {
     background: #4a1d0f;
     border-radius: 18px;
@@ -36,7 +33,6 @@
     justify-content: center;
 }
 
-/* LOGO */
 .client-logo-dark img {
     max-height: 42px;
     max-width: 100%;

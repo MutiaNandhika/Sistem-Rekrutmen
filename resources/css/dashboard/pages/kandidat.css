@@ -1,16 +1,7 @@
-/* ==================================================
-   KELOLA KANDIDAT – FLAT TABLE (SCOPED)
-   MIRIP MANAJEMEN AKUN
-================================================== */
-
 .page-kelola-kandidat .kandidat-table {
     width: 100%;
     border-collapse: collapse; /* 🔥 penting */
 }
-
-/* =============================
-   HEADER
-============================= */
 
 .page-kelola-kandidat .kandidat-table thead th {
     background: #0f172a;
@@ -21,13 +12,9 @@
     white-space: nowrap;
 }
 
-/* =============================
-   ROW & CELL
-============================= */
-
 .page-kelola-kandidat .kandidat-table tbody tr {
     background: #ffffff;
-    border-bottom: 1px solid #e5e7eb; /* ✅ garis tipis */
+    border-bottom: 1px solid #e5e7eb; 
 }
 
 .page-kelola-kandidat .kandidat-table tbody td {
@@ -37,17 +24,12 @@
     white-space: nowrap;
 }
 
-/* ❌ PASTIKAN TIDAK ADA CARD EFFECT */
 .page-kelola-kandidat .kandidat-table,
 .page-kelola-kandidat .kandidat-table tbody tr {
     box-shadow: none !important;
     border-radius: 0 !important;
     border-spacing: 0 !important;
 }
-
-/* =============================
-   DATATABLES (SCOPED)
-============================= */
 
 .page-kelola-kandidat .dataTables_wrapper {
     width: 100%;
@@ -74,10 +56,6 @@
     color: #fff !important;
     border: none !important;
 }
-
-/* =================================================
-   MOBILE – TETAP TABLE (HORIZONTAL SCROLL)
-================================================= */
 
 @media (max-width: 768px) {
 

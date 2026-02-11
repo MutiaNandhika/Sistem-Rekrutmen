@@ -14,7 +14,6 @@
     transition: all 0.2s ease;
 }
 
-/* ORANGE */
 .btn-dashboard.orange {
     background-color: #f97316;
     color: #fff;
@@ -25,7 +24,6 @@
     color: #fff;
 }
 
-/* BLUE */
 .btn-dashboard.blue {
     background-color: #2563eb;
     color: #fff;
@@ -36,7 +34,6 @@
     color: #fff;
 }
 
-/* SMALL */
 .btn-dashboard.sm {
     padding: 6px 14px;
     font-size: 13px;

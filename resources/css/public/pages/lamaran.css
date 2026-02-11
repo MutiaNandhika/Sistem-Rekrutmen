@@ -1,20 +1,19 @@
-/* ================= LAMARAN TIMELINE ================= */
+/* Timeline Lamaran */
 
 .lamaran-wrapper {
     max-width: 900px;
-    margin: 0 auto;        
+    margin: 0 auto;
 }
 
 .lamaran-title {
-    margin-top: 32px;   /* JARAK DARI NAVBAR */
-    margin-bottom: 24px;
+    margin: 32px 0 24px;
     font-weight: 700;
 }
+
 .main-content {
     padding-top: 24px;
 }
 
-/* TIMELINE */
 .lamaran-timeline {
     position: relative;
     padding-left: 48px;
@@ -30,7 +29,6 @@
     background: #d1d5db;
 }
 
-/* ITEM */
 .timeline-item {
     display: flex;
     gap: 20px;
@@ -38,7 +36,6 @@
     position: relative;
 }
 
-/* DOT */
 .timeline-dot {
     width: 32px;
     height: 32px;
@@ -59,7 +56,6 @@
     color: #065f46;
 }
 
-/* CONTENT */
 .timeline-content h6 {
     font-weight: 700;
     margin-bottom: 8px;
@@ -73,7 +69,6 @@
     margin-bottom: 12px;
 }
 
-/* BOX */
 .timeline-box {
     border: 1px solid #fb923c;
     background: #fff7ed;
@@ -83,13 +78,11 @@
     margin-bottom: 12px;
 }
 
-/* ACTIONS */
 .timeline-actions {
     display: flex;
     gap: 12px;
 }
 
-/* RESPONSIVE */
 @media (max-width: 768px) {
     .lamaran-timeline {
         padding-left: 36px;

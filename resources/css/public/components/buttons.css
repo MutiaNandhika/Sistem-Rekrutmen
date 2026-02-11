@@ -1,4 +1,3 @@
-/* ================= BUTTON TOGGLE ================= */
 .btn-toggle {
     display: inline-flex;
     align-items: center;
@@ -13,7 +12,6 @@
     transform: rotate(180deg);
 }
 
-/* ================= CTA BUTTON ================= */
 .btn-cta-primary {
     background-color: #f04e23 !important;
     color: #fff !important;
@@ -32,7 +30,6 @@
     color: #fff !important;
 }
 
-/* Secondary */
 .btn-cta-secondary {
     background: transparent !important;
     color: #fff !important;
@@ -51,7 +48,6 @@
     color: #f04e23 !important;
 }
 
-/* PRIMARY BUTTON */
 .btn-cta-primary {
     background-color: #f04e23;
     color: #ffffff;
@@ -67,7 +63,6 @@
     color: #ffffff;
 }
 
-/* SECONDARY BUTTON */
 .btn-cta-secondary {
     background: transparent;
     color: #ffffff;

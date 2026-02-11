@@ -1,20 +1,14 @@
-/* ==================================================
-   MANAJEMEN AKUN – SCOPED CSS
-================================================== */
-
 .page-manajemen-akun .dataTables_wrapper {
     font-size: 14px;
     width: 100%;
     overflow-x: auto;
 }
 
-/* TABLE BASE */
 .page-manajemen-akun table.dataTable {
     width: 100% !important;
     min-width: 600px;
 }
 
-/* HEADER */
 .page-manajemen-akun table.dataTable thead th {
     background: #0f172a;
     color: #ffffff;
@@ -24,7 +18,6 @@
     white-space: nowrap;
 }
 
-/* SORT ICON */
 .page-manajemen-akun table.dataTable thead th.sorting::after,
 .page-manajemen-akun table.dataTable thead th.sorting_asc::after,
 .page-manajemen-akun table.dataTable thead th.sorting_desc::after {
@@ -32,19 +25,16 @@
     opacity: 1;
 }
 
-/* BODY */
 .page-manajemen-akun table.dataTable tbody td {
     padding: 12px 14px;
     vertical-align: middle;
     white-space: nowrap;
 }
 
-/* ROW BORDER */
 .page-manajemen-akun table.dataTable tbody tr {
     border-bottom: 1px solid #e5e7eb;
 }
 
-/* PAGINATION */
 .page-manajemen-akun .dataTables_paginate .paginate_button {
     border-radius: 6px !important;
     padding: 4px 10px !important;
@@ -56,13 +46,11 @@
     border: none !important;
 }
 
-/* INFO */
 .page-manajemen-akun .dataTables_info {
     font-size: 13px;
     color: #374151;
 }
 
-/* SEARCH */
 .page-manajemen-akun .dataTables_filter {
     margin-bottom: 12px;
 }
@@ -73,17 +61,12 @@
     padding: 6px 10px;
 }
 
-/* BADGE */
 .page-manajemen-akun .badge {
     font-size: 12px;
     padding: 4px 10px;
     border-radius: 999px;
     font-weight: 600;
 }
-
-/* ==================================================
-   MOBILE OPTIMIZATION (TABEL, BUKAN CARD)
-================================================== */
 
 @media (max-width: 768px) {
 
@@ -106,7 +89,6 @@
         padding: 10px 12px;
     }
 
-    /* KOLOM AKSI */
     .page-manajemen-akun table.dataTable tbody td:last-child {
         text-align: center;
     }
