@@ -18,7 +18,6 @@ window.addEducation = function () {
     const endY    = eduEndYear.value;
     const info    = eduInfo.value.trim();
 
-    // ================= VALIDASI FIELD (SAMA SEPERTI SERTIFIKAT) =================
     if (!tingkat || !sekolah || !jurusan || !startM || !startY || !endM || !endY) {
         showAlert({
             icon: 'warning',
@@ -29,7 +28,6 @@ window.addEducation = function () {
         return;
     }
 
-    // ================= VALIDASI FILE (HANYA SAAT TAMBAH) =================
     if (!editId && !fileInput.files.length) {
         showAlert({
             icon: 'warning',
@@ -40,7 +38,6 @@ window.addEducation = function () {
         return;
     }
 
-    // ================= FORM DATA =================
     const formData = new FormData();
     formData.append('tingkat', tingkat);
     formData.append('nama_sekolah', sekolah);

@@ -34,12 +34,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 showAlert({ text: data.message });
 
-                // 🔑 update avatar dari BACKEND
                 if (avatar && data.photo_url) {
                     avatar.src = data.photo_url + '?t=' + Date.now();
                 }
 
-                // 🔥 tampilkan tombol hapus jika foto ada
                 if (btnRemove && data.photo_url && data.photo_url !== DEFAULT_AVATAR) {
                     btnRemove.classList.remove('d-none');
                 }
@@ -103,7 +101,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (photoInput) photoInput.value = '';
                 if (removeEl) removeEl.value = 1;
 
-                // 🔥 langsung sembunyikan tombol hapus
                 btnRemove.classList.add('d-none');
             };
 

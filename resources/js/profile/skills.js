@@ -1,8 +1,3 @@
-/* =========================================
-   SKILLS.JS – FINAL VERSION
-========================================= */
-
-/* ===== CSRF TOKEN ===== */
 function csrfToken() {
     const meta = document.querySelector('meta[name="csrf-token"]');
     return meta ? meta.getAttribute('content') : '';
@@ -22,9 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let skills = [];
 
-    /* =========================
-       TAMBAH DARI DROPDOWN
-    ========================= */
+    /* Tambah dari dropdown */
     select.addEventListener('change', () => {
         const id = select.value;
         const text = select.options[select.selectedIndex].text;
@@ -39,9 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
         select.value = '';
     });
 
-    /* =========================
-       TAMBAH MANUAL (ENTER)
-    ========================= */
+    /* Tambah manual enter */
     input.addEventListener('keydown', e => {
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -57,16 +48,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    /* =========================
-       ADD SKILL (INTERNAL)
-    ========================= */
+    /* Add Skill */
     function addSkill(skill) {
 
-        // Bersihkan konflik
         if (skill.skill_id) delete skill.nama_skill;
         if (skill.nama_skill) delete skill.skill_id;
 
-        // Batas 10
         if (skills.length >= 10) {
             showAlert({
                 icon: 'warning',
@@ -85,9 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
         render();
     }
 
-    /* =========================
-       RENDER PREVIEW
-    ========================= */
+    /* Render Preview */
     function render() {
         preview.innerHTML = '';
 
@@ -106,9 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
         render();
     };
 
-    /* =========================
-       SIMPAN KE SERVER
-    ========================= */
+    /* Simpan ke server */
     btnSave.addEventListener('click', async () => {
 
         if (!skills.length) {
@@ -121,7 +104,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            // 🔥 kirim satu per satu (AMAN & SIMPLE)
             for (const skill of skills) {
                 const res = await fetch('/pelamar/profile/skills', {
                     method: 'POST',
@@ -158,9 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    /* =========================
-       RESET SAAT MODAL DIBUKA
-    ========================= */
+    /* Reset saat modal dibuka */
     modal.addEventListener('show.bs.modal', () => {
         skills = [];
         render();
@@ -196,7 +176,6 @@ window.deleteSkill = async function (id) {
             throw new Error('Gagal hapus skill');
         }
 
-        // hapus dari UI
         const el = document.getElementById(`skill-${id}`);
         if (el) el.remove();
 
@@ -217,4 +196,3 @@ window.deleteSkill = async function (id) {
         });
     }
 };
-

@@ -525,8 +525,8 @@ public function storeCertificate(Request $request)
         'bulan_terbit' => 'required|integer|min:1|max:12',
         'tahun_terbit' => 'required|integer',
         'tanpa_expired' => 'nullable|boolean',
-        'bulan_expired' => 'nullable|integer|min:1|max:12',
-        'tahun_expired' => 'nullable|integer',
+        'bulan_expired' => 'required_unless:tanpa_expired,1|nullable|integer|min:1|max:12',
+        'tahun_expired' => 'required_unless:tanpa_expired,1|nullable|integer',
         'informasi_tambahan' => 'nullable|string',
         'file_bukti' => 'required|file|mimes:pdf,jpg,jpeg,png|max:4096',
     ]);
@@ -562,8 +562,8 @@ public function updateCertificate(Request $request, $id)
         'bulan_terbit' => 'required|integer|min:1|max:12',
         'tahun_terbit' => 'required|integer',
         'tanpa_expired' => 'nullable|boolean',
-        'bulan_expired' => 'nullable|integer|min:1|max:12',
-        'tahun_expired' => 'nullable|integer',
+        'bulan_expired' => 'required_unless:tanpa_expired,1|nullable|integer|min:1|max:12',
+        'tahun_expired' => 'required_unless:tanpa_expired,1|nullable|integer',
         'informasi_tambahan' => 'nullable|string',
         'file_bukti' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:4096',
     ]);
@@ -620,8 +620,8 @@ public function storeOrganization(Request $request)
         'mulai_bulan'     => 'required|integer|min:1|max:12',
         'mulai_tahun'     => 'required|integer',
         'masih_aktif'     => 'nullable|boolean',
-        'selesai_bulan'   => 'nullable|integer|min:1|max:12',
-        'selesai_tahun'   => 'nullable|integer',
+        'selesai_bulan'   => 'required_unless:masih_aktif,1|nullable|integer|min:1|max:12',
+        'selesai_tahun'   => 'required_unless:masih_aktif,1|nullable|integer',
         'informasi_tambahan' => 'nullable|string',
         'file_bukti'      => 'required|file|mimes:pdf,jpg,jpeg,png|max:4096',
     ]);
@@ -658,8 +658,8 @@ public function updateOrganization(Request $request, $id)
         'mulai_bulan'     => 'required|integer|min:1|max:12',
         'mulai_tahun'     => 'required|integer',
         'masih_aktif'     => 'nullable|boolean',
-        'selesai_bulan'   => 'nullable|integer|min:1|max:12',
-        'selesai_tahun'   => 'nullable|integer',
+        'selesai_bulan'   => 'required_unless:masih_aktif,1|nullable|integer|min:1|max:12',
+        'selesai_tahun'   => 'required_unless:masih_aktif,1|nullable|integer',
         'informasi_tambahan' => 'nullable|string',
         'file_bukti'      => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:4096',
     ]);

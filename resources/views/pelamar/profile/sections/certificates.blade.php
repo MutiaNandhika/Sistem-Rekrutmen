@@ -24,34 +24,48 @@
 
         @if ($user->pelamarCertificates->count())
             @foreach ($user->pelamarCertificates as $cert)
+
+                @php
+                    $bulanTerbit  = $bulan[$cert->bulan_terbit] ?? null;
+                    $bulanExpired = $bulan[$cert->bulan_expired] ?? null;
+                @endphp
+
                 <div
                     class="education-item d-flex justify-content-between align-items-start mb-3"
                     id="certificate-{{ $cert->id }}">
 
                     <div>
-                        <h6 class="fw-bold mb-1">{{ $cert->nama_sertifikat }}</h6>
+                        <h6 class="fw-bold mb-1">
+                            {{ $cert->nama_sertifikat }}
+                        </h6>
 
+                        {{-- ================= TANGGAL ================= --}}
                         <div class="text-muted small">
-                            @if ($cert->bulan_terbit)
-                                {{ $bulan[$cert->bulan_terbit] ?? '' }}
-                            @endif
-                            {{ $cert->tahun_terbit }}
 
+                            {{-- Tanggal Terbit --}}
+                            @if($bulanTerbit)
+                                {{ $bulanTerbit }} {{ $cert->tahun_terbit }}
+                            @else
+                                {{ $cert->tahun_terbit }}
+                            @endif
+
+                            {{-- Expired --}}
                             @if ($cert->tanpa_expired)
                                 • Tidak kedaluwarsa
-                            @elseif ($cert->bulan_expired && $cert->tahun_expired)
-                                –
-                                {{ $bulan[$cert->bulan_expired] ?? '' }}
-                                {{ $cert->tahun_expired }}
+                            @elseif ($bulanExpired && $cert->tahun_expired)
+                                – {{ $bulanExpired }} {{ $cert->tahun_expired }}
                             @endif
+
                         </div>
 
+                        {{-- Informasi tambahan --}}
                         @if ($cert->informasi_tambahan)
                             <p class="text-muted small mb-0">
                                 {{ $cert->informasi_tambahan }}
                             </p>
                         @endif
 
+                        {{-- File Bukti --}}
                         @if ($cert->file_bukti)
                             <div class="mt-1">
                                 <a
@@ -65,6 +79,7 @@
                         @endif
                     </div>
 
+                    {{-- Dropdown --}}
                     <div class="dropdown">
                         <button
                             class="btn btn-sm btn-light"
@@ -93,6 +108,7 @@
                     </div>
 
                 </div>
+
             @endforeach
         @else
             <p class="text-muted small">

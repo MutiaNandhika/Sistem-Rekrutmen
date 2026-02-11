@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    /* ================= GUARD ================= */
     const input   = document.getElementById('resumeInput');
     const preview = document.getElementById('resumePreview');
     const frame   = document.getElementById('resumeFrame');
@@ -12,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return meta ? meta.getAttribute('content') : '';
     }
 
-    /* ================= PREVIEW ================= */
+    /* Preview */
     input.addEventListener('change', () => {
         const file = input.files[0];
         if (!file) return;
@@ -45,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    /* ================= UPLOAD ================= */
+    /* Upload */
     window.saveResume = function () {
 
         if (!input.files.length) {
@@ -95,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    /* ================= DELETE ================= */
+    /* Delete */
     window.deleteResume = function () {
 
         if (typeof Swal === 'undefined') {
@@ -132,8 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     title: 'Berhasil',
                     text: 'Resume berhasil dihapus'
                 });
-
-                // reload tetap dipertahankan
+                
                 setTimeout(() => {
                     location.reload();
                 }, 800);

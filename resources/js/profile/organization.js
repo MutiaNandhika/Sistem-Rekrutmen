@@ -1,3 +1,5 @@
+console.log('organization.js loaded');
+
 document.addEventListener('DOMContentLoaded', () => {
 
     const modal = document.getElementById('modalOrganisasi');
@@ -19,21 +21,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const previewLink = document.getElementById('orgFileLink');
 
     function csrfToken() {
-        return document.querySelector('meta[name="csrf-token"]')?.content;
+        const meta = document.querySelector('meta[name="csrf-token"]');
+        return meta ? meta.getAttribute('content') : '';
     }
 
-    /* ================= SIMPAN / UPDATE ================= */
+    /* ================= TAMBAH / UPDATE ================= */
     window.saveOrg = function () {
 
         const id = editIdInput.value;
 
-        const nama  = orgName.value.trim();
+        const nama   = orgName.value.trim();
         const posisi = orgRole.value.trim();
         const bulan  = orgStartMonth.value;
         const tahun  = orgStartYear.value;
+        const noEnd  = orgOngoing.checked;
+        const endM   = orgEndMonth.value;
+        const endY   = orgEndYear.value;
+        const desc   = orgDesc.value.trim();
         const file   = orgFile.files[0];
 
-        // ================= VALIDASI FIELD (SAMA SEPERTI SERTIFIKAT) =================
         if (!nama || !posisi || !bulan || !tahun) {
             showAlert({
                 icon: 'warning',
@@ -44,7 +50,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // ================= VALIDASI FILE (HANYA SAAT TAMBAH) =================
         if (!id && !file) {
             showAlert({
                 icon: 'warning',
@@ -55,18 +60,29 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // ================= FORM DATA =================
+        if (!noEnd) {
+            if (!endM || !endY) {
+                showAlert({
+                    icon: 'warning',
+                    title: 'Periksa Data',
+                    text: 'Tanggal selesai wajib diisi',
+                    timer: null
+                });
+                return;
+            }
+        }
+
         const formData = new FormData();
         formData.append('nama_organisasi', nama);
         formData.append('posisi', posisi);
         formData.append('mulai_bulan', bulan);
         formData.append('mulai_tahun', tahun);
-        formData.append('masih_aktif', orgOngoing.checked ? 1 : 0);
-        formData.append('informasi_tambahan', orgDesc.value.trim());
+        formData.append('masih_aktif', noEnd ? 1 : 0);
+        formData.append('informasi_tambahan', desc);
 
-        if (!orgOngoing.checked) {
-            formData.append('selesai_bulan', orgEndMonth.value || '');
-            formData.append('selesai_tahun', orgEndYear.value || '');
+        if (!noEnd) {
+            formData.append('selesai_bulan', endM);
+            formData.append('selesai_tahun', endY);
         }
 
         if (file) {
@@ -76,7 +92,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const BASE_URL = '/pelamar/profile/organizations';
         const url = id ? `${BASE_URL}/${id}` : BASE_URL;
 
-        if (id) formData.append('_method', 'PUT');
+        if (id) {
+            formData.append('_method', 'PUT');
+        }
 
         fetch(url, {
             method: 'POST',
@@ -86,11 +104,20 @@ document.addEventListener('DOMContentLoaded', () => {
             },
             body: formData
         })
-        .then(res => {
-            if (!res.ok) throw new Error();
-            return res.json();
-        })
-        .then(() => {
+        .then(async res => {
+            const data = await res.json();
+
+            if (!res.ok) {
+                console.error(data);
+                showAlert({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: data.message || 'Validasi gagal',
+                    timer: null
+                });
+                return;
+            }
+
             showAlert({
                 icon: 'success',
                 title: 'Berhasil',
@@ -105,11 +132,12 @@ document.addEventListener('DOMContentLoaded', () => {
             showAlert({
                 icon: 'error',
                 title: 'Gagal',
-                text: 'Gagal menyimpan data',
+                text: 'Request gagal',
                 timer: null
             });
         });
     };
+
 
     /* ================= EDIT ================= */
     window.editOrganization = function (id, org) {
@@ -121,17 +149,11 @@ document.addEventListener('DOMContentLoaded', () => {
         orgDesc.value       = org.informasi_tambahan ?? '';
         orgStartMonth.value = org.mulai_bulan;
         orgStartYear.value  = org.mulai_tahun;
-        orgOngoing.checked = !!org.masih_aktif;
+        orgOngoing.checked  = !!org.masih_aktif;
 
-        if (!org.masih_aktif) {
-            orgEndMonth.value = org.selesai_bulan;
-            orgEndYear.value  = org.selesai_tahun;
-        } else {
-            orgEndMonth.value = '';
-            orgEndYear.value  = '';
-        }
+        orgEndMonth.value = org.masih_aktif ? '' : (org.selesai_bulan ?? '');
+        orgEndYear.value  = org.masih_aktif ? '' : (org.selesai_tahun ?? '');
 
-        // preview file
         if (org.file_bukti) {
             previewBox.classList.remove('d-none');
             previewLink.href = `/storage/${org.file_bukti}`;
@@ -141,57 +163,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         orgFile.value = '';
-
-        new bootstrap.Modal(modal).show();
     };
 
-    /* ================= DELETE ================= */
-    window.deleteOrganization = function (id) {
-
-        Swal.fire({
-            title: 'Yakin?',
-            text: 'Data organisasi akan dihapus',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Ya, hapus',
-            cancelButtonText: 'Batal'
-        }).then(result => {
-            if (!result.isConfirmed) return;
-
-            fetch(`/pelamar/profile/organizations/${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'X-CSRF-TOKEN': csrfToken(),
-                    'Accept': 'application/json'
-                }
-            })
-            .then(res => {
-                if (!res.ok) throw new Error();
-
-                document.getElementById(`organization-${id}`)?.remove();
-
-                showAlert({
-                    icon: 'success',
-                    title: 'Berhasil',
-                    text: 'Organisasi berhasil dihapus'
-                });
-            })
-            .catch(() => {
-                showAlert({
-                    icon: 'error',
-                    title: 'Gagal',
-                    text: 'Gagal menghapus data',
-                    timer: null
-                });
-            });
-        });
-    };
 
     /* ================= DELETE ================= */
     window.deleteOrganization = function (id) {
 
         if (typeof Swal === 'undefined') {
-            if (!confirm('Yakin ingin menghapus data ini?')) return;
+            if (!confirm('Yakin ingin menghapus organisasi ini?')) return;
             doDelete();
             return;
         }
@@ -219,7 +198,8 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(res => {
                 if (!res.ok) throw new Error();
 
-                document.getElementById(`organization-${id}`)?.remove();
+                const el = document.getElementById(`organization-${id}`);
+                if (el) el.remove();
 
                 showAlert({
                     icon: 'success',
@@ -231,11 +211,32 @@ document.addEventListener('DOMContentLoaded', () => {
                 showAlert({
                     icon: 'error',
                     title: 'Gagal',
-                    text: 'Gagal menghapus data',
+                    text: 'Gagal menghapus organisasi',
                     timer: null
                 });
             });
         }
     };
+
+
+    /* ================= RESET MODAL ================= */
+    modal.addEventListener('hidden.bs.modal', () => {
+
+        editIdInput.value = '';
+
+        document.querySelectorAll(
+            '#modalOrganisasi input, #modalOrganisasi textarea, #modalOrganisasi select'
+        ).forEach(el => {
+            if (el.type === 'checkbox') {
+                el.checked = false;
+            } else {
+                el.value = '';
+            }
+        });
+
+        // reset preview
+        if (previewBox) previewBox.classList.add('d-none');
+        if (previewLink) previewLink.href = '#';
+    });
 
 });

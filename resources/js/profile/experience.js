@@ -15,7 +15,6 @@ window.addExperience = function () {
     const end        = expEnd.value;
     const desc       = expDescription.value.trim();
 
-    // ================= VALIDASI FIELD (SAMA SEPERTI SERTIFIKAT) =================
     if (!posisi || !perusahaan || !start) {
         showAlert({
             icon: 'warning',
@@ -26,7 +25,6 @@ window.addExperience = function () {
         return;
     }
 
-    // ================= VALIDASI FILE (HANYA SAAT TAMBAH) =================
     if (!editId && !fileInput.files.length) {
         showAlert({
             icon: 'warning',
@@ -37,7 +35,6 @@ window.addExperience = function () {
         return;
     }
 
-    // ================= FORM DATA =================
     const formData = new FormData();
     formData.append('posisi', posisi);
     formData.append('perusahaan', perusahaan);
@@ -59,7 +56,6 @@ window.addExperience = function () {
         formData.append('file_bukti', fileInput.files[0]);
     }
 
-    // spoof PUT
     if (editId) {
         formData.append('_method', 'PUT');
     }
@@ -119,7 +115,6 @@ window.editExperience = function (id, exp) {
     document.getElementById('expDescription').value =
         exp.deskripsi ?? '';
 
-    // ===== FILE PREVIEW =====
     const preview = document.getElementById('expFilePreview');
     const link = document.getElementById('expFileLink');
 

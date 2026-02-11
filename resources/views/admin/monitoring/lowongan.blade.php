@@ -176,7 +176,6 @@ $(document).ready(function () {
         }
     });
 
-    {{-- 🔍 FILTER HRD / PIC --}}
     $('#filterHrd').on('change', function () {
         const value = $(this).val();
         table.column(3).search(value).draw();

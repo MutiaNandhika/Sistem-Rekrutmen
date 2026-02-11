@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    /* ================= GUARD ================= */
     const modal = document.getElementById('modalPenghargaan');
     const editIdInput = document.getElementById('achievementEditId');
 
@@ -22,7 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const deskripsi = awardDeskripsi.value.trim();
         const file = document.getElementById('awardFile').files[0];
 
-        // ================= VALIDASI FIELD (SAMA SEPERTI SERTIFIKAT) =================
         if (!judul || !penyelenggara || !tahun) {
             showAlert({
                 icon: 'warning',
@@ -33,7 +31,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // ================= VALIDASI FILE (HANYA SAAT TAMBAH) =================
         if (!id && !file) {
             showAlert({
                 icon: 'warning',
@@ -44,7 +41,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // ================= FORM DATA =================
         const formData = new FormData();
         formData.append('judul', judul);
         formData.append('penyelenggara', penyelenggara);
