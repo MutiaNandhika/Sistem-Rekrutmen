@@ -4,7 +4,7 @@
 
 @section('content')
 
-<div class="page-monitoring-kandidat"><!-- 🔑 WRAPPER SCOPING -->
+<div class="page-monitoring-kandidat">
 
 <div class="d-flex justify-content-between mb-4">
     <h4 class="fw-bold">Monitoring & Statistik Rekrutmen</h4>
@@ -29,7 +29,7 @@
     </div>
 </div>
 
-{{-- STAT CARDS --}}
+{{-- Stat Card --}}
 <div class="row g-4 mb-4">
     <div class="col-md-3">
         <div class="dashboard-stat-card">
@@ -46,7 +46,7 @@
     </div>
 </div>
 
-{{-- CHART --}}
+{{-- Chart --}}
 <div class="row g-4">
     <div class="col-lg-4">
         <div class="dashboard-card">
@@ -76,7 +76,7 @@
     </div>
 </div>
 
-</div> {{-- END WRAPPER --}}
+</div> 
 @endsection
 
 @push('scripts')
@@ -145,13 +145,13 @@ function renderCharts(data) {
     });
 }
 
-// AUTO REFRESH
+// Auto Refresh
 function startAutoRefresh() {
     clearInterval(refreshTimer);
     refreshTimer = setInterval(loadAdminDashboard, 10000);
 }
 
-// EVENT
+// Event
 tahunSelect.addEventListener('change', () => {
     loadAdminDashboard();
     startAutoRefresh();
@@ -162,7 +162,7 @@ bulanSelect.addEventListener('change', () => {
     startAutoRefresh();
 });
 
-// INIT
+// init
 loadAdminDashboard();
 startAutoRefresh();
 </script>

@@ -7,29 +7,32 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
-    <!-- Fonts -->
+    {{-- Fonts --}}
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet">
 
-    <!-- Scripts -->
+    {{-- App Assets --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
+
 <body class="font-sans antialiased bg-gray-100">
 
-<div class="min-h-screen">
-    {{-- NAVIGATION --}}
-    @include('layouts.public')
+    <div class="min-h-screen">
 
-    {{-- HEADER (OPTIONAL) --}}
-    @yield('header')
+        @include('layouts.public')
 
-    {{-- PAGE CONTENT --}}
-    <main class="py-8">
-        @yield('content')
-    </main>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-@include('partials.alert')
+        @yield('header')
+
+        {{-- Main Content --}}
+        <main class="py-8">
+            @yield('content')
+        </main>
+
+    </div>
+
+    {{-- Alert --}}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    @include('partials.alert')
 
 </body>
 </html>

@@ -15,7 +15,6 @@
                        class="form-control mb-3"
                        accept="application/pdf">
 
-                {{-- PREVIEW PDF --}}
                 <div id="resumePreview"
                      class="border rounded"
                      style="height:400px; display:none;">

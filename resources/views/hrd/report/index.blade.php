@@ -10,7 +10,7 @@
     Data dapat diunduh dalam bentuk PDF atau Excel untuk keperluan evaluasi dan pelaporan.
 </p>
 
-{{-- ================= FILTER ================= --}}
+{{-- Filter --}}
 <div class="card mb-4">
     <div class="card-body">
         <form method="GET" class="row g-3 align-items-end">
@@ -48,7 +48,7 @@
     </div>
 </div>
 
-{{-- ================= STATISTIK ================= --}}
+{{-- Statistik --}}
 <div class="row g-3 mb-4">
 
     @php
@@ -77,7 +77,7 @@
     <div class="col-md-3">
         <div class="card text-center border-success">
             <div class="card-body">
-                <div class="text-muted small">Persentase Lolos</div>
+                <div class="text-muted small">Persentase yang Lolos</div>
                 <h5 class="fw-bold text-success">
                     {{ $persenLolos }}%
                 </h5>
@@ -87,8 +87,7 @@
 
 </div>
 
-
-{{-- ================= EXPORT ================= --}}
+{{-- Export --}}
 <div class="d-flex gap-2">
     <a href="{{ route('hrd.report.pdf', request()->query()) }}"
        target="_blank"

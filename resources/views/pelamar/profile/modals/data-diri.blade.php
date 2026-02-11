@@ -5,13 +5,11 @@
             <form id="formDataDiri" enctype="multipart/form-data">
                 @csrf
 
-                {{-- HEADER --}}
                 <div class="modal-header border-0">
                     <h5 class="modal-title fw-bold">Data Diri</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
 
-                {{-- BODY --}}
                 <div class="modal-body px-4">
 
                     <div class="text-center mb-4">
@@ -36,7 +34,7 @@
                             @if($user->pelamarProfile?->photo)
                                 <button type="button"
                                         id="btnRemovePhoto"
-                                        class="btn btn-sm btn-outline-danger">
+                                        class="btn btn-sm btn-outline-danger {{ !$user->pelamarProfile?->photo ? 'd-none' : '' }}">
                                     Hapus Foto
                                 </button>
                             @endif
@@ -48,14 +46,12 @@
                             accept="image/*"
                             hidden>
 
-                        {{-- penanda hapus foto --}}
                         <input type="hidden"
                             name="remove_photo"
                             id="removePhoto"
                             value="0">
                     </div>
 
-                    {{-- NAMA LENGKAP --}}
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Nama Lengkap</label>
                         <input type="text"
@@ -65,7 +61,6 @@
                                required>
                     </div>
 
-                    {{-- WHATSAPP --}}
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Nomor WhatsApp</label>
                         <input type="text"
@@ -77,7 +72,6 @@
                         </small>
                     </div>
 
-                    {{-- EMAIL --}}
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Email</label>
                         <input type="email"
@@ -87,7 +81,6 @@
                         <small class="text-muted">Email telah diverifikasi</small>
                     </div>
 
-                    {{-- LOKASI & USIA --}}
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label class="form-label fw-semibold">Lokasi</label>
@@ -106,7 +99,6 @@
                         </div>
                     </div>
 
-                    {{-- PENDIDIKAN & GENDER --}}
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label class="form-label fw-semibold">Pendidikan Terakhir</label>
@@ -134,7 +126,6 @@
 
                 </div>
 
-                {{-- FOOTER --}}
                 <div class="modal-footer border-0">
                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">
                         Batal

@@ -2,15 +2,17 @@
 
 @section('title', 'Lupa Password')
 
+@push('auth-css')
+@vite(['resources/css/auth/forgot-password.css'])
+@endpush
+
 @section('content')
-<div class="login-wrapper">
+<div class="login-wrapper forgot-password-page">
 
-    {{-- LEFT --}}
     <div class="login-left">
-
         <h1 class="login-title">Lupa Password?</h1>
 
-        <p style="margin-bottom:24px;font-size:14px;color:#6b7280;">
+        <p class="login-desc">
             Masukkan email Anda. Kami akan mengirimkan link untuk reset password.
         </p>
 
@@ -24,29 +26,28 @@
             @csrf
 
             <label>Email</label>
-            <input type="email"
-                   name="email"
-                   class="login-input"
-                   placeholder="Masukkan email Anda"
-                   required>
+            <input
+                type="email"
+                name="email"
+                class="login-input"
+                placeholder="Masukkan email Anda"
+                required
+            >
 
             @error('email')
-                <small style="color:red">{{ $message }}</small>
+                <small class="text-error">{{ $message }}</small>
             @enderror
 
-            <button class="btn-login">
+            <button type="submit" class="btn-login">
                 Kirim Link Reset
             </button>
         </form>
 
-        <a href="{{ route('login') }}"
-           style="margin-top:16px;display:inline-block;font-size:14px;">
+        <a href="{{ route('login') }}" class="back-login">
             ← Kembali ke Login
         </a>
-
     </div>
 
-    {{-- RIGHT --}}
     <div class="login-right">
         <div>
             <h2>Butuh Bantuan?</h2>

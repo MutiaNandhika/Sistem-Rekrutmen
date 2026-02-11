@@ -1,25 +1,20 @@
-{{-- ================= MODAL PENDIDIKAN ================= --}}
 <div class="modal fade" id="modalPendidikan" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content border-0 rounded-4 shadow">
 
-            {{-- HEADER --}}
             <div class="modal-header border-0">
                 <h6 class="modal-title fw-bold">Tambah Pendidikan</h6>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
 
-            {{-- BODY --}}
             <div class="modal-body px-4">
                 <input type="hidden" id="educationEditId">
 
-                {{-- INFO --}}
                 <div class="alert alert-light small">
                     Harap diperhatikan: Daftar sekolah/perguruan tinggi
                     yang disediakan hanya yang berlaku di Indonesia.
                 </div>
 
-                {{-- TINGKAT PENDIDIKAN --}}
                 <div class="mb-3">
                     <label class="form-label fw-semibold">
                         Tingkat Pendidikan <span class="text-danger">*</span>
@@ -35,7 +30,6 @@
                     </select>
                 </div>
 
-                {{-- NAMA SEKOLAH --}}
                 <div class="mb-3">
                     <label class="form-label fw-semibold">
                         Nama Sekolah / Perguruan Tinggi <span class="text-danger">*</span>
@@ -43,7 +37,6 @@
                     <input id="eduSchool" class="form-control">
                 </div>
 
-                {{-- BIDANG STUDI --}}
                 <div class="mb-3">
                     <label class="form-label fw-semibold">
                         Bidang Studi <span class="text-danger">*</span>
@@ -51,7 +44,6 @@
                     <input id="eduMajor" class="form-control">
                 </div>
 
-                {{-- DIMULAI --}}
                 <div class="mb-3">
                     <label class="form-label fw-semibold">
                         Dimulai <span class="text-danger">*</span>
@@ -78,7 +70,6 @@
                     </div>
                 </div>
 
-                {{-- BERAKHIR --}}
                 <div class="mb-3">
                     <label class="form-label fw-semibold">
                         Berakhir <span class="text-danger">*</span>
@@ -106,7 +97,6 @@
                     </div>
                 </div>
 
-                {{-- INFORMASI TAMBAHAN --}}
                 <div class="mb-3">
                     <label class="form-label fw-semibold">
                         Informasi Tambahan (Opsional)
@@ -117,7 +107,6 @@
                     </div>
                 </div>
 
-                {{-- FILE BUKTI --}}
                 <div class="mb-3">
                     <label class="form-label fw-semibold">
                         File Bukti Pendidikan <span class="text-danger">*</span>
@@ -131,7 +120,6 @@
                     </small>
                 </div>
 
-                {{-- PREVIEW FILE SAAT EDIT --}}
                 <div class="mb-3 d-none" id="eduFilePreview">
                     <label class="form-label fw-semibold">File Saat Ini</label>
                     <div>
@@ -148,7 +136,6 @@
 
             </div>
 
-            {{-- FOOTER --}}
             <div class="modal-footer border-0">
                 <button type="button"
                         class="btn btn-light"

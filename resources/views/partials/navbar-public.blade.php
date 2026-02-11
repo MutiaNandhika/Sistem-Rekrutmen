@@ -11,7 +11,6 @@
 
         <div class="collapse navbar-collapse" id="navbarPublic">
 
-            {{-- MENU TENGAH --}}
             <ul class="navbar-nav mx-auto gap-md-4">
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('public.home') ? 'active fw-semibold' : '' }}"

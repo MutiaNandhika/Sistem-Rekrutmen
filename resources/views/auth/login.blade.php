@@ -52,7 +52,7 @@
                 </button>
             </form>
 
-            {{-- MOBILE ONLY SWITCH --}}
+            {{-- Khusus Mobile --}}
             <div class="auth-switch">
                 Belum punya akun?
                 <a href="{{ route('register') }}">Daftar di sini</a>
@@ -61,7 +61,7 @@
 
     </div>
 
-    {{-- RIGHT (DESKTOP ONLY) --}}
+    {{-- Khusus Desktop --}}
     <div class="login-right">
         <div>
             <h2>Hallo!</h2>

@@ -40,62 +40,61 @@
                      alt="MDA Partner"
                      class="about-logo img-fluid">
             </div>
-{{-- VISI & MISI --}}
-<section class="vision-mission-section py-5">
-    <div class="container">
 
-        {{-- VISI --}}
-        <div class="row align-items-center g-5 mb-5">
+            {{-- VISI & MISI --}}
+            <section class="vision-mission-section py-5">
+                <div class="container">
 
-            <div class="col-lg-4 text-center">
-                <div class="vm-image vm-left">
-                    <img src="{{ asset('images/vision.png') }}"
-                         alt="Visi MDA Partner"
-                         class="img-fluid">
+                    <div class="row align-items-center g-5 mb-5">
+
+                        <div class="col-lg-4 text-center">
+                            <div class="vm-image vm-left">
+                                <img src="{{ asset('images/vision.png') }}"
+                                    alt="Visi MDA Partner"
+                                    class="img-fluid">
+                            </div>
+                        </div>
+
+                        <div class="col-lg-8">
+                            <h3 class="vm-title">
+                                Visi <span>MDA Partner</span>
+                            </h3>
+
+                            <p class="vm-text">
+                                Menjadi partner strategis yang memberikan solusi tenaga kerja
+                                profesional dan inovatif untuk mendukung pertumbuhan serta
+                                keberlangsungan bisnis di berbagai industri.
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <div class="row align-items-center g-5 flex-lg-row-reverse">
+
+                        <div class="col-lg-4 text-center">
+                            <div class="vm-image vm-right">
+                                <img src="{{ asset('images/mission.png') }}"
+                                    alt="Misi MDA Partner"
+                                    class="img-fluid">
+                            </div>
+                        </div>
+
+                        <div class="col-lg-8">
+                            <h3 class="vm-title">
+                                Misi <span>MDA Partner</span>
+                            </h3>
+
+                            <ul class="vm-list">
+                                <li>Menyediakan SDM berkualitas dan kompeten sesuai kebutuhan industri.</li>
+                                <li>Memberikan layanan ketenagakerjaan yang efisien, inovatif, dan berorientasi pada klien.</li>
+                                <li>Mendukung pertumbuhan karir fokus pada tim bisnis melalui pengelolaan SDM yang profesional.</li>
+                            </ul>
+                        </div>
+
+                    </div>
+
                 </div>
-            </div>
-
-            <div class="col-lg-8">
-                <h3 class="vm-title">
-                    Visi <span>MDA Partner</span>
-                </h3>
-
-                <p class="vm-text">
-                    Menjadi partner strategis yang memberikan solusi tenaga kerja
-                    profesional dan inovatif untuk mendukung pertumbuhan serta
-                    keberlangsungan bisnis di berbagai industri.
-                </p>
-            </div>
-
-        </div>
-
-        {{-- MISI --}}
-        <div class="row align-items-center g-5 flex-lg-row-reverse">
-
-            <div class="col-lg-4 text-center">
-                <div class="vm-image vm-right">
-                    <img src="{{ asset('images/mission.png') }}"
-                         alt="Misi MDA Partner"
-                         class="img-fluid">
-                </div>
-            </div>
-
-            <div class="col-lg-8">
-                <h3 class="vm-title">
-                    Misi <span>MDA Partner</span>
-                </h3>
-
-                <ul class="vm-list">
-                    <li>Menyediakan SDM berkualitas dan kompeten sesuai kebutuhan industri.</li>
-                    <li>Memberikan layanan ketenagakerjaan yang efisien, inovatif, dan berorientasi pada klien.</li>
-                    <li>Mendukung pertumbuhan karir fokus pada tim bisnis melalui pengelolaan SDM yang profesional.</li>
-                </ul>
-            </div>
-
-        </div>
-
-    </div>
-</section>
+            </section>
 
         </div>
 

@@ -160,7 +160,7 @@
     <div class="container">
         <div class="hero-box">
 
-            {{-- CONTENT WRAPPER (WAJIB) --}}
+            {{-- CONTENT WRAPPER --}}
             <div class="hero-content">
                 <div class="row align-items-center">
                     <div class="col-lg-8">
@@ -174,14 +174,13 @@
                             berkualitas untuk berbagai perusahaan.
                         </p>
 
-                        {{-- HERO BUTTON --}}
                         <div class="hero-actions">
                             <a href="{{ route('jobs.index') }}"
                                class="btn btn-cta-primary">
                                 Lihat Lowongan
                             </a>
 
-                            <a href="https://katalog.inaproc.id/"
+                            <a href="https://katalog.inaproc.id/mitra-daksa-anarawata"
                                target="_blank"
                                rel="noopener"
                                class="btn btn-cta-secondary">
@@ -240,7 +239,7 @@
         </div>
 
         <div class="row g-4">
-            {{-- CARD --}}
+
             <div class="col-md-6 col-lg-3">
                 <div class="service-card h-100">
                     <div class="service-icon">
@@ -305,7 +304,6 @@
 </section>
 
 {{-- ANEKA JASA --}}
-{{-- ANEKA JASA --}}
 <section class="py-5 bg-light">
     <div class="container">
 
@@ -318,7 +316,6 @@
             </p>
         </div>
 
-        {{-- STATE DI LEVEL GRID --}}
         <div class="row g-4" x-data="{ active: null }">
 
             @foreach ($jasa as $item)
@@ -327,19 +324,16 @@
                     <div class="jasa-card shadow-sm d-flex flex-column"
                     :class="{ 'is-open': active === '{{ $item['id'] }}' }">
 
-                        {{-- BODY --}}
                         <div class="p-4 jasa-body flex-grow-1">
-                            {{-- ICON --}}
+
                             <div class="jasa-icon">
                                 <i class="bi {{ $item['icon'] }}"></i>
                             </div>
 
-                            {{-- TITLE --}}
                             <h6 class="jasa-title mb-3">
                                 {{ $item['title'] }}
                             </h6>
 
-                            {{-- DETAIL --}}
                             <div
                                 x-show="active === '{{ $item['id'] }}'"
                                 x-collapse
@@ -353,7 +347,6 @@
                             </div>
                         </div>
 
-                        {{-- BUTTON --}}
                         <button
                             type="button"
                             class="jasa-btn"
@@ -390,13 +383,11 @@
     </div>
 </section>
 
-
-{{-- KLIEN KAMI (BANNER STYLE) --}}
+{{-- KLIEN KAMI --}}
 <section class="client-banner my-5">
     <div class="container-fluid px-0">
         <div class="client-banner-inner">
 
-            {{-- HEADER --}}
             <div class="container">
                 <div class="row align-items-center mb-4">
                     <div class="col-md-6">
@@ -483,14 +474,13 @@
             </p>
 
             <div class="cta-actions">
-                {{-- BUTTON LOWONGAN --}}
+                
                 <a href="{{ route('jobs.index') }}"
                    class="btn btn-cta-primary">
                     Lihat Lowongan
                 </a>
 
-                {{-- BUTTON KATALOG --}}
-                <a href="https://katalog.inaproc.id/"
+                <a href="https://katalog.inaproc.id/mitra-daksa-anarawata"
                    target="_blank"
                    rel="noopener"
                    class="btn btn-cta-secondary">

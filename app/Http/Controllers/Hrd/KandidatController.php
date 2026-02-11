@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Application;
 use App\Models\Lowongan;
 use Illuminate\Http\Request;
+use App\Mail\StatusLamaranMail;
+use Illuminate\Support\Facades\Mail;
 
 class KandidatController extends Controller
 {
@@ -16,7 +18,6 @@ class KandidatController extends Controller
      */
     public function index(Request $request, Lowongan $lowongan)
     {
-        // ❗ HRD lain boleh lihat (read-only)
         $isOwner = $lowongan->hrd_id === auth()->id();
 
         $query = Application::with([
@@ -28,14 +29,8 @@ class KandidatController extends Controller
             ->where('lowongan_id', $lowongan->id)
             ->orderBy('created_at', 'asc');
 
-        /**
-         * =============================
-         * FILTER STATUS (SARAN DOSEN)
-         * =============================
-         */
         if ($request->filled('status')) {
 
-            // Selesai - Ditolak (gabungan)
             if ($request->status === 'ditolak') {
                 $query->whereIn('status', [
                     'ditolak',
@@ -43,7 +38,6 @@ class KandidatController extends Controller
                     'ditolak_administrasi',
                 ]);
             } else {
-                // Status tunggal
                 $query->where('status', $request->status);
             }
         }
@@ -64,10 +58,8 @@ class KandidatController extends Controller
      */
     public function show(Lowongan $lowongan, Application $application)
     {
-        // ❗ viewer allowed
         $isOwner = $lowongan->hrd_id === auth()->id();
 
-        // 🔐 pastikan kandidat milik lowongan
         abort_if($application->lowongan_id !== $lowongan->id, 404);
 
         $application->load([
@@ -89,23 +81,129 @@ class KandidatController extends Controller
 
     /**
      * =====================================================
-     * LOLOS ADMINISTRASI → MASUK SELEKSI (SAW)
+     * UPDATE STATUS
+     * =====================================================
+     */
+    public function updateStatus(Request $request, Lowongan $lowongan, Application $application)
+    {
+        abort_if($lowongan->hrd_id !== auth()->id(), 403);
+        abort_if($application->lowongan_id !== $lowongan->id, 404);
+
+        $request->validate([
+            'status' => 'required|in:diproses,screening,seleksi,interview,offer,diterima,ditolak'
+        ]);
+
+        $oldStatus = $application->status;
+
+        if (
+            in_array($oldStatus, ['interview','offer']) &&
+            in_array($request->status, ['screening','seleksi'])
+        ) {
+            return back()->with('error', 'Perubahan status tidak valid.');
+        }
+
+        $application->update([
+            'status' => $request->status
+        ]);
+
+        if ($oldStatus !== $request->status) {
+            Mail::to($application->user->email)
+                ->queue(
+                    (new StatusLamaranMail($application))
+                        ->delay(now()->addSeconds(5))
+                );
+        }
+
+        return back()->with('success', 'Status lamaran diperbarui & email terkirim.');
+    }
+
+    /**
+     * =====================================================
+     * SET INTERVIEW
+     * =====================================================
+     */
+    public function setInterview(Request $request, Lowongan $lowongan, Application $application)
+    {
+        abort_if($lowongan->hrd_id !== auth()->id(), 403);
+        abort_if($application->lowongan_id !== $lowongan->id, 404);
+
+        if ($application->status !== 'interview') {
+            return back()->with('error', 'Kandidat belum berada pada tahap interview.');
+        }
+
+        $data = $request->validate([
+            'interview_method' => 'required|in:online,offline',
+            'interview_at'     => 'required|date',
+            'interview_link'   => 'nullable|string',
+        ]);
+
+        $application->update($data);
+
+        return back()->with('success', 'Jadwal interview berhasil disimpan');
+    }
+
+    /**
+     * =====================================================
+     * DELETE INTERVIEW
+     * =====================================================
+     */
+    public function deleteInterview(Lowongan $lowongan, Application $application)
+    {
+        abort_if($lowongan->hrd_id !== auth()->id(), 403);
+        abort_if($application->lowongan_id !== $lowongan->id, 404);
+
+        $application->update([
+            'interview_method' => null,
+            'interview_at'     => null,
+            'interview_link'   => null,
+        ]);
+
+        return back()->with('success', 'Jadwal interview berhasil dihapus');
+    }
+
+    /**
+     * =====================================================
+     * UPLOAD OFFER
+     * =====================================================
+     */
+    public function uploadOffer(Request $request, Lowongan $lowongan, Application $application)
+    {
+        abort_if($lowongan->hrd_id !== auth()->id(), 403);
+        abort_if($application->lowongan_id !== $lowongan->id, 404);
+        abort_if($application->status !== 'interview', 403);
+
+        $request->validate([
+            'offer_file' => 'required|url',
+        ]);
+
+        $application->update([
+            'offer_file' => $request->offer_file,
+            'status'     => 'offer',
+        ]);
+
+        Mail::to($application->user->email)
+            ->queue(
+                (new StatusLamaranMail($application))
+                    ->delay(now()->addSeconds(5))
+            );
+
+        return back()->with('success', 'Offer berhasil dikirim ke pelamar');
+    }
+
+    /**
+     * =====================================================
+     * LOLOS ADMINISTRASI
      * =====================================================
      */
     public function lolosAdministrasi(Lowongan $lowongan, Application $application)
     {
-        // 🔐 hanya HRD pemilik lowongan
         abort_if($lowongan->hrd_id !== auth()->id(), 403);
-
-        // 🔐 pastikan application milik lowongan ini
         abort_if($application->lowongan_id !== $lowongan->id, 404);
 
-        // ✅ hanya boleh dari tahap screening
         if ($application->status !== 'screening') {
             return back()->with('error', 'Kandidat tidak berada pada tahap screening.');
         }
 
-        // 🔄 screening → seleksi (SAW)
         $application->update([
             'status' => 'seleksi',
         ]);
@@ -113,25 +211,24 @@ class KandidatController extends Controller
         return back()->with('success', 'Kandidat berhasil lolos administrasi.');
     }
 
+    /**
+     * =====================================================
+     * TOLAK ADMINISTRASI
+     * =====================================================
+     */
     public function tolakAdministrasi(Lowongan $lowongan, Application $application)
-{
-    // 🔐 hanya HRD pemilik
-    abort_if($lowongan->hrd_id !== auth()->id(), 403);
+    {
+        abort_if($lowongan->hrd_id !== auth()->id(), 403);
+        abort_if($application->lowongan_id !== $lowongan->id, 404);
 
-    // 🔐 pastikan kandidat milik lowongan
-    abort_if($application->lowongan_id !== $lowongan->id, 404);
+        if ($application->status !== 'screening') {
+            return back()->with('error', 'Kandidat tidak berada pada tahap screening.');
+        }
 
-    // ✅ hanya dari screening
-    if ($application->status !== 'screening') {
-        return back()->with('error', 'Kandidat tidak berada pada tahap screening.');
+        $application->update([
+            'status' => 'ditolak_administrasi',
+        ]);
+
+        return back()->with('success', 'Kandidat ditolak pada tahap administrasi.');
     }
-
-    // ❌ TOLAK ADMINISTRASI
-    $application->update([
-        'status' => 'ditolak_administrasi',
-    ]);
-
-    return back()->with('success', 'Kandidat ditolak pada tahap administrasi.');
-}
-
 }

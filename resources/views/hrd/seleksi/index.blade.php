@@ -14,7 +14,7 @@
 
 @section('content')
 
-<div class="page-seleksi-kandidat"><!-- 🔥 SCOPING WRAPPER -->
+<div class="page-seleksi-kandidat">
 
 <h4 class="fw-bold mb-3">Seleksi Kandidat (Metode SAW)</h4>
 
@@ -124,7 +124,6 @@ $(document).ready(function () {
 
 $(document).ready(function () {
 
-    // 🔥 CONFIRM RESET SAW (SweetAlert)
     $('.form-reset-saw').on('submit', function (e) {
         e.preventDefault();
 
@@ -141,7 +140,7 @@ $(document).ready(function () {
             cancelButtonColor: '#6c757d'
         }).then((result) => {
             if (result.isConfirmed) {
-                form.submit(); // 🚀 submit asli
+                form.submit();
             }
         });
     });

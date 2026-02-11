@@ -22,11 +22,11 @@
     ];
 @endphp
 
-{{-- ================= HEADER ================= --}}
+{{-- Header --}}
 <table width="100%" cellpadding="0" cellspacing="0">
     <tr>
 
-        {{-- FOTO --}}
+        {{-- Foto --}}
         <td width="22%" valign="top">
             @if($profile && $profile->photo)
                 <img
@@ -36,7 +36,7 @@
             @endif
         </td>
 
-        {{-- IDENTITAS --}}
+        {{-- Identitas --}}
         <td width="78%" valign="top">
             <h1>{{ $user->name }}</h1>
 
@@ -58,7 +58,7 @@
 
 <hr>
 
-{{-- ================= TENTANG SAYA ================= --}}
+{{-- Tentang Saya --}}
 @if($profile?->tentang_saya)
 <h2>Tentang Saya</h2>
 <table width="100%">
@@ -69,7 +69,7 @@
 <hr>
 @endif
 
-{{-- ================= PENGALAMAN KERJA ================= --}}
+{{-- Pengalaman Kerja --}}
 @if($user->pelamarExperiences->count())
 <h2>Pengalaman Kerja</h2>
 <table width="100%" cellpadding="0" cellspacing="0">
@@ -96,7 +96,7 @@
 <hr>
 @endif
 
-{{-- ================= PENDIDIKAN ================= --}}
+{{-- Pendidikan --}}
 @if($user->pelamarEducations->count())
 <h2>Pendidikan</h2>
 <table width="100%" cellpadding="0" cellspacing="0">
@@ -123,7 +123,7 @@
 <hr>
 @endif
 
-{{-- ================= SKILLS ================= --}}
+{{-- Skills --}}
 @if($user->pelamarSkills->count())
 <h2>Keahlian</h2>
 <table width="100%">
@@ -142,7 +142,7 @@
 <hr>
 @endif
 
-{{-- ================= SERTIFIKAT ================= --}}
+{{-- Sertifikat --}}
 @if($user->pelamarCertificates->count())
 <h2>Sertifikat</h2>
 <table width="100%" cellpadding="0" cellspacing="0">
@@ -175,7 +175,7 @@
 <hr>
 @endif
 
-{{-- ================= PENGHARGAAN ================= --}}
+{{-- Penghargaan --}}
 @if($user->pelamarAchievements->count())
 <h2>Penghargaan</h2>
 <table width="100%">
@@ -197,7 +197,7 @@
 <hr>
 @endif
 
-{{-- ================= ORGANISASI ================= --}}
+{{-- Organisasi --}}
 @if($user->pelamarOrganizations->count())
 <h2>Pengalaman Organisasi</h2>
 <table width="100%">

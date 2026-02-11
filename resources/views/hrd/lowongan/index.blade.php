@@ -24,6 +24,7 @@
         Tambah Lowongan Kerja
     </a>
 </div>
+
 {{-- FILTER TABS --}}
 <div class="card mb-4">
     <div class="card-body d-flex justify-content-between align-items-center">
@@ -76,6 +77,7 @@
         </button>
     </div>
 </div>
+
 <form method="GET" class="mb-3">
     <select name="pic"
             class="form-select w-auto"
@@ -92,6 +94,7 @@
         @endforeach
     </select>
 </form>
+
 {{-- LIST LOWONGAN --}}
 <div class="lowongan-list">
     @forelse ($lowongans as $lowongan)
@@ -118,7 +121,7 @@
                 {{ ucfirst($lowongan->status) }}
             </span>
         </div>
-        {{-- META --}}
+
         <ul class="lowongan-meta">
             <li>
                 <i class="bi bi-briefcase">
@@ -132,14 +135,14 @@
             </li>
         </ul>
 
-{{-- BATAS PENDAFTARAN --}}
-<small class="text-muted d-block mt-1">
-    <i class="bi bi-calendar-x"></i>
-    Ditutup pada:
-    <strong>
-        {{ \Carbon\Carbon::parse($lowongan->tanggal_selesai)->translatedFormat('d M Y') }}
-    </strong>
-</small>
+        {{-- BATAS PENDAFTARAN --}}
+        <small class="text-muted d-block mt-1">
+            <i class="bi bi-calendar-x"></i>
+            Ditutup pada:
+            <strong>
+                {{ \Carbon\Carbon::parse($lowongan->tanggal_selesai)->translatedFormat('d M Y') }}
+            </strong>
+        </small>
 
         {{-- INFO PIC --}}
         <small class="text-muted">
@@ -150,16 +153,16 @@
                     {{ $lowongan->hrd_id === $userId ? 'Saya' : $lowongan->hrd->name }}
             </span>
         </small>
+
         {{-- ACTIONS --}}
         <div class="lowongan-actions">
-            {{-- LEFT --}}
+
             <div class="left-actions">
                 <a href="{{ route('hrd.lowongan.show',$lowongan->
                     id) }}"
                 class="btn-dashboard orange sm">
                     Detail Lowongan
                 </a>
-                {{-- KELOLA (HANYA PIC) --}}
                     @if ($lowongan->hrd_id === auth()->id())
                 <a href="{{ route('hrd.kandidat.index',$lowongan->
                     id) }}"
@@ -168,7 +171,7 @@
                 </a>
                 @endif
             </div>
-            {{-- RIGHT --}}
+
             <div class="right-actions action-icons">
                 @if ($lowongan->hrd_id === auth()->id())
                 <a href="{{ route('hrd.lowongan.edit',$lowongan->
@@ -184,7 +187,6 @@
                 </span>
                 @endif
 
-                {{-- DELETE --}}
                 <button class="action-btn delete"
                         onclick="deleteLowongan({{ $lowongan->
                     id }}, this)"
@@ -192,7 +194,7 @@
                     <i class="bi bi-trash">
                     </i>
                 </button>
-                {{-- DROPDOWN --}}
+                
                 <div class="dropdown">
                     <button class="action-btn more"
                             data-bs-toggle="dropdown">
@@ -202,6 +204,7 @@
                     <ul class="dropdown-menu dropdown-menu-end action-menu">
                     </ul>
                 </div>
+
             </div>
         </div>
     </div>
@@ -215,10 +218,9 @@
 
 @push('scripts')
 <script>
-/* ================= DELETE (REAL DB) ================= */
+/* ================= DELETE ================= */
 function deleteLowongan(id, btn) {
 
-    // 🔥 SWEETALERT CONFIRM
     Swal.fire({
         title: 'Yakin ingin menghapus?',
         text: 'Lowongan yang dihapus tidak dapat dikembalikan.',
@@ -232,7 +234,6 @@ function deleteLowongan(id, btn) {
 
         if (!result.isConfirmed) return;
 
-        // 🚀 PROSES DELETE (TETAP SAMA)
         fetch(`/hrd/lowongan/${id}`, {
             method: 'DELETE',
             headers: {
@@ -256,7 +257,6 @@ function deleteLowongan(id, btn) {
                 updateCounters();
             }
 
-            // ✅ POPUP BERHASIL
             Swal.fire({
                 icon: 'success',
                 title: 'Berhasil',
@@ -378,7 +378,6 @@ function renderDropdown(card) {
         `;
     }
 
-    // ✅ HANYA BOLEH AKTIFKAN JIKA TIDAK EXPIRED
     if (status === 'nonaktif' && !expired) {
         html = `
         <li>
@@ -396,7 +395,6 @@ function renderDropdown(card) {
         `;
     }
 
-    // ❌ JIKA EXPIRED → HANYA ARSIP
     if (status === 'nonaktif' && expired) {
         html = `
         <li>
@@ -422,7 +420,7 @@ function renderDropdown(card) {
     menu.innerHTML = html;
 }
 
-/* ================= STATUS CHANGE (FRONTEND ONLY) ================= */
+/* ================= Perubahan Status ================= */
 function confirmStatusChange({ title, text, onConfirm }) {
     Swal.fire({
         title,
@@ -513,7 +511,6 @@ function updateStatus(card, status) {
     })
     .then(data => {
 
-        // 🔥 UPDATE UI SETELAH DB BERHASIL
         card.dataset.status = data.status;
         card.classList.toggle('active', data.status === 'aktif');
 

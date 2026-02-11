@@ -2,59 +2,45 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
+
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\AccountSettingsController;
+use App\Http\Controllers\CvController;
+
 use App\Http\Controllers\Public\JobController;
-use App\Http\Controllers\Admin\AkunAdminController;
-use App\Http\Controllers\Admin\ManajemenAkunController;
-use App\Http\Controllers\Admin\UsersPdfController;
-use App\Http\Controllers\Admin\MonitoringController;
-use App\Http\Controllers\Admin\ReportController;
-use App\Http\Controllers\Admin\LowonganMonitoringController;
-use App\Http\Controllers\Hrd\AkunHrdController;
+
+use App\Http\Controllers\Pelamar\LamaranController;
+
+use App\Http\Controllers\Hrd\DashboardController;
 use App\Http\Controllers\Hrd\LowonganController;
-use App\Http\Controllers\Hrd\LamaranHrdController;
 use App\Http\Controllers\Hrd\KandidatController;
 use App\Http\Controllers\Hrd\SawController;
 use App\Http\Controllers\Hrd\SkillController;
-use App\Http\Controllers\Hrd\ReportController as HrdReportController;
 use App\Http\Controllers\Hrd\BidangKerjaController;
-use App\Http\Controllers\AccountSettingsController;
-use App\Models\Application;
-use App\Http\Controllers\Pelamar\LamaranController;
-use App\Exports\UsersExport;
-use App\Http\Controllers\Hrd\DashboardController;
-use App\Http\Controllers\CvController;
-use Maatwebsite\Excel\Facades\Excel;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth;
-/*
-|--------------------------------------------------------------------------
-| PUBLIC / UMUM (GUEST BOLEH)
-|--------------------------------------------------------------------------
-*/
+use App\Http\Controllers\Hrd\ReportController as HrdReportController;
 
-Route::get('/', function () {
-    return view('public.home');
-})->name('public.home');
+use App\Http\Controllers\Admin\ManajemenAkunController;
+use App\Http\Controllers\Admin\UsersPdfController;
+use App\Http\Controllers\Admin\MonitoringController;
+use App\Http\Controllers\Admin\LowonganMonitoringController;
+use App\Http\Controllers\Admin\ReportController;
+
+use App\Exports\UsersExport;
+
+/* ================= PUBLIC ================= */
+
+Route::get('/', fn () => view('public.home'))->name('public.home');
 
 /* ===== LOWONGAN ===== */
+Route::get('/lowongan', [JobController::class, 'index'])->name('jobs.index');
+Route::get('/lowongan/{lowongan}', [JobController::class, 'show'])->name('jobs.show');
 
-Route::get('/lowongan', [JobController::class, 'index'])
-    ->name('jobs.index');
+Route::get('/tentang-kami', fn () => view('public.about'))->name('about');
 
-Route::get('/lowongan/{lowongan}', [JobController::class, 'show'])
-    ->name('jobs.show');
-
-Route::get('/tentang-kami', function () {
-    return view('public.about');
-})->name('about');
-
-
-/*
-|--------------------------------------------------------------------------
-| REDIRECT SETELAH LOGIN (BERDASARKAN ROLE)
-|--------------------------------------------------------------------------
-*/
+/* ================= REDIRECT LOGIN ================= */
 
 Route::get('/redirect-after-login', function (Request $request) {
 
@@ -73,25 +59,7 @@ Route::middleware(['auth'])->group(function () {
         ->name('cv.download');
 });
 
-/*
-|--------------------------------------------------------------------------
-| PROFILE (SEMUA ROLE)
-|--------------------------------------------------------------------------
-*/
-
-Route::middleware(['auth', 'role:admin,hrd'])->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
-
-
-
-/*
-|--------------------------------------------------------------------------
-| PELAMAR
-|--------------------------------------------------------------------------
-*/
+/* ================= PELAMAR ================= */
 
 Route::middleware(['auth', 'role:pelamar'])
     ->prefix('pelamar')
@@ -114,169 +82,106 @@ Route::middleware(['auth', 'role:pelamar'])
             [LamaranController::class, 'offerResponse']
         )->name('offer.response');
 
- /*
-        |========================
-        | DATA DIRI
-        |========================
-        */
-        // ✅ DATA DIRI (AJAX)
-        Route::post('/profile/data-diri', [ProfileController::class, 'updateDataDiri'])
-            ->name('pelamar.profile.data-diri');
+        // Data diri
+        Route::post('/profile/data-diri', [ProfileController::class, 'updateDataDiri'])->name('pelamar.profile.data-diri');
+        Route::post('/profile/tentang-saya', [ProfileController::class, 'updateTentangSaya'])->name('profile.tentang-saya');
 
-        // ✅ TENTANG SAYA
-        Route::post('/profile/tentang-saya', [ProfileController::class, 'updateTentangSaya'])
-            ->name('profile.tentang-saya');
-
-        /*
-        |========================
-        | EXPERIENCE
-        |========================
-        */
+        // Experience
         Route::post('/profile/experiences', [ProfileController::class, 'storeExperience']);
         Route::put('/profile/experiences/{id}', [ProfileController::class, 'updateExperience']);
         Route::delete('/profile/experiences/{id}', [ProfileController::class, 'deleteExperience']);
 
-        /*
-        |========================
-        | EDUCATION
-        |========================
-        */
+        // Education
         Route::post('/profile/educations', [ProfileController::class, 'storeEducation']);
         Route::put('/profile/educations/{id}', [ProfileController::class, 'updateEducation']);
         Route::delete('/profile/educations/{id}', [ProfileController::class, 'deleteEducation']);
 
-        /*
-        |========================
-        | SKILLS
-        |========================
-        */
+        // Skills
         Route::post('/profile/skills', [ProfileController::class, 'storeSkill']);
         Route::delete('/profile/skills/{id}', [ProfileController::class, 'deleteSkill']);
 
-        /*
-        |========================
-        | RESUME
-        |========================
-        */
+        // Resume
         Route::post('/profile/resume', [ProfileController::class, 'uploadResume']);
         Route::delete('/profile/resume', [ProfileController::class, 'deleteResume']);
 
-        /*
-        |========================
-        | CERTIFICATE
-        |========================
-        */
+        // Certificate
         Route::post('/profile/certificates', [ProfileController::class, 'storeCertificate']);
         Route::put('/profile/certificates/{id}', [ProfileController::class, 'updateCertificate']);
         Route::delete('/profile/certificates/{id}', [ProfileController::class, 'deleteCertificate']);
 
-        /*
-        |========================
-        | ORGANIZATION
-        |========================
-        */
+        // Organization
         Route::post('/profile/organizations', [ProfileController::class, 'storeOrganization']);
         Route::put('/profile/organizations/{id}', [ProfileController::class, 'updateOrganization']);
         Route::delete('/profile/organizations/{id}', [ProfileController::class, 'deleteOrganization']);
 
-        /*
-        |========================
-        | ACHIEVEMENT
-        |========================
-        */
+        // Achievement
         Route::post('/profile/achievements', [ProfileController::class, 'storeAchievement']);
         Route::put('/profile/achievements/{id}', [ProfileController::class, 'updateAchievement']);
         Route::delete('/profile/achievements/{id}', [ProfileController::class, 'deleteAchievement']);
 
     });
 
-
+/* ================= HRD ================= */
 
 Route::middleware(['auth', 'role:hrd'])
     ->prefix('hrd')
     ->name('hrd.')
     ->group(function () {
 
-    Route::get('/dashboard', [DashboardController::class, 'index'])
-            ->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard/data', [DashboardController::class, 'data'])->name('dashboard.data');
 
-        // AJAX DATA
-    Route::get('/dashboard/data', [DashboardController::class, 'data'])
-            ->name('dashboard.data');
+    // Kandidat
+        Route::get('/lowongan/{lowongan}/kandidat', [KandidatController::class, 'index'])->name('kandidat.index');
+        Route::get('/lowongan/{lowongan}/kandidat/{application}', [KandidatController::class, 'show'])->name('kandidat.detail');
+        Route::put('/lowongan/{lowongan}/kandidat/{application}/status', [KandidatController::class, 'updateStatus'])->name('kandidat.status');
+        Route::put('/lowongan/{lowongan}/kandidat/{application}/interview', [KandidatController::class, 'setInterview'])->name('kandidat.interview');
+        Route::delete('/lowongan/{lowongan}/kandidat/{application}/interview', [KandidatController::class, 'deleteInterview'])->name('kandidat.interview.delete');
+        Route::post('/lowongan/{lowongan}/kandidat/{application}/offer', [KandidatController::class, 'uploadOffer'])->name('kandidat.offer');
+        Route::put('/lowongan/{lowongan}/kandidat/{application}/lolos-administrasi', [KandidatController::class, 'lolosAdministrasi'])->name('kandidat.lolos_administrasi');
+        Route::put('/lowongan/{lowongan}/kandidat/{application}/tolak-administrasi', [KandidatController::class, 'tolakAdministrasi'])->name('kandidat.tolak_administrasi');
 
-    /* ================= LAMARAN ================= */
-    Route::get('/lamaran', [LamaranHrdController::class, 'index'])
-        ->name('lamaran.index');
+    // Lowongan
+    Route::get('/lowongan', [LowonganController::class, 'index'])->name('lowongan.index');
+    Route::get('/lowongan/create', [LowonganController::class, 'create'])->name('lowongan.create');
+    Route::post('/lowongan', [LowonganController::class, 'store'])->name('lowongan.store');
 
-    Route::put('/lamaran/{application}', [LamaranHrdController::class, 'update'])
-        ->name('lamaran.update');
+    Route::get('/lowongan/{lowongan}', [LowonganController::class, 'show'])->name('lowongan.show');
+    Route::get('/lowongan/{lowongan}/edit', [LowonganController::class, 'edit'])->name('lowongan.edit');
+    Route::put('/lowongan/{lowongan}', [LowonganController::class, 'update'])->name('lowongan.update');
+    Route::delete('/lowongan/{lowongan}', [LowonganController::class, 'destroy'])->name('lowongan.destroy');
 
-    Route::put('/lamaran/{application}/interview',
-        [LamaranHrdController::class, 'setInterview']
-    )->name('lamaran.interview');
+    Route::post('/lowongan/{lowongan}/status', [LowonganController::class, 'updateStatus'])
+        ->name('lowongan.status');
 
-    Route::delete('/lamaran/{application}/interview',
-        [LamaranHrdController::class, 'deleteInterview']
-    )->name('lamaran.interview.delete');
+    // Deskripsi lowongan
+    Route::get('/lowongan/{lowongan}/deskripsi', [LowonganController::class, 'createDeskripsi'])
+        ->name('lowongan.deskripsi.create');
 
-    Route::post(
-    '/lamaran/{application}/offer',
-        [LamaranHrdController::class, 'uploadOffer']
-    )->name('lamaran.offer.upload');
+    Route::put('/lowongan/{lowongan}/deskripsi', [LowonganController::class, 'updateDeskripsi'])
+        ->name('lowongan.deskripsi.update');
 
+    // Laporan lowongan
+    Route::get('/lowongan/{lowongan}/laporan', [SawController::class, 'laporan'])
+        ->name('laporan.index');
 
-    /* ================= KANDIDAT ================= */
-    Route::get('/lowongan/{lowongan}/kandidat',
-        [KandidatController::class, 'index']
-    )->name('kandidat.index');
+    Route::get('/lowongan/{lowongan}/laporan/pdf', [SawController::class, 'exportPdf'])
+        ->name('laporan.pdf');
 
-    Route::get('/lowongan/{lowongan}/kandidat/{application}',
-        [KandidatController::class, 'show']
-    )->name('kandidat.detail');
+    Route::get('/lowongan/{lowongan}/laporan/excel', [SawController::class, 'exportExcel'])
+        ->name('laporan.excel');
 
-    /* ================= LOWONGAN ================= */
-    Route::get('/lowongan', [LowonganController::class, 'index'])
-        ->name('lowongan.index');
+    // Seleksi SAW
+    Route::get('/lowongan/{lowongan}/seleksi', [SawController::class, 'index'])
+        ->name('seleksi.index');
 
-    Route::get('/lowongan/create', [LowonganController::class, 'create'])
-        ->name('lowongan.create');
+    Route::post('/lowongan/{lowongan}/seleksi/hitung', [SawController::class, 'hitung'])
+        ->name('seleksi.hitung');
 
-    Route::post('/lowongan', [LowonganController::class, 'store'])
-        ->name('lowongan.store');
+    Route::put('/lowongan/{lowongan}/seleksi/reset', [SawController::class, 'reset'])
+        ->name('seleksi.reset');
 
-    Route::get('/lowongan/{lowongan}', [LowonganController::class, 'show'])
-        ->name('lowongan.show');
-
-    Route::get('/lowongan/{lowongan}/edit', [LowonganController::class, 'edit'])
-        ->name('lowongan.edit');
-
-    Route::put('/lowongan/{lowongan}', [LowonganController::class, 'update'])
-        ->name('lowongan.update');
-
-    Route::post('/lowongan/{lowongan}/status', [LowonganController::class, 'updateStatus']
-        )->name('lowongan.status');
-
-    Route::delete('/lowongan/{lowongan}', [LowonganController::class, 'destroy'])
-        ->name('lowongan.destroy');
-
-    Route::get('/lowongan/{lowongan}/laporan', [SawController::class, 'laporan']
-        )->name('laporan.index');
-
-    Route::get('/lowongan/{lowongan}/laporan/pdf',[SawController::class, 'exportPdf']
-        )->name('laporan.pdf');
-
-    Route::get('/lowongan/{lowongan}/laporan/excel',[SawController::class, 'exportExcel']
-        )->name('laporan.excel');
-
-    /* ===== DESKRIPSI LOWONGAN ===== */
-    Route::get('/lowongan/{lowongan}/deskripsi',
-        [LowonganController::class, 'createDeskripsi']
-    )->name('lowongan.deskripsi.create');
-
-    Route::put('/lowongan/{lowongan}/deskripsi',
-        [LowonganController::class, 'updateDeskripsi']
-    )->name('lowongan.deskripsi.update');
-
+    // Master data
     Route::post('/skills', [SkillController::class, 'store']);
     Route::put('/skills/{skill}', [SkillController::class, 'update']);
     Route::delete('/skills/{skill}', [SkillController::class, 'destroy']);
@@ -285,61 +190,37 @@ Route::middleware(['auth', 'role:hrd'])
     Route::put('/bidang-kerja/{bidangKerja}', [BidangKerjaController::class, 'update']);
     Route::delete('/bidang-kerja/{bidangKerja}', [BidangKerjaController::class, 'destroy']);
 
-    Route::put('/lowongan/{lowongan}/kandidat/{application}/lolos-administrasi',[KandidatController::class, 'lolosAdministrasi']
-    )->name('kandidat.lolos_administrasi');
-
-    Route::put(
-    '/lowongan/{lowongan}/kandidat/{application}/tolak-administrasi',
-    [KandidatController::class, 'tolakAdministrasi']
-    )->name('kandidat.tolak_administrasi');
-
-
-    Route::get(
-    '/lowongan/{lowongan}/seleksi',
-    [SawController::class, 'index']
-    )->name('seleksi.index');
-
-    Route::post(
-        '/lowongan/{lowongan}/seleksi/hitung',
-        [SawController::class, 'hitung']
-    )->name('seleksi.hitung');
-
-    Route::put('/lowongan/{lowongan}/seleksi/reset',
-    [SawController::class, 'reset']
-    )->name('seleksi.reset');
-
-        Route::get('/report', [HrdReportController::class, 'index'])
-            ->name('report.index');
-
-        Route::get('/report/pdf', [HrdReportController::class, 'exportPdf'])
-            ->name('report.pdf');
-        
-        Route::get('/report/excel', [HrdReportController::class, 'exportExcel'])
-    ->name('report.excel');
-
+    // Report HRD
+    Route::get('/report', [HrdReportController::class, 'index'])->name('report.index');
+    Route::get('/report/pdf', [HrdReportController::class, 'exportPdf'])->name('report.pdf');
+    Route::get('/report/excel', [HrdReportController::class, 'exportExcel'])->name('report.excel');
 
 });
 
-/*
-|--------------------------------------------------------------------------
-| ADMIN
-|--------------------------------------------------------------------------
-*/
+/* ================= ADMIN ================= */
+
 Route::middleware(['auth', 'role:admin'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
 
-        Route::get('/dashboard', function () {
-            return view('admin.dashboard');
-        })->name('dashboard');
+        Route::get('/dashboard', fn () => view('admin.dashboard'))
+            ->name('dashboard');
 
+        // Monitoring
         Route::get('/monitoring', [MonitoringController::class, 'index'])
             ->name('monitoring');
 
         Route::get('/monitoring/data', [MonitoringController::class, 'data'])
             ->name('monitoring.data');
-            
+
+        Route::get('/monitoring/lowongan', [LowonganMonitoringController::class, 'index'])
+            ->name('monitoring.lowongan');
+
+        Route::get('/monitoring/lowongan/{lowongan}', [LowonganMonitoringController::class, 'show'])
+            ->name('monitoring.lowongan.detail');
+
+        // Manajemen akun
         Route::get('/manajemen-akun', [ManajemenAkunController::class, 'index'])
             ->name('akun.index');
 
@@ -352,17 +233,16 @@ Route::middleware(['auth', 'role:admin'])
         Route::delete('/manajemen-akun/{user}', [ManajemenAkunController::class, 'destroy'])
             ->name('akun.destroy');
 
-    Route::get('/manajemen-akun/pdf', [UsersPdfController::class, 'preview']);
-    Route::get('/manajemen-akun/excel', function () {
-        return Excel::download(
-            new UsersExport(request('role')),
-            'akun.xlsx'
-        );
-    });
+        Route::get('/manajemen-akun/pdf', [UsersPdfController::class, 'preview']);
 
-        Route::get('/akun/{id}', [AkunAdminController::class, 'show'])
-            ->name('akun.detail');
+        Route::get('/manajemen-akun/excel', function () {
+            return Excel::download(
+                new UsersExport(request('role')),
+                'akun.xlsx'
+            );
+        });
 
+        // Report
         Route::get('/report', [ReportController::class, 'index'])
             ->name('report.index');
 
@@ -371,41 +251,20 @@ Route::middleware(['auth', 'role:admin'])
 
         Route::get('/report/excel', [ReportController::class, 'exportExcel'])
             ->name('report.excel');
-
-        Route::get('/monitoring/lowongan',
-            [LowonganMonitoringController::class, 'index']
-        )->name('monitoring.lowongan');
-
-        Route::get('/monitoring/lowongan/{lowongan}',
-            [LowonganMonitoringController::class, 'show']
-        )->name('monitoring.lowongan.detail');
-
-
     });
 
-/*
-|--------------------------------------------------------------------------
-| AUTH ROUTES (Laravel Breeze)
-|--------------------------------------------------------------------------
-*/
+/* ================= AUTH ================= */
 
 require __DIR__.'/auth.php';
 
-/*
-|--------------------------------------------------------------------------
-| PENGATURAN AKUN (SEMUA ROLE)
-|--------------------------------------------------------------------------
-*/
+/* ================= ACCOUNT SETTINGS ================= */
 
-Route::middleware(['auth'])->group(function () {
-
-    Route::get('/pengaturan-akun', [AccountSettingsController::class, 'index'])
-        ->name('account.settings');
-
-    Route::post('/pengaturan-akun/password', [AccountSettingsController::class, 'updatePassword'])
-        ->name('account.password.update');
-
+Route::middleware('auth')->group(function () {
+    Route::get('/pengaturan-akun', [AccountSettingsController::class, 'index'])->name('account.settings');
+    Route::post('/pengaturan-akun/password', [AccountSettingsController::class, 'updatePassword'])->name('account.password.update');
 });
+
+/* ================= DEBUG ================= */
 
 Route::get('/log-test', function () {
     Log::info('INI LOG TEST BARU DARI /log-test');

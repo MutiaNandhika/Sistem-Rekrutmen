@@ -4,7 +4,7 @@
 
 @section('content')
 
-<div class="page-monitoring-lowongan"><!-- 🔑 WRAPPER SCOPING -->
+<div class="page-monitoring-lowongan">
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
@@ -15,7 +15,7 @@
     </div>
 </div>
 
-{{-- ================= FILTER ================= --}}
+{{-- Filter --}}
 <div class="card shadow-sm mb-3">
     <div class="card-body py-3">
         <div class="row g-3 align-items-end">
@@ -38,7 +38,7 @@
     </div>
 </div>
 
-{{-- ================= TABLE ================= --}}
+{{-- Table --}}
 <div class="card shadow-sm">
     <div class="card-body">
 
@@ -139,10 +139,10 @@
     </div>
 </div>
 
-</div> {{-- END WRAPPER --}}
+</div>
 @endsection
 
-{{-- ================= SCRIPT ================= --}}
+{{-- Script --}}
 @push('scripts')
 <script>
 $(document).ready(function () {

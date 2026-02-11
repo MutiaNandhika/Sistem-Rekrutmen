@@ -10,7 +10,7 @@
     berdasarkan periode dan lowongan yang dipilih.
 </p>
 
-{{-- ================= FILTER ================= --}}
+{{-- Filter --}}
 <div class="card mb-4">
     <div class="card-body">
         <form method="GET" class="row g-3 align-items-end">
@@ -48,7 +48,7 @@
     </div>
 </div>
 
-{{-- ================= STATISTIK ================= --}}
+{{-- Statistik --}}
 <div class="row g-3 mb-4">
 
     @php

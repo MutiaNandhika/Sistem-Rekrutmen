@@ -1,4 +1,4 @@
-{{-- ========================= TENTANG SAYA ============================ --}}
+{{-- Tentang Saya --}}
 
     <div class="cv-section mb-5">
 
@@ -13,7 +13,6 @@
             </button>
         </div>
 
-        {{-- OUTPUT TEXT --}}
         <p id="tentangSayaOutput" class="text-muted small mb-3">
             {{ $user->pelamarProfile->tentang_saya
                 ?? 'Jelaskan secara singkat kelebihanmu sehingga perusahaan yakin untuk merekrutmu.' }}

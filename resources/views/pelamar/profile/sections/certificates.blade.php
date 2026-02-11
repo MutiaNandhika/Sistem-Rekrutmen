@@ -1,93 +1,98 @@
+{{-- Sertifikat --}}
 <div class="cv-section mb-5">
 
     <div class="d-flex justify-content-between align-items-center mb-2">
         <h6 class="fw-bold text-uppercase mb-0">Sertifikat</h6>
 
-        <button class="btn btn-link text-primary fw-semibold p-0"
-                data-bs-toggle="modal"
-                data-bs-target="#modalSertifikat">
+        <button
+            class="btn btn-link text-primary fw-semibold p-0"
+            data-bs-toggle="modal"
+            data-bs-target="#modalSertifikat">
             + Tambahkan
         </button>
     </div>
 
     <div id="sertifikatList">
+
         @php
-        $bulan = [
-            1 => 'Jan', 2 => 'Feb', 3 => 'Mar', 4 => 'Apr',
-            5 => 'Mei', 6 => 'Jun', 7 => 'Jul', 8 => 'Agu',
-            9 => 'Sep', 10 => 'Okt', 11 => 'Nov', 12 => 'Des'
-        ];
+            $bulan = [
+                1 => 'Jan', 2 => 'Feb', 3 => 'Mar', 4 => 'Apr',
+                5 => 'Mei', 6 => 'Jun', 7 => 'Jul', 8 => 'Agu',
+                9 => 'Sep', 10 => 'Okt', 11 => 'Nov', 12 => 'Des'
+            ];
         @endphp
 
         @if ($user->pelamarCertificates->count())
             @foreach ($user->pelamarCertificates as $cert)
+                <div
+                    class="education-item d-flex justify-content-between align-items-start mb-3"
+                    id="certificate-{{ $cert->id }}">
 
-<div class="education-item d-flex justify-content-between align-items-start mb-3"
-     id="certificate-{{ $cert->id }}">
+                    <div>
+                        <h6 class="fw-bold mb-1">{{ $cert->nama_sertifikat }}</h6>
 
-    <div>
-        <h6 class="fw-bold mb-1">{{ $cert->nama_sertifikat }}</h6>
-        <div class="text-muted small">
-    {{-- TANGGAL TERBIT --}}
-            @if ($cert->bulan_terbit)
-                {{ $bulan[$cert->bulan_terbit] ?? '' }}
-            @endif
-            {{ $cert->tahun_terbit }}
+                        <div class="text-muted small">
+                            @if ($cert->bulan_terbit)
+                                {{ $bulan[$cert->bulan_terbit] ?? '' }}
+                            @endif
+                            {{ $cert->tahun_terbit }}
 
-            {{-- BATAS MASA AKTIF --}}
-            @if ($cert->tanpa_expired)
-                • Tidak kedaluwarsa
-            @elseif ($cert->bulan_expired && $cert->tahun_expired)
-                –
-                {{ $bulan[$cert->bulan_expired] ?? '' }}
-                {{ $cert->tahun_expired }}
-            @endif
-        </div>
-        @if ($cert->informasi_tambahan)
-            <p class="text-muted small mb-0">
-                {{ $cert->informasi_tambahan }}
-            </p>
-        @endif
+                            @if ($cert->tanpa_expired)
+                                • Tidak kedaluwarsa
+                            @elseif ($cert->bulan_expired && $cert->tahun_expired)
+                                –
+                                {{ $bulan[$cert->bulan_expired] ?? '' }}
+                                {{ $cert->tahun_expired }}
+                            @endif
+                        </div>
 
-        @if ($cert->file_bukti)
-            <div class="mt-1">
-                <a href="{{ asset('storage/' . $cert->file_bukti) }}"
-                target="_blank"
-                class="text-primary small fw-semibold">
-                    <i class="bi bi-paperclip me-1"></i>
-                    Lihat File
-                </a>
-            </div>
-        @endif
+                        @if ($cert->informasi_tambahan)
+                            <p class="text-muted small mb-0">
+                                {{ $cert->informasi_tambahan }}
+                            </p>
+                        @endif
 
-    </div>
+                        @if ($cert->file_bukti)
+                            <div class="mt-1">
+                                <a
+                                    href="{{ asset('storage/' . $cert->file_bukti) }}"
+                                    target="_blank"
+                                    class="text-primary small fw-semibold">
+                                    <i class="bi bi-paperclip me-1"></i>
+                                    Lihat File
+                                </a>
+                            </div>
+                        @endif
+                    </div>
 
-    <div class="dropdown">
-        <button class="btn btn-sm btn-light"
-                data-bs-toggle="dropdown">
-            <i class="bi bi-three-dots"></i>
-        </button>
+                    <div class="dropdown">
+                        <button
+                            class="btn btn-sm btn-light"
+                            data-bs-toggle="dropdown">
+                            <i class="bi bi-three-dots"></i>
+                        </button>
 
-        <ul class="dropdown-menu">
-            <li>
-                <button class="dropdown-item"
-                        onclick="editCertificate({{ $cert->id }}, @js($cert))"
-                        data-bs-toggle="modal"
-                        data-bs-target="#modalSertifikat">
-                    <i class="bi bi-pencil me-2"></i>Edit
-                </button>
-            </li>
-            <li>
-                <button class="dropdown-item text-danger"
-                        onclick="deleteCertificate({{ $cert->id }})">
-                    <i class="bi bi-trash me-2"></i>Hapus
-                </button>
-            </li>
-        </ul>
-    </div>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <button
+                                    class="dropdown-item"
+                                    onclick="editCertificate({{ $cert->id }}, @js($cert))"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalSertifikat">
+                                    <i class="bi bi-pencil me-2"></i>Edit
+                                </button>
+                            </li>
+                            <li>
+                                <button
+                                    class="dropdown-item text-danger"
+                                    onclick="deleteCertificate({{ $cert->id }})">
+                                    <i class="bi bi-trash me-2"></i>Hapus
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
 
-</div>
-
+                </div>
             @endforeach
         @else
             <p class="text-muted small">

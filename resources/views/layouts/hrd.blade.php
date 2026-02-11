@@ -3,54 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>@yield('title', 'Dashboard HRD')</title>
 
     <link rel="icon" type="image/png" href="{{ asset('mda.png') }}">
 
-    {{-- Bootstrap --}}
+    {{-- Styles --}}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
 
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-
-    {{-- Dashboard CSS --}}
+    {{-- Dashboard Styles --}}
     @vite(['resources/css/dashboard/dashboard.css'])
 
+    {{-- Page Styles --}}
     @stack('styles')
 </head>
 
 <body class="d-flex flex-column min-vh-100">
 
-    {{-- NAVBAR DASHBOARD --}}
+    {{-- Navbar --}}
     @include('partials.navbar-dashboard')
-    
-{{-- BREADCRUMB (OPTIONAL) --}}
-@hasSection('breadcrumb')
-    @yield('breadcrumb')
-@endif
 
+    {{-- Breadcrumb --}}
+    @hasSection('breadcrumb')
+        @yield('breadcrumb')
+    @endif
+
+    {{-- Main Content --}}
     <main class="container-fluid px-4 py-4 flex-fill">
         @yield('content')
     </main>
 
-    {{-- FOOTER DASHBOARD --}}
+    {{-- Footer --}}
     @include('partials.footer-dashboard')
 
+    {{-- Scripts --}}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-
-    {{-- Chart.js --}}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    {{-- Page Scripts --}}
     @stack('scripts')
 
+    {{-- Alert --}}
     @include('partials.alert')
+
 </body>
 </html>

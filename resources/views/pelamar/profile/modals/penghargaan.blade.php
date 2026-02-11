@@ -40,7 +40,6 @@
                     <textarea id="awardDeskripsi" class="form-control"></textarea>
                 </div>
 
-                {{-- FILE BUKTI --}}
                 <div class="mb-3">
                     <label class="form-label fw-semibold">
                         File Bukti Penghargaan <span class="text-danger">*</span>
@@ -54,7 +53,6 @@
                     </small>
                 </div>
 
-                {{-- PREVIEW FILE SAAT EDIT --}}
                 <div class="mb-3 d-none" id="awardFilePreview">
                     <label class="form-label fw-semibold">File Saat Ini</label>
                     <div>

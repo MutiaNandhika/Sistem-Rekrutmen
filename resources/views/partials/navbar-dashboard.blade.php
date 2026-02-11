@@ -1,13 +1,11 @@
 <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
     <div class="container-fluid px-4">
 
-        {{-- LOGO --}}
         <a class="navbar-brand d-flex align-items-center gap-2"
            href="{{ url('/redirect-after-login') }}">
             <img src="{{ asset('images/mda-logo.png') }}" height="28">
         </a>
 
-        {{-- TOGGLER --}}
         <button class="navbar-toggler" type="button"
                 data-bs-toggle="collapse"
                 data-bs-target="#navbarDashboard">
@@ -15,11 +13,7 @@
         </button>
 
         <div class="collapse navbar-collapse" id="navbarDashboard">
-
-            {{-- ================= MENU KIRI ================= --}}
             <ul class="navbar-nav me-auto mb-2 mb-md-0 gap-md-3">
-
-                {{-- ================= HRD ================= --}}
                 @if (Auth::user()->role === 'hrd')
 
                     <li class="nav-item">
@@ -55,15 +49,13 @@
                         </a>
                     </li>
 
-                    {{-- 🔍 MONITORING KANDIDAT --}}
                     <li class="nav-item">
                         <a class="nav-link {{ request()->is('admin/monitoring') ? 'active fw-semibold' : '' }}"
                            href="{{ route('admin.monitoring') }}">
                             Monitoring Kandidat
                         </a>
                     </li>
-
-                    {{-- 🔍 MONITORING LOWONGAN --}}
+                    
                     <li class="nav-item">
                         <a class="nav-link
                            {{ request()->is('admin/monitoring/lowongan*') ? 'active fw-semibold' : '' }}"

@@ -30,7 +30,7 @@
     @endif
 
 
-    {{-- ================= INFORMASI AKUN ================= --}}
+    {{-- INFORMASI AKUN --}}
     <div class="card shadow-sm mb-4">
         <div class="card-header fw-semibold">
             Informasi Akun
@@ -71,7 +71,7 @@
         </div>
     </div>
 
-    {{-- ================= GANTI KATA SANDI ================= --}}
+    {{-- GANTI KATA SANDI --}}
     <div class="card shadow-sm">
         <div class="card-header fw-semibold">
             Ganti Kata Sandi

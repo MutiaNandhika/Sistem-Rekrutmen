@@ -6,7 +6,6 @@
 <section class="jobs-section py-5">
     <div class="container">
 
-        {{-- TITLE --}}
         <div class="text-center mb-4">
             <h2 class="jobs-title">Daftar Lowongan</h2>
             <p class="jobs-subtitle">
@@ -60,17 +59,17 @@
                     </select>
                 </div>
 
-<div class="col-md-3 d-flex align-items-stretch gap-2">
-    <button type="submit" class="btn btn-jobs-search flex-fill">
-        <i class="bi bi-search me-2"></i>
-        Search
-    </button>
+                <div class="col-md-3 d-flex align-items-stretch gap-2">
+                    <button type="submit" class="btn btn-jobs-search flex-fill">
+                        <i class="bi bi-search me-2"></i>
+                        Search
+                    </button>
 
-    <a href="{{ route('jobs.index') }}"
-       class="btn btn-jobs-reset d-flex align-items-center justify-content-center">
-        <i class="bi bi-arrow-counterclockwise"></i>
-    </a>
-</div>
+                    <a href="{{ route('jobs.index') }}"
+                    class="btn btn-jobs-reset d-flex align-items-center justify-content-center">
+                        <i class="bi bi-arrow-counterclockwise"></i>
+                    </a>
+                </div>
 
             </div>
         </form>

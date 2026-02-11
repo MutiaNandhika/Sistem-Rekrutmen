@@ -26,19 +26,16 @@
                     <tbody>
                         @foreach($applications as $app)
                             <tr>
-                                {{-- NAMA LOWONGAN --}}
                                 <td>
                                     <div class="fw-semibold">
                                         {{ $app->lowongan->nama_lowongan }}
                                     </div>
                                 </td>
 
-                                {{-- TANGGAL --}}
                                 <td>
                                     {{ $app->created_at->format('d M Y') }}
                                 </td>
 
-                                {{-- STATUS --}}
                                 <td>
                                     @php
                                         $colors = [
@@ -57,7 +54,6 @@
                                     </span>
                                 </td>
 
-                                {{-- AKSI --}}
                                 <td class="text-end">
                                     <a href="{{ route('pelamar.lamaran.show', $app) }}"
                                        class="btn btn-outline-primary btn-sm">

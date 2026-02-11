@@ -14,10 +14,9 @@
 
 @section('content')
 
-{{-- PAGE TITLE --}}
 <h4 class="fw-bold text-center mb-4">Pasang Loker</h4>
 
-{{-- STEP INDICATOR --}}
+{{-- Step Indicator --}}
 <div class="d-flex justify-content-center align-items-center gap-3 mb-4">
 
     <div class="d-flex align-items-center gap-2">
@@ -34,278 +33,329 @@
 
 </div>
 
-
 <form
-action="{{ isset($lowongan) ? route('hrd.lowongan.update',$lowongan->id) : route('hrd.lowongan.store') }}"
-method="POST">
-@csrf
-@if(isset($lowongan)) @method('PUT') @endif
+    action="{{ isset($lowongan) ? route('hrd.lowongan.update', $lowongan->id) : route('hrd.lowongan.store') }}"
+    method="POST">
+    @csrf
+    @if(isset($lowongan)) @method('PUT') @endif
 
-{{-- ================= DETAIL & JENIS PEKERJAAN ================= --}}
-<div class="card mb-4">
-    <div class="card-header fw-semibold">
-        Detail & Jenis Pekerjaan <span class="text-danger">*</span>
-    </div>
-
-    <div class="card-body">
-
-        <div class="mb-3">
-            <label class="form-label fw-semibold">
-                Nama Loker</i>
-            </label>
-            <input type="text" name="nama_lowongan" class="form-control"
-               value="{{ old('nama_lowongan', $lowongan->nama_lowongan ?? '') }}"
-               required>
+    {{-- Detail & Jenis Pekerjaan --}}
+    <div class="card mb-4">
+        <div class="card-header fw-semibold">
+            Detail & Jenis Pekerjaan <span class="text-danger">*</span>
         </div>
 
-        <div class="mb-3">
-    <div class="d-flex justify-content-between align-items-center mb-1">
-        <label class="form-label fw-semibold mb-0">
-            Bidang Kerja
-        </label>
+        <div class="card-body">
 
-        <button type="button"
-                class="btn btn-sm btn-outline-primary"
-                data-bs-toggle="modal"
-                data-bs-target="#modalBidangKerja">
-            + Tambah Bidang Kerja
-        </button>
-    </div>
-
-    <select name="bidang_kerja_id"
-            class="form-select select-bidang-kerja"
-            required>
-        <option value="">-- Pilih Bidang Kerja --</option>
-        @foreach ($bidangKerja as $bidang)
-            <option value="{{ $bidang->id }}"
-                {{ old('bidang_kerja_id', $lowongan->bidang_kerja_id ?? '') == $bidang->id ? 'selected' : '' }}>
-                {{ $bidang->nama }}
-            </option>
-        @endforeach
-    </select>
-</div>
-
-
-        <div class="mb-2">
-            <label class="form-label fw-semibold mt-3">Tipe Kerja</label>
-            <select name="tipe_kerja" class="form-select" required>
-                @foreach (['penuh_waktu'=>'Penuh Waktu','paruh_waktu'=>'Paruh Waktu','kontrak'=>'Kontrak'] as $val=>$label)
-                    <option value="{{ $val }}"
-                        {{ old('tipe_kerja',$lowongan->tipe_kerja ?? '') == $val ? 'selected' : '' }}>
-                        {{ $label }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
-
-    </div>
-</div>
-
-{{-- ================= PERIODE PENDAFTARAN ================= --}}
-<div class="card mb-4">
-    <div class="card-header fw-semibold">
-        Periode Pendaftaran <span class="text-danger">*</span>
-    </div>
-
-    <div class="card-body">
-        <div class="row">
-            <div class="col-md-6">
+            <div class="mb-3">
                 <label class="form-label fw-semibold">
-                    Tanggal Mulai Pendaftaran <span class="text-danger">*</span>
+                    Nama Loker
                 </label>
-                <input type="date"
-                       name="tanggal_mulai"
-                       class="form-control"
-                       value="{{ old('tanggal_mulai', $lowongan->tanggal_mulai ?? '') }}"
-                       required>
+                <input
+                    type="text"
+                    name="nama_lowongan"
+                    class="form-control"
+                    value="{{ old('nama_lowongan', $lowongan->nama_lowongan ?? '') }}"
+                    required>
             </div>
 
-            <div class="col-md-6">
-                <label class="form-label fw-semibold">
-                    Tanggal Selesai Pendaftaran <span class="text-danger">*</span>
-                </label>
-                <input type="date"
-                       name="tanggal_selesai"
-                       class="form-control"
-                       value="{{ old('tanggal_selesai', $lowongan->tanggal_selesai ?? '') }}"
-                       required>
-            </div>
-        </div>
-    </div>
-</div>
+            <div class="mb-3">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <label class="form-label fw-semibold mb-0">
+                        Bidang Kerja
+                    </label>
 
-
-{{-- ================= LOKASI ================= --}}
-<div class="card mb-4">
-    <div class="card-header fw-semibold">
-        Lokasi <span class="text-danger">*</span>
-    </div>
-
-    <div class="card-body">
-
-        <label class="form-label fw-semibold">Sistem Kerja</label>
-        <div class="d-flex gap-4 mb-3">
-            @foreach (['kantor'=>'Di Kantor','remote'=>'Remote','hybrid'=>'Hybrid'] as $val=>$label)
-            <div>
-                <input type="radio" name="sistem_kerja" value="{{ $val }}"
-       {{ old('sistem_kerja',$lowongan->sistem_kerja ?? '') == $val ? 'checked' : '' }}
-       required>
-                {{ $label }}
-            </div>
-        @endforeach
-        </div>
-
-        <div>
-            <label class="form-label fw-semibold mt-3">Lokasi</label>
-            <input type="text" name="lokasi" class="form-control"
-               value="{{ old('lokasi',$lowongan->lokasi ?? '') }}" required>
-        </div>
-        <div>
-            <label class="form-label fw-semibold mt-3">Penempatan Kerja</label>
-            <input type="text"
-           name="penempatan"
-           class="form-control"
-           placeholder="Contoh: Perusahaan Klien (Manufaktur)"
-           value="{{ old('penempatan', $lowongan->penempatan ?? '') }}">
-        </div>
-
-    </div>
-</div>
-
-
-{{-- ================= GAJI ================= --}}
-<div class="card mb-4">
-    <div class="card-header fw-semibold">
-        Gaji <span class="text-danger">*</span>
-    </div>
-
-    <div class="card-body d-flex align-items-center gap-2">
-        <input type="number" name="gaji_min" class="form-control"
-               value="{{ old('gaji_min',$lowongan->gaji_min ?? '') }}">
-        <span>hingga</span>
-        <input type="number" name="gaji_max" class="form-control"
-               value="{{ old('gaji_max',$lowongan->gaji_max ?? '') }}">
-    </div>
-</div>
-
-{{-- ================= PERSYARATAN KERJA ================= --}}
-<div class="card mb-4">
-    <div class="card-header fw-semibold">
-        Persyaratan Kerja <span class="text-danger">*</span>
-    </div>
-
-    <div class="card-body">
-
-        <label class="form-label fw-semibold">Jenis Kelamin</label>
-
-        <div class="d-flex gap-4 mb-3">
-            @foreach ([
-                'laki-laki' => 'Laki-laki',
-                'perempuan' => 'Perempuan',
-                'semua' => 'Laki-laki & Perempuan'
-            ] as $val => $label)
-                <div>
-                    <input type="radio"
-                        name="jenis_kelamin"
-                        value="{{ $val }}"
-                        {{ old('jenis_kelamin', $lowongan->jenis_kelamin ?? 'semua') == $val ? 'checked' : '' }}>
-                    {{ $label }}
+                    <button
+                        type="button"
+                        class="btn btn-sm btn-outline-primary"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalBidangKerja">
+                        + Tambah Bidang Kerja
+                    </button>
                 </div>
-            @endforeach
-        </div>
 
-        <label class="form-label fw-semibold">Usia</label>
-        <div class="d-flex align-items-center gap-2 mb-2">
-            <input type="number" name="usia_min" class="form-control"
-                   value="{{ old('usia_min',$lowongan->usia_min ?? '') }}">
-            <span>hingga</span>
-            <input type="number" name="usia_max" class="form-control"
-                   value="{{ old('usia_max',$lowongan->usia_max ?? '') }}">
-        </div>
+                <select
+                    name="bidang_kerja_id"
+                    class="form-select select-bidang-kerja"
+                    required>
+                    <option value="">-- Pilih Bidang Kerja --</option>
+                    @foreach ($bidangKerja as $bidang)
+                        <option value="{{ $bidang->id }}"
+                            {{ old('bidang_kerja_id', $lowongan->bidang_kerja_id ?? '') == $bidang->id ? 'selected' : '' }}>
+                            {{ $bidang->nama }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
 
-        <div class="form-check mb-3">
-            <input class="form-check-input"
-        type="checkbox"
-        name="tanpa_batas_usia"
-        value="1"
-        {{ old('tanpa_batas_usia', $lowongan->tanpa_batas_usia ?? false) ? 'checked' : '' }}>
-            Tidak ada batas usia
-        </div>
-
-        <div class="mb-3">
-            <div class="d-flex justify-content-between align-items-center mb-1">
-                <label class="form-label fw-semibold mb-0">
-                    Skill Wajib Diisi
+            <div class="mb-2">
+                <label class="form-label fw-semibold mt-3">
+                    Tipe Kerja
                 </label>
+                <select
+                    name="tipe_kerja"
+                    class="form-select"
+                    required>
+                    @foreach ([
+                        'penuh_waktu' => 'Penuh Waktu',
+                        'paruh_waktu' => 'Paruh Waktu',
+                        'kontrak'     => 'Kontrak'
+                    ] as $val => $label)
+                        <option value="{{ $val }}"
+                            {{ old('tipe_kerja', $lowongan->tipe_kerja ?? '') == $val ? 'selected' : '' }}>
+                            {{ $label }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
 
-                <button type="button"
+        </div>
+    </div>
+
+    {{-- Periode Pendaftaran --}}
+    <div class="card mb-4">
+        <div class="card-header fw-semibold">
+            Periode Pendaftaran <span class="text-danger">*</span>
+        </div>
+
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">
+                        Tanggal Mulai Pendaftaran <span class="text-danger">*</span>
+                    </label>
+                    <input
+                        type="date"
+                        name="tanggal_mulai"
+                        class="form-control"
+                        value="{{ old('tanggal_mulai', $lowongan->tanggal_mulai ?? '') }}"
+                        required>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">
+                        Tanggal Selesai Pendaftaran <span class="text-danger">*</span>
+                    </label>
+                    <input
+                        type="date"
+                        name="tanggal_selesai"
+                        class="form-control"
+                        value="{{ old('tanggal_selesai', $lowongan->tanggal_selesai ?? '') }}"
+                        required>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    {{-- Lokasi --}}
+    <div class="card mb-4">
+        <div class="card-header fw-semibold">
+            Lokasi <span class="text-danger">*</span>
+        </div>
+
+        <div class="card-body">
+
+            <label class="form-label fw-semibold">Sistem Kerja</label>
+            <div class="d-flex gap-4 mb-3">
+                @foreach ([
+                    'kantor' => 'Di Kantor',
+                    'remote' => 'Remote',
+                    'hybrid' => 'Hybrid'
+                ] as $val => $label)
+                    <div>
+                        <input
+                            type="radio"
+                            name="sistem_kerja"
+                            value="{{ $val }}"
+                            {{ old('sistem_kerja', $lowongan->sistem_kerja ?? '') == $val ? 'checked' : '' }}
+                            required>
+                        {{ $label }}
+                    </div>
+                @endforeach
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Lokasi</label>
+                <input
+                    type="text"
+                    name="lokasi"
+                    class="form-control"
+                    value="{{ old('lokasi', $lowongan->lokasi ?? '') }}"
+                    required>
+            </div>
+
+            <div>
+                <label class="form-label fw-semibold">Penempatan Kerja</label>
+                <input
+                    type="text"
+                    name="penempatan"
+                    class="form-control"
+                    placeholder="Contoh: Perusahaan Klien (Manufaktur)"
+                    value="{{ old('penempatan', $lowongan->penempatan ?? '') }}">
+            </div>
+
+        </div>
+    </div>
+
+
+    {{-- Gaji --}}
+    <div class="card mb-4">
+        <div class="card-header fw-semibold">
+            Gaji <span class="text-danger">*</span>
+        </div>
+
+        <div class="card-body d-flex align-items-center gap-2">
+            <input
+                type="number"
+                name="gaji_min"
+                class="form-control"
+                value="{{ old('gaji_min', $lowongan->gaji_min ?? '') }}">
+
+            <span>hingga</span>
+
+            <input
+                type="number"
+                name="gaji_max"
+                class="form-control"
+                value="{{ old('gaji_max', $lowongan->gaji_max ?? '') }}">
+        </div>
+    </div>
+
+    {{-- Persyaratan Kerja --}}
+    <div class="card mb-4">
+        <div class="card-header fw-semibold">
+            Persyaratan Kerja <span class="text-danger">*</span>
+        </div>
+
+        <div class="card-body">
+
+            <label class="form-label fw-semibold">Jenis Kelamin</label>
+            <div class="d-flex gap-4 mb-3">
+                @foreach ([
+                    'laki-laki' => 'Laki-laki',
+                    'perempuan' => 'Perempuan',
+                    'semua' => 'Laki-laki & Perempuan'
+                ] as $val => $label)
+                    <div>
+                        <input
+                            type="radio"
+                            name="jenis_kelamin"
+                            value="{{ $val }}"
+                            {{ old('jenis_kelamin', $lowongan->jenis_kelamin ?? 'semua') == $val ? 'checked' : '' }}>
+                        {{ $label }}
+                    </div>
+                @endforeach
+            </div>
+
+            <label class="form-label fw-semibold">Usia</label>
+            <div class="d-flex align-items-center gap-2 mb-2">
+                <input
+                    type="number"
+                    name="usia_min"
+                    class="form-control"
+                    value="{{ old('usia_min', $lowongan->usia_min ?? '') }}">
+
+                <span>hingga</span>
+
+                <input
+                    type="number"
+                    name="usia_max"
+                    class="form-control"
+                    value="{{ old('usia_max', $lowongan->usia_max ?? '') }}">
+            </div>
+
+            <div class="form-check mb-3">
+                <input
+                    class="form-check-input"
+                    type="checkbox"
+                    name="tanpa_batas_usia"
+                    value="1"
+                    {{ old('tanpa_batas_usia', $lowongan->tanpa_batas_usia ?? false) ? 'checked' : '' }}>
+                Tidak ada batas usia
+            </div>
+
+            <div class="mb-3">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <label class="form-label fw-semibold mb-0">
+                        Skill Wajib Diisi
+                    </label>
+
+                    <button
+                        type="button"
                         class="btn btn-sm btn-outline-primary"
                         data-bs-toggle="modal"
                         data-bs-target="#modalSkill">
-                    + Tambah Skill
-                </button>
+                        + Tambah Skill
+                    </button>
+                </div>
+
+                <select
+                    class="form-select select-skill"
+                    name="skills[]"
+                    multiple>
+                    @foreach ($skills as $skill)
+                        <option
+                            value="{{ $skill->id }}"
+                            {{ isset($lowongan) && $lowongan->skills->contains($skill->id) ? 'selected' : '' }}>
+                            {{ $skill->nama_skill }}
+                        </option>
+                    @endforeach
+                </select>
             </div>
 
-            <select class="form-select select-skill" name="skills[]" multiple>
-            @foreach ($skills as $skill)
-                <option value="{{ $skill->id }}"
-                    {{ isset($lowongan) && $lowongan->skills->contains($skill->id) ? 'selected' : '' }}>
-                    {{ $skill->nama_skill }}
-                </option>
-            @endforeach
-        </select>
-        </div>
+            <div class="mb-3">
+                <label class="form-label fw-semibold">
+                    Pendidikan Minimal yang Dibutuhkan
+                </label>
+                <select name="pendidikan_minimal" class="form-select">
+                    @foreach (['SMA/SMK', 'D3', 'S1'] as $p)
+                        <option
+                            value="{{ $p }}"
+                            {{ old('pendidikan_minimal', $lowongan->pendidikan_minimal ?? '') == $p ? 'selected' : '' }}>
+                            {{ $p }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
 
-        <div class="mb-3">
-            <label class="form-label fw-semibold">
-                Pendidikan Minimal yang Dibutuhkan
-            </label>
-            <select name="pendidikan_minimal" class="form-select">
-            @foreach (['SMA/SMK','D3','S1'] as $p)
-                <option value="{{ $p }}"
-                    {{ old('pendidikan_minimal',$lowongan->pendidikan_minimal ?? '') == $p ? 'selected' : '' }}>
-                    {{ $p }}
-                </option>
-            @endforeach
-        </select>
-        </div>
+            <div>
+                <label class="form-label fw-semibold">
+                    Pengalaman Kerja yang Dibutuhkan
+                </label>
+                <select name="pengalaman_kerja" class="form-select">
+                    @foreach (['Fresh_Graduate', '1-2_Tahun', '3_Tahun_Lebih'] as $p)
+                        <option
+                            value="{{ $p }}"
+                            {{ old('pengalaman_kerja', $lowongan->pengalaman_kerja ?? '') == $p ? 'selected' : '' }}>
+                            {{ str_replace('_', ' ', $p) }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
 
-        <div>
-            <label class="form-label fw-semibold">
-                Pengalaman Kerja yang Dibutuhkan
-            </label>
-            <select name="pengalaman_kerja" class="form-select">
-            @foreach (['Fresh_Graduate','1-2_Tahun','3_Tahun_Lebih'] as $p)
-                <option value="{{ $p }}"
-                    {{ old('pengalaman_kerja',$lowongan->pengalaman_kerja ?? '') == $p ? 'selected' : '' }}>
-                    {{ str_replace('_',' ',$p) }}
-                </option>
-            @endforeach
-        </select>
         </div>
-
     </div>
-</div>
 
-<div class="mb-3">
-    <label class="form-label">Jumlah Kandidat Diterima</label>
-    <input type="number"
-           name="jumlah_diterima"
-           class="form-control"
-           min="1"
-           value="{{ old('jumlah_diterima', $lowongan->jumlah_diterima ?? 1) }}"
-           required>
-    <small class="text-muted">
-        Sistem akan otomatis menentukan jumlah interview (3x lipat).
-    </small>
-</div>
+    <div class="mb-3">
+        <label class="form-label">Jumlah Kandidat Diterima</label>
+        <input type="number"
+            name="jumlah_diterima"
+            class="form-control"
+            min="1"
+            value="{{ old('jumlah_diterima', $lowongan->jumlah_diterima ?? 1) }}"
+            required>
+        <small class="text-muted">
+            Sistem akan otomatis menentukan jumlah interview (3x lipat).
+        </small>
+    </div>
 
 
-{{-- ================= ACTION BUTTON ================= --}}
-<div class="d-flex justify-content-end gap-2">
-    <a href="{{ route('hrd.lowongan.index') }}" class="btn btn-light">Kembali</a>
-    <button type="submit" class="btn btn-primary">Selanjutnya</button>
-</div>
+    {{-- ================= ACTION BUTTON ================= --}}
+    <div class="d-flex justify-content-end gap-2">
+        <a href="{{ route('hrd.lowongan.index') }}" class="btn btn-light">Kembali</a>
+        <button type="submit" class="btn btn-primary">Selanjutnya</button>
+    </div>
 
 </form>
 
@@ -334,6 +384,7 @@ method="POST">
         </div>
     </div>
 </div>
+
 <div class="modal fade" id="modalEditSkill" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -357,7 +408,7 @@ method="POST">
     </div>
 </div>
 
-{{-- MODAL TAMBAH BIDANG KERJA --}}
+{{-- Modal Tambah Bidang Kerja --}}
 <div class="modal fade" id="modalBidangKerja" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -384,7 +435,7 @@ method="POST">
     </div>
 </div>
 
-{{-- MODAL EDIT BIDANG KERJA --}}
+{{-- Modal Edit Bidang Kerja --}}
 <div class="modal fade" id="modalEditBidangKerja" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -413,7 +464,7 @@ method="POST">
 
 @push('scripts')
 <script>
-/* ================= SELECT2 ================= */
+/* Select2 Initialization */
 $(function () {
     $('.select-skill').select2({
         placeholder: 'Cari & pilih skill',
@@ -426,7 +477,8 @@ $(function () {
     });
 });
 
-/* ================= SKILL ================= */
+
+/* Create Skill */
 function saveSkill() {
     const name = document.getElementById('skillName').value.trim();
 
@@ -466,15 +518,19 @@ function saveSkill() {
     .catch(err => Swal.fire('Gagal', err.message, 'error'));
 }
 
-/* ================= EDIT SKILL ================= */
+
+/* Open Edit Modal */
 $('.select-skill').on('select2:select', function (e) {
     const data = e.params.data;
+
     document.getElementById('editSkillId').value = data.id;
     document.getElementById('editSkillName').value = data.text.trim();
 
     new bootstrap.Modal(document.getElementById('modalEditSkill')).show();
 });
 
+
+/* Update Skill */
 function updateSkill() {
     const id   = document.getElementById('editSkillId').value;
     const name = document.getElementById('editSkillName').value.trim();
@@ -489,14 +545,14 @@ function updateSkill() {
     }
 
     fetch(`/hrd/skills/${id}`, {
-        method: 'POST', // ⬅️ PENTING
+        method: 'POST',
         headers: {
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
             'Content-Type': 'application/json',
             'Accept': 'application/json'
         },
         body: JSON.stringify({
-            _method: 'PUT',       // ⬅️ METHOD SPOOFING
+            _method: 'PUT',
             nama_skill: name
         })
     })
@@ -505,8 +561,6 @@ function updateSkill() {
         return res.json();
     })
     .then(skill => {
-
-        // ✅ update text option saja
         const option = $('.select-skill option[value="' + skill.id + '"]');
         option.text(skill.nama_skill);
 
@@ -533,6 +587,8 @@ function updateSkill() {
     });
 }
 
+
+/* Delete Skill */
 function deleteSkill() {
     const id = document.getElementById('editSkillId').value;
 
@@ -557,10 +613,12 @@ function deleteSkill() {
             return res.json();
         })
         .then(() => {
-            $('.select-skill option[value="'+id+'"]').remove();
+            $('.select-skill option[value="' + id + '"]').remove();
             $('.select-skill').trigger('change');
 
-            bootstrap.Modal.getInstance(document.getElementById('modalEditSkill')).hide();
+            bootstrap.Modal
+                .getInstance(document.getElementById('modalEditSkill'))
+                .hide();
 
             Swal.fire('Berhasil', 'Skill berhasil dihapus', 'success');
         })
@@ -568,7 +626,7 @@ function deleteSkill() {
     });
 }
 
-/* ================= BIDANG KERJA ================= */
+/* Bidang Kerja CRUD */
 function saveBidangKerja() {
     const name = document.getElementById('bidangKerjaName').value.trim();
 
@@ -608,6 +666,8 @@ function saveBidangKerja() {
     .catch(err => Swal.fire('Gagal', err.message, 'error'));
 }
 
+
+/* Open Edit Modal */
 $('.select-bidang-kerja').on('select2:select', function (e) {
     const data = e.params.data;
 
@@ -617,6 +677,8 @@ $('.select-bidang-kerja').on('select2:select', function (e) {
     new bootstrap.Modal(document.getElementById('modalEditBidangKerja')).show();
 });
 
+
+/* Update Bidang Kerja */
 function updateBidangKerja() {
     const id   = document.getElementById('editBidangKerjaId').value;
     const name = document.getElementById('editBidangKerjaName').value.trim();
@@ -635,7 +697,7 @@ function updateBidangKerja() {
     })
     .then(bidang => {
         const option = new Option(bidang.nama, bidang.id, true, true);
-        $('.select-bidang-kerja option[value="'+bidang.id+'"]').replaceWith(option);
+        $('.select-bidang-kerja option[value="' + bidang.id + '"]').replaceWith(option);
         $('.select-bidang-kerja').trigger('change');
 
         bootstrap.Modal.getInstance(document.getElementById('modalEditBidangKerja')).hide();
@@ -651,6 +713,8 @@ function updateBidangKerja() {
     .catch(err => Swal.fire('Gagal', err.message, 'error'));
 }
 
+
+/* Delete Bidang Kerja */
 function deleteBidangKerja() {
     const id = document.getElementById('editBidangKerjaId').value;
 
@@ -675,7 +739,7 @@ function deleteBidangKerja() {
             return res.json();
         })
         .then(() => {
-            $('.select-bidang-kerja option[value="'+id+'"]').remove();
+            $('.select-bidang-kerja option[value="' + id + '"]').remove();
             $('.select-bidang-kerja').trigger('change');
 
             bootstrap.Modal.getInstance(document.getElementById('modalEditBidangKerja')).hide();
@@ -685,5 +749,6 @@ function deleteBidangKerja() {
         .catch(err => Swal.fire('Gagal', err.message, 'error'));
     });
 }
+
 </script>
 @endpush

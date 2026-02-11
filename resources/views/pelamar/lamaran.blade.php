@@ -55,7 +55,6 @@
 <div class="card shadow-sm">
     <div class="card-body">
 
-        {{-- HEADER --}}
         <div class="d-flex justify-content-between align-items-start mb-2">
             <div>
                 <h5 class="mb-1">Tracking Lamaran</h5>
@@ -74,19 +73,19 @@
         {{-- ALERT GAGAL --}}
         @if($status === 'ditolak_administrasi')
             <div class="alert alert-danger">
-                ❌ Lamaran kamu ditolak pada tahap <strong>administrasi</strong>.
+                Lamaran kamu ditolak pada tahap <strong>administrasi</strong>.
             </div>
         @elseif($status === 'tidak_lolos_saw')
             <div class="alert alert-danger">
-                ❌ Kamu tidak lolos pada tahap <strong>seleksi</strong>.
+                Kamu tidak lolos pada tahap <strong>seleksi</strong>.
             </div>
         @elseif($status === 'ditolak')
             <div class="alert alert-danger">
-                ❌ Kamu tidak lolos pada tahap <strong>interview</strong>.
+                Kamu tidak lolos pada tahap <strong>interview</strong>.
             </div>
         @elseif($status === 'offer_ditolak')
             <div class="alert alert-warning">
-                ⚠️ Kamu menolak penawaran kerja dari perusahaan.
+                Kamu menolak penawaran kerja dari perusahaan.
             </div>
         @endif
 
@@ -157,89 +156,139 @@
                     </div>
                 </div>
 
-                {{-- ================= 4. INTERVIEW ================= --}}
-<div class="timeline-item {{ $currentStep >= 4 ? 'active' : '' }}">
-    <div class="timeline-dot">4</div>
-    <div class="timeline-content">
-        <h6>INTERVIEW</h6>
+                {{-- 4. INTERVIEW --}}
+                <div class="timeline-item {{ $currentStep >= 4 ? 'active' : '' }}">
+                    <div class="timeline-dot">4</div>
+                    <div class="timeline-content">
+                        <h6>INTERVIEW</h6>
 
-        {{-- BELUM SAMPAI INTERVIEW --}}
-        @if($currentStep < 4)
-            {{-- tidak ada keterangan --}}
+                        {{-- BELUM SAMPAI INTERVIEW --}}
+                        @if($currentStep < 4)
+                            {{-- tidak ada keterangan --}}
 
-        {{-- GAGAL SEBELUM INTERVIEW --}}
-        @elseif(in_array($status, ['ditolak_administrasi', 'tidak_lolos_saw']))
-            <div class="timeline-info text-muted">
-                Tahap interview tidak dilanjutkan.
-            </div>
+                        {{-- GAGAL SEBELUM INTERVIEW --}}
+                        @elseif(in_array($status, ['ditolak_administrasi', 'tidak_lolos_saw']))
+                            <div class="timeline-info text-muted">
+                                Tahap interview tidak dilanjutkan.
+                            </div>
 
-        {{-- TIDAK LOLOS INTERVIEW --}}
-        @elseif($status === 'ditolak')
-            <div class="timeline-info text-danger">
-                Tidak lolos interview.
-            </div>
+                        {{-- TIDAK LOLOS INTERVIEW --}}
+                        @elseif($status === 'ditolak')
+                            <div class="timeline-info text-danger">
+                                Tidak lolos interview.
+                            </div>
 
-        {{-- SEDANG / AKAN INTERVIEW --}}
-        @elseif($status === 'interview')
+                        {{-- SEDANG / AKAN INTERVIEW --}}
+                        @elseif($status === 'interview')
 
-            @if($application->interview_at)
-                <div class="timeline-box">
-                    <strong>Interview sedang berlangsung / dijadwalkan</strong><br><br>
+                            @if($application->interview_at)
+                                <div class="timeline-box">
+                                    <strong>Interview sedang berlangsung / dijadwalkan</strong><br><br>
 
-                    <strong>Metode:</strong> {{ ucfirst($application->interview_method) }}<br>
-                    <strong>Tanggal:</strong>
-                    {{ $application->interview_at->translatedFormat('d F Y H:i') }}
+                                    <strong>Metode:</strong> {{ ucfirst($application->interview_method) }}<br>
+                                    <strong>Tanggal:</strong>
+                                    {{ $application->interview_at->translatedFormat('d F Y H:i') }}
 
-                    @if($application->interview_link)
-                        <br>
-                        <strong>Link:</strong>
-                        <a href="{{ $application->interview_link }}" target="_blank">
-                            {{ $application->interview_link }}
-                        </a>
-                    @endif
+                                    @if($application->interview_link)
+                                        <br>
+                                        <strong>Link:</strong>
+                                        <a href="{{ $application->interview_link }}" target="_blank">
+                                            {{ $application->interview_link }}
+                                        </a>
+                                    @endif
+                                </div>
+                            @else
+                                <div class="timeline-info">
+                                    Menunggu penjadwalan interview dari perusahaan.
+                                </div>
+                            @endif
+
+                        {{-- INTERVIEW SUDAH DILALUI --}}
+                        @else
+                            <div class="timeline-info">
+                                Interview telah dilalui.
+                            </div>
+                        @endif
                 </div>
-            @else
-                <div class="timeline-info">
-                    Menunggu penjadwalan interview dari perusahaan.
-                </div>
-            @endif
-
-        {{-- INTERVIEW SUDAH DILALUI --}}
-        @else
-            <div class="timeline-info">
-                Interview telah dilalui.
-            </div>
-        @endif
-
     </div>
-</div>
-
                 {{-- 5. OFFER --}}
                 <div class="timeline-item {{ $currentStep >= 5 ? 'active' : '' }}">
                     <div class="timeline-dot">5</div>
                     <div class="timeline-content">
                         <h6>OFFER</h6>
 
+                        {{-- BELUM SAMPAI OFFER --}}
                         @if($currentStep < 5)
                             {{-- tidak ada keterangan --}}
+
+                        {{-- OFFER DIKIRIM --}}
                         @elseif($status === 'offer')
-                            <div class="timeline-info">
+
+                            <div class="timeline-info mb-2">
                                 Penawaran kerja telah dikirim oleh perusahaan.
                             </div>
+
+                            @if($application->offer_file)
+                                <a href="{{ $application->offer_file }}"
+                                target="_blank"
+                                class="btn btn-outline-primary btn-sm mb-3">
+                                    📄 Lihat Offering Letter
+                                </a>
+                            @endif
+
+                            {{-- TOMBOL RESPON --}}
+                            <div class="d-flex gap-2">
+                                <form method="POST"
+                                    action="{{ route('pelamar.offer.response', $application) }}">
+                                    @csrf
+                                    <input type="hidden" name="response" value="diterima">
+                                    <button class="btn btn-success btn-sm">
+                                        Terima Offer
+                                    </button>
+                                </form>
+
+                                <form method="POST"
+                                    action="{{ route('pelamar.offer.response', $application) }}">
+                                    @csrf
+                                    <input type="hidden" name="response" value="ditolak">
+                                    <button class="btn btn-danger btn-sm">
+                                        Tolak Offer
+                                    </button>
+                                </form>
+                            </div>
+
+                        {{-- OFFER DITOLAK --}}
                         @elseif($status === 'offer_ditolak')
+
                             <div class="timeline-info text-warning">
-                                Kamu menolak penawaran kerja.
+                                Kamu menolak penawaran kerja dari perusahaan.
                             </div>
+
+                            @if($application->offer_file)
+                                <a href="{{ $application->offer_file }}"
+                                target="_blank"
+                                class="btn btn-outline-secondary btn-sm mt-2">
+                                    Lihat Offering Letter
+                                </a>
+                            @endif
+
+                        {{-- OFFER DITERIMA --}}
                         @elseif($status === 'diterima')
+
                             <div class="alert alert-success mt-2">
-                                🎉 Selamat! Kamu resmi diterima bekerja.
+                                Selamat! Kamu resmi diterima bekerja.
                             </div>
+
+                        {{-- TIDAK DILANJUTKAN --}}
                         @else
                             <div class="timeline-info text-muted">
                                 Proses tidak berlanjut ke tahap offer.
                             </div>
                         @endif
+
                     </div>
+                </div>
+
                 </div>
 
             </div>

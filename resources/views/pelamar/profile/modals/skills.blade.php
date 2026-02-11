@@ -13,7 +13,6 @@
                     Pilih dari daftar atau tambahkan skill baru
                 </p>
 
-                {{-- DROPDOWN --}}
                 <select id="skillSelect" class="form-select mb-2">
                     <option value="">Pilih skill</option>
                     @foreach(\App\Models\Skill::orderBy('nama_skill')->get() as $skill)
@@ -23,7 +22,6 @@
                     @endforeach
                 </select>
 
-                {{-- INPUT MANUAL --}}
                 <input type="text"
                        id="customSkill"
                        class="form-control mb-3"

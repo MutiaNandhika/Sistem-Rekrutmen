@@ -18,19 +18,15 @@
 
 {{-- STEP INDICATOR --}}
 <div class="d-flex justify-content-center align-items-center gap-3 mb-4">
-
     <div class="d-flex align-items-center gap-2">
         <span class="step-circle done">1</span>
         <span class="fw-semibold">Info Loker</span>
     </div>
-
     <div class="step-line"></div>
-
     <div class="d-flex align-items-center gap-2">
         <span class="step-circle active">2</span>
         <span class="fw-semibold">Deskripsi Pekerjaan</span>
     </div>
-
 </div>
 
 <form method="POST"
@@ -53,27 +49,20 @@
         </div>
     </div>
 
-    {{-- ACTION BUTTON --}}
     <div class="d-flex justify-content-between mb-5">
-
-        {{-- 🔙 SEBELUMNYA (SUBMIT!) --}}
         <button type="submit"
                 name="action"
                 value="back"
                 class="btn btn-light border">
             Sebelumnya
         </button>
-
         <div class="d-flex gap-2">
-            {{-- 💾 DRAFT --}}
             <button type="submit"
                     name="action"
                     value="draft"
                     class="btn btn-warning text-white">
                 Simpan Draft
             </button>
-
-            {{-- 🚀 PUBLISH --}}
             <button type="submit"
                     name="action"
                     value="publish"

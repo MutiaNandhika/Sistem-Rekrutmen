@@ -3,9 +3,9 @@
 
 @section('content')
 
-<div class="page-manajemen-akun"><!-- 🔒 SCOPING WRAPPER -->
+<div class="page-manajemen-akun">
 
-{{-- ================= HEADER ================= --}}
+{{-- Header --}}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
         <h4 class="fw-bold mb-1">Manajemen Akun</h4>
@@ -22,7 +22,7 @@
     </button>
 </div>
 
-{{-- ================= FILTER & EXPORT ================= --}}
+{{-- Filter & Export --}}
 <div class="card shadow-sm mb-4">
     <div class="card-body d-flex flex-wrap gap-3 align-items-center justify-content-between">
 
@@ -64,7 +64,7 @@
     </div>
 </div>
 
-{{-- ================= TABLE ================= --}}
+{{-- Table --}}
 <div class="card shadow-sm">
     <div class="card-body">
 
@@ -120,7 +120,7 @@
 
     </div>
 </div>
-{{-- ================= MODAL TAMBAH ================= --}}
+{{-- Modal Tambah Akun --}}
 <div class="modal fade" id="modalTambah">
     <div class="modal-dialog modal-dialog-centered">
         <form method="POST"
@@ -151,7 +151,7 @@
     </div>
 </div>
 
-{{-- ================= MODAL EDIT ================= --}}
+{{-- Modal Edit --}}
 <div class="modal fade" id="modalEdit">
     <div class="modal-dialog modal-dialog-centered">
         <form method="POST" id="formEdit" class="modal-content">
@@ -183,7 +183,7 @@
     </div>
 </div>
 
-{{-- ================= SCRIPT ================= --}}
+{{-- Script --}}
 <script>
 function openEdit(user){
     document.getElementById('editName').value  = user.name;

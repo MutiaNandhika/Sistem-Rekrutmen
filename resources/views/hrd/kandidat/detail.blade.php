@@ -2,7 +2,6 @@
 
 @section('title', 'Detail Kandidat')
 
-{{-- ================= BREADCRUMB ================= --}}
 @section('breadcrumb')
 <nav class="breadcrumb-wrapper">
     <a href="{{ route('hrd.lowongan.index') }}">Lowongan</a>
@@ -14,6 +13,7 @@
 @endsection
 
 @section('content')
+
 @php
     use Carbon\Carbon;
 
@@ -46,25 +46,20 @@
     };
 @endphp
 
-{{-- HEADER --}}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h4 class="fw-bold mb-0">Detail Kandidat</h4>
     <a href="{{ route('hrd.kandidat.index', $lowongan) }}" class="btn btn-light border">
-        ← Kembali ke Kandidat
+        Kembali ke Kandidat
     </a>
 </div>
 
 <div class="row g-4">
 
-               {{-- ======================================================
-| LEFT : PROFIL
-====================================================== --}}
-<div class="col-lg-7">
+{{-- Left Profile--}}
 
-    {{-- PROFILE CARD --}}
+<div class="col-lg-7">
     <div class="card shadow-sm mb-4">
         <div class="card-body d-flex gap-4">
-            {{-- AVATAR --}}
             @if($profile?->photo)
                 <img
                     src="{{ asset('storage/'.$profile->photo) }}"
@@ -97,256 +92,252 @@
                     <div class="col-6 mb-2"><strong>Pendidikan Terakhir</strong><br>{{ $profile->last_education ?? '-' }}</div>
                     <div class="col-6 mb-2"><strong>Jenis Kelamin</strong><br>{{ $profile->gender ?? '-' }}</div>
                 </div>
-
             </div>
         </div>
     </div>
     
-    {{-- TENTANG SAYA --}}
+    {{-- Tentang Saya --}}
     <div class="mb-4">
         <h6 class="fw-bold text-uppercase small">Tentang Saya</h6>
         <hr class="my-2">
         <p class="text-muted">{{ $profile->tentang_saya ?? '-' }}</p>
     </div>
 
-{{-- =========================
-| PENGALAMAN KERJA
-========================= --}}
-<div class="mb-4">
-<h6 class="fw-bold text-uppercase small">Pengalaman Kerja</h6>
-<hr class="my-2">
+    {{-- Pengalaman Kerja --}}
+    <div class="mb-4">
+        <h6 class="fw-bold text-uppercase small">Pengalaman Kerja</h6>
+        <hr class="my-2">
 
-@forelse ($user->pelamarExperiences as $exp)
-<div class="mb-3">
-    <strong>{{ $exp->posisi }}</strong> – {{ $exp->perusahaan }}<br>
-    <span class="text-muted small">
-        {{ Carbon::parse($exp->tanggal_mulai)->translatedFormat('F Y') }} –
-        {{ $exp->masih_bekerja ? 'Sekarang' : Carbon::parse($exp->tanggal_selesai)->translatedFormat('F Y') }}
-    </span>
+        @forelse ($user->pelamarExperiences as $exp)
+            <div class="mb-3">
+                <strong>{{ $exp->posisi }}</strong> – {{ $exp->perusahaan }}<br>
 
-    @if($exp->deskripsi)
-        <p class="text-muted mt-1">{{ $exp->deskripsi }}</p>
-    @endif
-            @if($exp->file_bukti)
-                <div>
-                    <a href="{{ asset('storage/'.$exp->file_bukti) }}"
-                       target="_blank"
-                       class="btn btn-outline-primary btn-sm">
-                        <i class="bi bi-paperclip"></i> Lihat File
-                    </a>
-                </div>
-            @endif
-    </div>
-    @empty
-    <p class="text-muted">Tidak ada pengalaman kerja.</p>
-    @endforelse
-    </div>
+                <span class="text-muted small">
+                    {{ Carbon::parse($exp->tanggal_mulai)->translatedFormat('F Y') }} –
+                    {{ $exp->masih_bekerja
+                        ? 'Sekarang'
+                        : Carbon::parse($exp->tanggal_selesai)->translatedFormat('F Y') }}
+                </span>
 
-{{-- =========================
-| PENDIDIKAN
-========================= --}}
-<div class="mb-4">
-<h6 class="fw-bold text-uppercase small">Pendidikan</h6>
-<hr class="my-2">
-
-@forelse ($user->pelamarEducations as $edu)
-<div class="mb-3">
-    <strong>{{ $edu->nama_sekolah }}</strong><br>
-    <span class="text-muted">{{ $edu->tingkat }} – {{ $edu->bidang_studi }}</span><br>
-    <span class="text-muted small">
-        {{ bulan($edu->mulai_bulan) }} {{ $edu->mulai_tahun }} –
-        {{ bulan($edu->selesai_bulan) }} {{ $edu->selesai_tahun }}
-    </span>
-
-    @if($edu->informasi_tambahan)
-        <p class="text-muted mt-1">{{ $edu->informasi_tambahan }}</p>
-    @endif
-
-    @if($edu->file_bukti)
-        <div class="mt-2">
-            <a href="{{ asset('storage/'.$edu->file_bukti) }}"
-            target="_blank"
-            class="btn btn-outline-primary btn-sm">
-                <i class="bi bi-file-earmark-text"></i> Lihat File
-            </a>
-        </div>
-    @endif
-
-</div>
-@empty
-<p class="text-muted">Data pendidikan belum tersedia.</p>
-@endforelse
-</div>
-
-{{-- SKILLS --}}
-<div class="mb-4">
-    <h6 class="fw-bold text-uppercase small">Skills</h6>
-    <hr class="my-2">
-
-    @if ($user->pelamarSkills->count())
-        <div class="d-flex flex-wrap gap-2">
-            @foreach ($user->pelamarSkills as $ps)
-                @if($ps->skill)
-                    <span class="badge bg-light text-dark border">
-                        {{ $ps->skill->nama_skill }}
-                    </span>
+                @if($exp->deskripsi)
+                    <p class="text-muted mt-1">{{ $exp->deskripsi }}</p>
                 @endif
-            @endforeach
-        </div>
-    @else
-        <p class="text-muted">Tidak ada skill.</p>
-    @endif
-</div>
+
+                @if($exp->file_bukti)
+                    <div class="mt-2">
+                        <a href="{{ asset('storage/'.$exp->file_bukti) }}"
+                        target="_blank"
+                        class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-paperclip"></i> Lihat File
+                        </a>
+                    </div>
+                @endif
+            </div>
+        @empty
+            <p class="text-muted">Tidak ada pengalaman kerja.</p>
+        @endforelse
+    </div>
 
 
-{{-- =========================
-| RESUME
-========================= --}}
-<div class="mb-4">
-<h6 class="fw-bold text-uppercase small">Resume</h6>
-<hr class="my-2">
+    {{-- Pendidikan --}}
+    <div class="mb-4">
+        <h6 class="fw-bold text-uppercase small">Pendidikan</h6>
+        <hr class="my-2">
 
-@if ($user->pelamarResume)
-<a href="{{ asset('storage/'.$user->pelamarResume->file_path) }}"
-   target="_blank"
-   class="btn btn-outline-primary btn-sm">
-    <i class="bi bi-file-earmark-text"></i> Lihat Resume
-</a>
-@else
-<p class="text-muted">Resume belum diunggah.</p>
-@endif
-</div>
+        @forelse ($user->pelamarEducations as $edu)
+            <div class="mb-3">
+                <strong>{{ $edu->nama_sekolah }}</strong><br>
 
-{{-- =========================
-| PENGHARGAAN
-========================= --}}
-<div class="mb-4">
-<h6 class="fw-bold text-uppercase small">Penghargaan</h6>
-<hr class="my-2">
+                <span class="text-muted">
+                    {{ $edu->tingkat }} – {{ $edu->bidang_studi }}
+                </span><br>
 
-@forelse ($user->pelamarAchievements as $ach)
-<div class="mb-3">
-    <strong>{{ $ach->judul }}</strong> – {{ $ach->tahun }}
-    @if($ach->deskripsi)
-        <p class="text-muted small">{{ $ach->deskripsi }}</p>
-    @endif
+                <span class="text-muted small">
+                    {{ bulan($edu->mulai_bulan) }} {{ $edu->mulai_tahun }} –
+                    {{ bulan($edu->selesai_bulan) }} {{ $edu->selesai_tahun }}
+                </span>
 
-    @if($ach->file_bukti)
-        <div class="mt-2">
-            <a href="{{ asset('storage/'.$ach->file_bukti) }}"
+                @if($edu->informasi_tambahan)
+                    <p class="text-muted mt-1">{{ $edu->informasi_tambahan }}</p>
+                @endif
+
+                @if($edu->file_bukti)
+                    <div class="mt-2">
+                        <a href="{{ asset('storage/'.$edu->file_bukti) }}"
+                        target="_blank"
+                        class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-file-earmark-text"></i> Lihat File
+                        </a>
+                    </div>
+                @endif
+            </div>
+        @empty
+            <p class="text-muted">Data pendidikan belum tersedia.</p>
+        @endforelse
+    </div>
+
+    {{-- Skills --}}
+    <div class="mb-4">
+        <h6 class="fw-bold text-uppercase small">Skills</h6>
+        <hr class="my-2">
+
+        @if($user->pelamarSkills->count())
+            <div class="d-flex flex-wrap gap-2">
+                @foreach ($user->pelamarSkills as $ps)
+                    @if($ps->skill)
+                        <span class="badge bg-light text-dark border">
+                            {{ $ps->skill->nama_skill }}
+                        </span>
+                    @endif
+                @endforeach
+            </div>
+        @else
+            <p class="text-muted">Tidak ada skill.</p>
+        @endif
+    </div>
+
+    {{-- Resume --}}
+    <div class="mb-4">
+        <h6 class="fw-bold text-uppercase small">Resume</h6>
+        <hr class="my-2">
+
+        @if($user->pelamarResume)
+            <a href="{{ asset('storage/'.$user->pelamarResume->file_path) }}"
             target="_blank"
             class="btn btn-outline-primary btn-sm">
-                <i class="bi bi-award"></i> Lihat File
+                <i class="bi bi-file-earmark-text"></i> Lihat Resume
             </a>
-        </div>
-    @endif
+        @else
+            <p class="text-muted">Resume belum diunggah.</p>
+        @endif
+    </div>
+
+    {{-- Penghargaan --}}
+    <div class="mb-4">
+        <h6 class="fw-bold text-uppercase small">Penghargaan</h6>
+        <hr class="my-2">
+
+        @forelse ($user->pelamarAchievements as $ach)
+            <div class="mb-3">
+                <strong>{{ $ach->judul }}</strong> – {{ $ach->tahun }}
+
+                @if($ach->deskripsi)
+                    <p class="text-muted small mt-1">{{ $ach->deskripsi }}</p>
+                @endif
+
+                @if($ach->file_bukti)
+                    <div class="mt-2">
+                        <a href="{{ asset('storage/'.$ach->file_bukti) }}"
+                        target="_blank"
+                        class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-award"></i> Lihat File
+                        </a>
+                    </div>
+                @endif
+            </div>
+        @empty
+            <p class="text-muted">Tidak ada penghargaan.</p>
+        @endforelse
+    </div>
+
+    {{-- Sertifikat --}}
+    <div class="mb-4">
+        <h6 class="fw-bold text-uppercase small">Sertifikat</h6>
+        <hr class="my-2">
+
+        @forelse ($user->pelamarCertificates as $cert)
+            <div class="mb-3">
+                <strong>{{ $cert->nama_sertifikat }}</strong><br>
+
+                <span class="text-muted small">
+                    Terbit: {{ bulan($cert->bulan_terbit) }} {{ $cert->tahun_terbit }} ·
+                    Berlaku:
+                    {{ $cert->tanpa_expired
+                        ? 'Tidak ada batas waktu'
+                        : bulan($cert->bulan_expired).' '.$cert->tahun_expired }}
+                </span>
+
+                @if($cert->informasi_tambahan)
+                    <p class="text-muted mt-1">{{ $cert->informasi_tambahan }}</p>
+                @endif
+
+                @if($cert->file_bukti)
+                    <div class="mt-2">
+                        <a href="{{ asset('storage/'.$cert->file_bukti) }}"
+                        target="_blank"
+                        class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-patch-check"></i> Lihat File
+                        </a>
+                    </div>
+                @endif
+            </div>
+        @empty
+            <p class="text-muted">Tidak ada sertifikat.</p>
+        @endforelse
+    </div>
+
+    {{-- Organisasi --}}
+    <div class="mb-4">
+        <h6 class="fw-bold text-uppercase small">Organisasi & Relawan</h6>
+        <hr class="my-2">
+
+        @forelse ($user->pelamarOrganizations as $org)
+            <div class="mb-3">
+                <strong>{{ $org->nama_organisasi }}</strong> – {{ $org->posisi ?? '-' }}<br>
+
+                <span class="text-muted small">
+                    {{ bulan($org->mulai_bulan) }} {{ $org->mulai_tahun }} –
+                    {{ $org->masih_aktif
+                        ? 'Sekarang'
+                        : bulan($org->selesai_bulan).' '.$org->selesai_tahun }}
+                </span>
+
+                @if($org->informasi_tambahan)
+                    <p class="text-muted mt-1">{{ $org->informasi_tambahan }}</p>
+                @endif
+
+                @if($org->file_bukti)
+                    <div class="mt-2">
+                        <a href="{{ asset('storage/'.$org->file_bukti) }}"
+                        target="_blank"
+                        class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-paperclip"></i> Lihat File
+                        </a>
+                    </div>
+                @endif
+            </div>
+        @empty
+            <p class="text-muted">Tidak ada pengalaman organisasi.</p>
+        @endforelse
+    </div>
 
 </div>
-@empty
-<p class="text-muted">Tidak ada penghargaan.</p>
-@endforelse
-</div>
 
-{{-- =========================
-| SERTIFIKAT
-========================= --}}
-<div class="mb-4">
-<h6 class="fw-bold text-uppercase small">Sertifikat</h6>
-<hr class="my-2">
-
-@forelse ($user->pelamarCertificates as $cert)
-<div class="mb-3">
-    <strong>{{ $cert->nama_sertifikat }}</strong><br>
-    <span class="text-muted small">
-        Terbit: {{ bulan($cert->bulan_terbit) }} {{ $cert->tahun_terbit }} ·
-        Berlaku: {{ $cert->tanpa_expired ? 'Tidak ada batas waktu' : bulan($cert->bulan_expired).' '.$cert->tahun_expired }}
-    </span>
-
-    @if($cert->informasi_tambahan)
-        <p class="text-muted mt-1">{{ $cert->informasi_tambahan }}</p>
-    @endif
-
-    @if($cert->file_bukti)
-        <div class="mt-2">
-            <a href="{{ asset('storage/'.$cert->file_bukti) }}"
-            target="_blank"
-            class="btn btn-outline-primary btn-sm">
-                <i class="bi bi-patch-check"></i> Lihat File
-            </a>
-        </div>
-    @endif
-
-</div>
-@empty
-<p class="text-muted">Tidak ada sertifikat.</p>
-@endforelse
-</div>
-
-{{-- =========================
-| ORGANISASI
-========================= --}}
-<div class="mb-4">
-<h6 class="fw-bold text-uppercase small">Organisasi & Relawan</h6>
-<hr class="my-2">
-
-@forelse ($user->pelamarOrganizations as $org)
-<div class="mb-3">
-    <strong>{{ $org->nama_organisasi }}</strong> – {{ $org->posisi ?? '-' }}<br>
-    <span class="text-muted small">
-        {{ bulan($org->mulai_bulan) }} {{ $org->mulai_tahun }} –
-        {{ $org->masih_aktif ? 'Sekarang' : bulan($org->selesai_bulan).' '.$org->selesai_tahun }}
-    </span>
-
-    @if($org->informasi_tambahan)
-        <p class="text-muted mt-1">{{ $org->informasi_tambahan }}</p>
-    @endif
-
-            @if($org->file_bukti)
-                <div>
-                    <a href="{{ asset('storage/'.$org->file_bukti) }}"
-                       target="_blank"
-                       class="btn btn-outline-primary btn-sm">
-                        <i class="bi bi-paperclip"></i> Lihat File
-                    </a>
-                </div>
-            @endif
-</div>
-@empty
-<p class="text-muted">Tidak ada pengalaman organisasi.</p>
-@endforelse
-</div>
-
-</div>
-
-
-{{-- ======================================================
-| RIGHT : TRACKING LAMARAN
-====================================================== --}}
-
+{{-- Right Tracking Lamaran --}}
 <div class="col-lg-5">
 
-    @if (!$isOwner)
-    <div class="alert alert-info small">
-        Anda sedang melihat kandidat ini sebagai <strong>viewer</strong>.
-        Aksi seleksi hanya dapat dilakukan oleh HRD pembuat lowongan.
-    </div>
-@endif
+    @if(!$isOwner)
+        <div class="alert alert-info small">
+            Anda sedang melihat kandidat ini sebagai <strong>viewer</strong>.
+            Aksi seleksi hanya dapat dilakukan oleh HRD pembuat lowongan.
+        </div>
+    @endif
 
     <div class="card shadow-sm">
         <div class="card-body">
 
             <h6 class="fw-bold mb-4">Tracking Lamaran</h6>
 
-            {{-- ================= 1. DIPROSES ================= --}}
+            {{-- 1. Diproses --}}
             <div class="mb-4">
                 <strong>1. DIPROSES</strong>
 
                 @if($isOwner && $application->status === 'diproses')
                     <form method="POST"
-                        action="{{ route('hrd.lamaran.update', $application) }}"
-                        class="form-tracking-confirm"
-                        data-title="Proses ke Screening?"
-                        data-text="Kandidat akan masuk ke tahap screening administrasi.">
+                          action="{{ route('hrd.kandidat.status', [$lowongan->id, $application->id]) }}"
+                          class="form-tracking-confirm"
+                          data-title="Proses ke Screening?"
+                          data-text="Kandidat akan masuk ke tahap screening administrasi.">
                         @csrf
                         @method('PUT')
                         <input type="hidden" name="status" value="screening">
@@ -357,7 +348,7 @@
                 @endif
             </div>
 
-            {{-- ================= 2. SCREENING ================= --}}
+            {{-- 2. Screening --}}
             <div class="mb-4">
                 <strong>2. SCREENING (Administrasi)</strong>
 
@@ -374,14 +365,11 @@
                 @if($isOwner && $application->status === 'screening')
                     <div class="d-flex gap-2 mt-2">
 
-                        {{-- ❌ TOLAK ADMIN --}}
-                        <form
-                        action="{{ route('hrd.kandidat.tolak_administrasi', [$lowongan->id, $application->id]) }}"
-                        method="POST"
-                        class="form-tracking-confirm"
-                        data-title="Tolak Administrasi?"
-                        data-text="Kandidat akan ditolak pada tahap administrasi.">
-
+                        <form method="POST"
+                              action="{{ route('hrd.kandidat.tolak_administrasi', [$lowongan->id, $application->id]) }}"
+                              class="form-tracking-confirm"
+                              data-title="Tolak Administrasi?"
+                              data-text="Kandidat akan ditolak pada tahap administrasi.">
                             @csrf
                             @method('PUT')
                             <button class="btn btn-danger btn-sm">
@@ -389,14 +377,11 @@
                             </button>
                         </form>
 
-                        {{-- ✅ LOLOS ADMIN --}}
-                        <form
-                        action="{{ route('hrd.kandidat.lolos_administrasi', [$lowongan->id, $application->id]) }}"
-                        method="POST"
-                        class="form-tracking-confirm"
-                        data-title="Lolos Administrasi?"
-                        data-text="Kandidat akan masuk ke tahap seleksi (SAW).">
-
+                        <form method="POST"
+                              action="{{ route('hrd.kandidat.lolos_administrasi', [$lowongan->id, $application->id]) }}"
+                              class="form-tracking-confirm"
+                              data-title="Lolos Administrasi?"
+                              data-text="Kandidat akan masuk ke tahap seleksi (SAW).">
                             @csrf
                             @method('PUT')
                             <button class="btn btn-success btn-sm">
@@ -408,7 +393,7 @@
                 @endif
             </div>
 
-            {{-- ================= 3. SELEKSI ================= --}}
+            {{-- 3. Seleksi --}}
             <div class="mb-4">
                 <strong>3. SELEKSI</strong>
 
@@ -423,192 +408,180 @@
                 @endif
             </div>
 
-{{-- ================= 4. INTERVIEW ================= --}}
-<div class="mb-4">
-    <strong>4. INTERVIEW</strong>
+            {{-- 4. Interview --}}
+            <div class="mb-4">
+                <strong>4. INTERVIEW</strong>
 
-    {{-- ================= KONDISI GLOBAL ================= --}}
+                @if($application->status === 'ditolak_administrasi')
+                    <p class="text-danger small mt-2">
+                        Proses berhenti. Kandidat tidak lolos tahap administrasi.
+                    </p>
 
-    {{-- ❌ GAGAL ADMINISTRASI --}}
-    @if($application->status === 'ditolak_administrasi')
-        <p class="text-danger small mt-2">
-            Proses berhenti. Kandidat tidak lolos tahap administrasi.
-        </p>
+                @elseif($application->status === 'seleksi')
+                    <p class="text-muted small mt-2">
+                        Tahap interview akan tersedia setelah proses seleksi (SAW) selesai.
+                    </p>
 
-    {{-- ⏳ BELUM MASUK SAW --}}
-    @elseif(is_null($application->saw_score))
-        <p class="text-muted small mt-2">
-            Tahap interview akan tersedia setelah proses seleksi (SAW) selesai.
-        </p>
+                @elseif($application->status === 'tidak_lolos_saw')
+                    <p class="text-danger small mt-2">
+                        Kandidat tidak lolos seleksi (SAW).
+                    </p>
 
-    {{-- ❌ TIDAK LOLOS SELEKSI (SAW) --}}
-    @elseif($application->status === 'tidak_lolos_saw')
-        <p class="text-danger small mt-2">
-            Kandidat tidak lolos seleksi (SAW).
-        </p>
+                @elseif($application->status === 'ditolak')
+                    <p class="text-danger small mt-2">
+                        Kandidat tidak lolos tahap interview.
+                    </p>
 
-    {{-- ❌ TIDAK LOLOS INTERVIEW --}}
-    @elseif($application->status === 'ditolak')
-        <p class="text-danger small mt-2">
-            Kandidat tidak lolos tahap interview.
-        </p>
+                @elseif($application->status === 'interview')
 
-    {{-- ================= MASUK INTERVIEW ================= --}}
-    @elseif($application->status === 'interview')
+                    @if($application->interview_at)
+                        <div class="alert alert-warning small mt-2">
+                            <div class="mb-1">
+                                <strong>Metode:</strong> {{ ucfirst($application->interview_method) }}
+                            </div>
+                            <div class="mb-1">
+                                <strong>Tanggal:</strong>
+                                {{ $application->interview_at->translatedFormat('d F Y H:i') }}
+                            </div>
 
-        {{-- INFO JADWAL --}}
-        @if($application->interview_at)
-            <div class="alert alert-warning small mt-2">
-                <div class="mb-1">
-                    <strong>Metode:</strong> {{ ucfirst($application->interview_method) }}
-                </div>
-                <div class="mb-1">
-                    <strong>Tanggal:</strong>
-                    {{ $application->interview_at->translatedFormat('d F Y H:i') }}
-                </div>
+                            @if($application->interview_link)
+                                <div>
+                                    <strong>Link:</strong>
+                                    <a href="{{ $application->interview_link }}" target="_blank">
+                                        {{ $application->interview_link }}
+                                    </a>
+                                </div>
+                            @endif
+                        </div>
+                    @else
+                        <p class="text-muted small mt-2">
+                            Jadwal interview belum ditentukan.
+                        </p>
+                    @endif
 
-                @if($application->interview_link)
-                    <div>
-                        <strong>Link:</strong>
-                        <a href="{{ $application->interview_link }}" target="_blank">
-                            {{ $application->interview_link }}
+                    {{-- Aksi Hrd --}}
+                    @if($isOwner && $application->status === 'interview')
+                        <div class="d-flex flex-column gap-2 mt-3">
+
+                            <button
+                                class="btn btn-outline-primary btn-sm align-self-start"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalInterview">
+                                <i class="bi bi-calendar-event"></i>
+                                Atur Jadwal Interview
+                            </button>
+
+                            <form method="POST"
+                                action="{{ route('hrd.kandidat.status', [$lowongan->id, $application->id]) }}"
+                                class="form-tracking-confirm"
+                                data-title="Tidak Lolos Interview?"
+                                data-text="Kandidat akan ditolak pada tahap interview.">
+                                @csrf
+                                @method('PUT')
+                                <input type="hidden" name="status" value="ditolak">
+
+                                <button class="btn btn-danger btn-sm"
+                                        {{ is_null($application->interview_at) ? 'disabled' : '' }}>
+                                    Tidak Lolos Interview
+                                </button>
+                            </form>
+
+                            <form method="POST"
+                                action="{{ route('hrd.kandidat.offer', [$lowongan->id, $application->id]) }}"
+                                class="form-tracking-confirm"
+                                data-title="Kirim Offer?"
+                                data-text="Offer akan dikirim ke kandidat. Pastikan link sudah benar.">
+                                @csrf
+
+                                <input type="url"
+                                    name="offer_file"
+                                    class="form-control form-control-sm mb-2"
+                                    placeholder="Link Offering (Google Drive / PDF)"
+                                    required
+                                    {{ is_null($application->interview_at) ? 'disabled' : '' }}>
+
+                                <button class="btn btn-success btn-sm w-100"
+                                        {{ is_null($application->interview_at) ? 'disabled' : '' }}>
+                                    Kirim Offer
+                                </button>
+                            </form>
+
+                            @if(is_null($application->interview_at))
+                                <small class="text-muted">
+                                    Jadwal interview harus dibuat terlebih dahulu.
+                                </small>
+                            @endif
+
+                        </div>
+                    @endif
+
+
+    @endif
+</div>
+            {{-- 5. Offer --}}
+            <div>
+                <strong>5. OFFER</strong>
+
+                @if($application->status === 'ditolak_administrasi')
+                    <p class="text-danger small mt-2">
+                        Proses tidak berlanjut ke tahap offer karena kandidat
+                        <strong>gagal administrasi</strong>.
+                    </p>
+
+                @elseif($application->status === 'tidak_lolos_saw')
+                    <p class="text-danger small mt-2">
+                        Proses tidak berlanjut ke tahap offer karena kandidat
+                        <strong>tidak lolos seleksi</strong>.
+                    </p>
+
+                @elseif($application->status === 'ditolak')
+                    <p class="text-danger small mt-2">
+                        Proses tidak berlanjut ke tahap offer karena kandidat
+                        <strong>tidak lolos interview</strong>.
+                    </p>
+
+                @elseif($application->status === 'interview')
+                    <p class="text-muted small mt-2">
+                        Menunggu hasil interview sebelum keputusan offer.
+                    </p>
+
+                @elseif($application->status === 'offer')
+                    <p class="text-muted small mt-2">
+                        Offer telah dikirim ke pelamar dan menunggu respon.
+                    </p>
+
+                    @if($application->offer_file)
+                        <a href="{{ $application->offer_file }}"
+                        target="_blank"
+                        class="btn btn-outline-primary btn-sm mb-2">
+                            <i class="bi bi-file-earmark-text"></i> Lihat Offering
                         </a>
+                    @endif
+
+                    <p class="text-muted small">
+                        Status respon pelamar:
+                        <span class="badge bg-secondary">Menunggu</span>
+                    </p>
+
+                @elseif($application->status === 'offer_ditolak')
+                    <div class="alert alert-warning small mt-2">
+                        Kandidat <strong>menolak offer</strong> yang diberikan perusahaan.
                     </div>
+
+                    @if($application->offer_file)
+                        <a href="{{ $application->offer_file }}"
+                        target="_blank"
+                        class="btn btn-outline-secondary btn-sm">
+                            <i class="bi bi-file-earmark-text"></i> Lihat Offering
+                        </a>
+                    @endif
+
+                @elseif($application->status === 'diterima')
+                    <p class="text-success small mt-2 fw-semibold">
+                        Kandidat <strong>menerima offering</strong> dan resmi diterima bekerja.
+                    </p>
                 @endif
             </div>
-        @else
-            <p class="text-muted small mt-2">
-                Jadwal interview belum ditentukan.
-            </p>
-        @endif
-
-        {{-- ================= AKSI HRD ================= --}}
-        @if($isOwner)
-            <div class="d-flex flex-column gap-2 mt-3">
-
-                {{-- 🗓️ ATUR JADWAL --}}
-                <button
-                    class="btn btn-outline-primary btn-sm align-self-start"
-                    data-bs-toggle="modal"
-                    data-bs-target="#modalInterview">
-                    <i class="bi bi-calendar-event"></i>
-                    Atur Jadwal Interview
-                </button>
-
-                {{-- ❌ TIDAK LOLOS INTERVIEW --}}
-                <form method="POST"
-                      action="{{ route('hrd.lamaran.update', $application) }}"
-                      class="form-tracking-confirm"
-                      data-title="Tidak Lolos Interview?"
-                      data-text="Kandidat akan ditolak pada tahap interview.">
-
-                    @csrf
-                    @method('PUT')
-                    <input type="hidden" name="status" value="ditolak">
-
-                    <button class="btn btn-danger btn-sm">
-                        Tidak Lolos Interview
-                    </button>
-                </form>
-
-                {{-- ✅ KIRIM OFFER --}}
-                <form method="POST"
-                      action="{{ route('hrd.lamaran.offer.upload', $application) }}"
-                      class="form-tracking-confirm"
-                      data-title="Kirim Offer?"
-                      data-text="Offer akan dikirim ke kandidat. Pastikan link sudah benar.">
-
-                    @csrf
-
-                    <input type="url"
-                           name="offer_file"
-                           class="form-control form-control-sm mb-2"
-                           placeholder="Link Offering (Google Drive / PDF)"
-                           required>
-
-                    <button class="btn btn-success btn-sm w-100">
-                        Kirim Offer
-                    </button>
-                </form>
-
-            </div>
-        @endif
-    @endif
-</div>
-
-
-{{-- ================= 5. OFFER ================= --}}
-<div>
-    <strong>5. OFFER</strong>
-
-    {{-- ⛔ GAGAL ADMINISTRASI --}}
-    @if($application->status === 'ditolak_administrasi')
-        <p class="text-danger small mt-2">
-            Proses tidak berlanjut ke tahap offer karena kandidat
-            <strong>gagal administrasi</strong>.
-        </p>
-
-    {{-- ⛔ TIDAK LOLOS SELEKSI (SAW) --}}
-    @elseif($application->status === 'tidak_lolos_saw')
-        <p class="text-danger small mt-2">
-            Proses tidak berlanjut ke tahap offer karena kandidat
-            <strong>tidak lolos seleksi</strong>.
-        </p>
-
-    {{-- ⛔ TIDAK LOLOS INTERVIEW --}}
-    @elseif($application->status === 'ditolak')
-        <p class="text-danger small mt-2">
-            Proses tidak berlanjut ke tahap offer karena kandidat
-            <strong>tidak lolos interview</strong>.
-        </p>
-
-    {{-- ⏳ MASIH INTERVIEW --}}
-    @elseif($application->status === 'interview')
-        <p class="text-muted small mt-2">
-            Menunggu hasil interview sebelum keputusan offer.
-        </p>
-
-    {{-- 📨 OFFER DIKIRIM --}}
-    @elseif($application->status === 'offer')
-        <p class="text-muted small mt-2">
-            Offer telah dikirim ke pelamar dan menunggu respon.
-        </p>
-
-        @if($application->offer_file)
-            <a href="{{ $application->offer_file }}"
-               target="_blank"
-               class="btn btn-outline-primary btn-sm mb-2">
-                <i class="bi bi-file-earmark-text"></i> Lihat Offering
-            </a>
-        @endif
-
-        <p class="text-muted small">
-            Status respon pelamar:
-            <span class="badge bg-secondary">MENUNGGU</span>
-        </p>
-
-    {{-- 🚫 OFFER DITOLAK PELAMAR --}}
-    @elseif($application->status === 'offer_ditolak')
-        <div class="alert alert-warning small mt-2">
-            ⚠️ Kandidat <strong>MENOLAK OFFER</strong> yang diberikan perusahaan.
-        </div>
-
-        @if($application->offer_file)
-            <a href="{{ $application->offer_file }}"
-               target="_blank"
-               class="btn btn-outline-secondary btn-sm">
-                <i class="bi bi-file-earmark-text"></i> Lihat Offering
-            </a>
-        @endif
-
-    {{-- ✅ OFFER DITERIMA --}}
-    @elseif($application->status === 'diterima')
-        <p class="text-success small mt-2 fw-semibold">
-            Kandidat <strong>menerima offering</strong> dan resmi diterima bekerja.
-        </p>
-    @endif
-</div>
-
 
 <hr class="my-4">
 
@@ -617,12 +590,11 @@
     {{ $application->updated_at->translatedFormat('d F Y') }}
 </small>
 
-
 <div class="modal fade" id="modalInterview" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <form method="POST"
-              action="{{ route('hrd.lamaran.interview', $application) }}"
-              class="modal-content">
+            action="{{ route('hrd.kandidat.interview', [$lowongan->id, $application->id]) }}"
+            class="modal-content">
 
             @csrf
             @method('PUT')
@@ -667,17 +639,17 @@
 
             <div class="modal-footer justify-content-between">
                 @if($application->interview_at)
-                    <form method="POST"
-                          action="{{ route('hrd.lamaran.interview.delete', $application) }}">
-                        @csrf
-                        @method('DELETE')
-                        <button class="btn btn-outline-danger btn-sm">
-                            Hapus Jadwal
-                        </button>
-                    </form>
+                    <button type="submit"
+                            formaction="{{ route('hrd.kandidat.interview.delete', [$lowongan->id, $application->id]) }}"
+                            formmethod="POST"
+                            name="_method"
+                            value="DELETE"
+                            class="btn btn-outline-danger btn-sm">
+                        Hapus Jadwal
+                    </button>
                 @endif
 
-                <button class="btn btn  -primary">Simpan</button>
+                <button class="btn btn-primary">Simpan</button>
             </div>
 
         </form>
@@ -686,7 +658,7 @@
 
 </div>
 
-{{-- ================= MODAL AVATAR PREVIEW ================= --}}
+{{-- Modal Avatar Preview --}}
 @if($profile?->photo)
 <div class="modal fade" id="modalAvatarPreview" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-md">
@@ -733,7 +705,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 cancelButtonColor: '#6c757d'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    form.submit(); // ✅ SUBMIT ASLI
+                    form.submit();
                 }
             });
         });

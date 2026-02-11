@@ -2,7 +2,7 @@
 
 @section('title', 'Detail Lowongan')
 
-{{-- ================= BREADCRUMB ================= --}}
+{{-- Breadcrumb --}}
 @section('breadcrumb')
 <nav class="breadcrumb-wrapper">
     <a href="{{ route('admin.dashboard') }}">Dashboard</a>

@@ -12,7 +12,7 @@
 
 @section('content')
 
-<div class="page-kelola-kandidat"><!-- 🔒 SCOPING WRAPPER -->
+<div class="page-kelola-kandidat">
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h4 class="fw-bold">Kelola Kandidat</h4>

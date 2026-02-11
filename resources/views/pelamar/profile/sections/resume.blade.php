@@ -1,4 +1,4 @@
-{{-- ================= RESUME ================= --}}
+{{-- Resume --}}
 <div class="cv-section mb-5">
 
     <div class="d-flex justify-content-between align-items-center mb-2">
@@ -16,28 +16,28 @@
     </p>
 
     {{-- OUTPUT FILE --}}
-<div id="resumeOutput" class="small text-muted">
+    <div id="resumeOutput" class="small text-muted">
 
-@if ($user->pelamarResume)
-    <div class="d-flex align-items-center justify-content-between">
-        <a href="{{ asset('storage/' . $user->pelamarResume->file_path) }}"
-           target="_blank"
-           class="text-primary fw-semibold"
-           id="resumeLink">
-            <i class="bi bi-file-earmark-pdf me-1"></i>
-            {{ $user->pelamarResume->file_name }}
-        </a>
+    @if ($user->pelamarResume)
+        <div class="d-flex align-items-center justify-content-between">
+            <a href="{{ asset('storage/' . $user->pelamarResume->file_path) }}"
+            target="_blank"
+            class="text-primary fw-semibold"
+            id="resumeLink">
+                <i class="bi bi-file-earmark-pdf me-1"></i>
+                {{ $user->pelamarResume->file_name }}
+            </a>
 
-        <button class="btn btn-sm btn-light text-danger"
-                onclick="deleteResume()">
-            <i class="bi bi-trash"></i>
-        </button>
+            <button class="btn btn-sm btn-light text-danger"
+                    onclick="deleteResume()">
+                <i class="bi bi-trash"></i>
+            </button>
+        </div>
+    @else
+        <span id="resumeEmpty">Belum ada resume diunggah</span>
+    @endif
+
     </div>
-@else
-    <span id="resumeEmpty">Belum ada resume diunggah</span>
-@endif
-
-</div>
 
     <hr>
 </div>

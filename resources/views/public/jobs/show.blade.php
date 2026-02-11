@@ -63,9 +63,7 @@
                         <a href="{{ route('login') }}" class="btn btn-secondary">
                             Login untuk Melamar
                         </a>
-
                     @else
-
                         @if(auth()->user()->role !== 'pelamar')
                             <button class="btn btn-secondary" disabled>
                                 Hanya Pelamar yang Bisa Melamar
@@ -100,7 +98,6 @@
                                     Lamar
                                 </button>
                             </form>
-
                         @endif
 
                     @endguest

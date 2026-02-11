@@ -65,7 +65,7 @@
                 </button>
             </form>
 
-            {{-- MOBILE ONLY SWITCH --}}
+            {{-- Khusus Mobile --}}
             <div class="auth-switch">
                 Sudah punya akun?
                 <a href="{{ route('login') }}">Login di sini</a>
@@ -74,7 +74,7 @@
 
     </div>
 
-    {{-- RIGHT (DESKTOP ONLY) --}}
+    {{-- Khusus Desktop --}}
     <div class="login-right">
         <div>
             <h2>Sudah Punya Akun?</h2>

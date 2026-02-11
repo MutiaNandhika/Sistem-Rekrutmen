@@ -1,41 +1,35 @@
-{{-- ================= MODAL SERTIFIKAT ================= --}}
 <div class="modal fade" id="modalSertifikat" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content rounded-4">
 
-            {{-- HEADER --}}
             <div class="modal-header border-0">
                 <h6 class="modal-title fw-bold">Tambah Sertifikat</h6>
                 <button class="btn-close" data-bs-dismiss="modal"></button>
             </div>
 
-            {{-- BODY --}}
             <div class="modal-body">
-
-                {{-- EDIT ID --}}
                 <input type="hidden" id="certificateEditId">
 
-                {{-- NAMA SERTIFIKAT --}}
                 <div class="mb-3">
                     <label class="form-label fw-semibold">
                         Nama Sertifikat <span class="text-danger">*</span>
                     </label>
-                    <input type="text"
-                           id="certName"
-                           class="form-control">
+                    <input
+                        type="text"
+                        id="certName"
+                        class="form-control">
                 </div>
 
-                {{-- ORGANISASI PENERBIT --}}
                 <div class="mb-3">
                     <label class="form-label fw-semibold">
                         Organisasi Penerbit <span class="text-danger">*</span>
                     </label>
-                    <input type="text"
-                           id="certIssuer"
-                           class="form-control">
+                    <input
+                        type="text"
+                        id="certIssuer"
+                        class="form-control">
                 </div>
 
-                {{-- TANGGAL TERBIT --}}
                 <div class="mb-3">
                     <label class="form-label fw-semibold">
                         Tanggal Diterbitkan <span class="text-danger">*</span>
@@ -51,7 +45,6 @@
                                     </option>
                                 @endfor
                             </select>
-
                         </div>
 
                         <div class="col-6">
@@ -65,7 +58,6 @@
                     </div>
                 </div>
 
-                {{-- MASA AKTIF --}}
                 <div class="mb-3">
                     <label class="form-label fw-semibold">
                         Batas Masa Aktif
@@ -81,7 +73,6 @@
                                     </option>
                                 @endfor
                             </select>
-
                         </div>
 
                         <div class="col-6">
@@ -95,32 +86,33 @@
                     </div>
 
                     <div class="form-check mt-2">
-                        <input class="form-check-input"
-                               type="checkbox"
-                               id="certNoExpire">
+                        <input
+                            class="form-check-input"
+                            type="checkbox"
+                            id="certNoExpire">
                         <label class="form-check-label">
                             Sertifikat ini tidak memiliki batas masa aktif
                         </label>
                     </div>
                 </div>
 
-                {{-- DESKRIPSI --}}
                 <div class="mb-3">
                     <label class="form-label fw-semibold">
                         Informasi Tambahan (Opsional)
                     </label>
-                    <textarea id="certDesc"
-                              class="form-control"
-                              rows="3"
-                              maxlength="2000"></textarea>
+                    <textarea
+                        id="certDesc"
+                        class="form-control"
+                        rows="3"
+                        maxlength="2000"></textarea>
                 </div>
 
-                {{-- FILE BUKTI SERTIFIKAT --}}
                 <div class="mb-3">
                     <label class="form-label fw-semibold">
                         File Bukti Sertifikat <span class="text-danger">*</span>
                     </label>
-                    <input type="file"
+                    <input
+                        type="file"
                         id="certFile"
                         class="form-control"
                         accept=".pdf,.jpg,.jpeg,.png">
@@ -129,14 +121,14 @@
                     </small>
                 </div>
 
-                {{-- PREVIEW FILE SAAT EDIT --}}
                 <div class="mb-3 d-none" id="certFilePreview">
                     <label class="form-label fw-semibold">File Saat Ini</label>
                     <div>
-                        <a href="#"
-                        target="_blank"
-                        id="certFileLink"
-                        class="fw-semibold text-primary">
+                        <a
+                            href="#"
+                            target="_blank"
+                            id="certFileLink"
+                            class="fw-semibold text-primary">
                             <i class="bi bi-paperclip me-1"></i>Lihat File Sertifikat
                         </a>
                     </div>
@@ -146,19 +138,19 @@
                 </div>
             </div>
 
-            {{-- FOOTER --}}
             <div class="modal-footer border-0">
-                <button class="btn btn-light"
-                        data-bs-dismiss="modal">
+                <button
+                    class="btn btn-light"
+                    data-bs-dismiss="modal">
                     Batal
                 </button>
 
-                <button class="btn btn-primary"
-                        onclick="addCertificate()"
-                        data-bs-dismiss="modal">
+                <button
+                    class="btn btn-primary"
+                    onclick="addCertificate()"
+                    data-bs-dismiss="modal">
                     Simpan
                 </button>
-
             </div>
 
         </div>

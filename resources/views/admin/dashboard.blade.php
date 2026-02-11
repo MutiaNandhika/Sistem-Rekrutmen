@@ -9,7 +9,7 @@
 
         <div class="row align-items-stretch">
 
-            {{-- ================= LEFT (LOGO) ================= --}}
+            {{-- Logo --}}
             <div class="col-lg-6 d-flex align-items-center">
 
                 <div class="admin-logo-wrapper">
@@ -20,7 +20,7 @@
 
             </div>
 
-            {{-- ================= RIGHT (DESCRIPTION) ================= --}}
+            {{-- Deskripsi --}}
             <div class="col-lg-6">
 
                 <div class="admin-description">
