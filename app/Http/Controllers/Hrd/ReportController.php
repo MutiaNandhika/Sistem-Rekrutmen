@@ -20,14 +20,8 @@ class ReportController extends Controller
         $to         = $request->to;
         $lowonganId = $request->lowongan_id;
 
-        // ==========================
-        // LOWONGAN MILIK HRD
-        // ==========================
         $lowongans = Lowongan::where('hrd_id', $hrdId)->get();
 
-        // ==========================
-        // QUERY UTAMA
-        // ==========================
         $query = Application::whereHas('lowongan', function ($q) use ($hrdId) {
             $q->where('hrd_id', $hrdId);
         });
@@ -45,9 +39,6 @@ class ReportController extends Controller
 
         $apps = $query->get();
 
-        // ==========================
-        // STATISTIK (SESUAI DEFINISI BARU)
-        // ==========================
         $totalPelamar = $apps->count();
 
         $screening = $apps->where('status', 'screening')->count();
@@ -62,9 +53,7 @@ class ReportController extends Controller
         $diterima = $apps->where('offer_response', 'diterima')->count();
         $ditolak  = $apps->where('offer_response', 'ditolak')->count();
 
-        // ==========================
-        // PERSENTASE LOLOS
-        // ==========================
+        // Presentase lolos
         $persenLolos = $totalPelamar > 0
             ? round(($diterima / $totalPelamar) * 100, 2)
             : 0;
@@ -85,9 +74,6 @@ class ReportController extends Controller
         ));
     }
 
-    // ==========================
-    // EXPORT PDF
-    // ==========================
     public function exportPdf(Request $request)
     {
         $data = $this->index($request)->getData();
@@ -97,9 +83,6 @@ class ReportController extends Controller
             ->stream('laporan-rekrutmen-hrd.pdf');
     }
 
-    // ==========================
-    // EXPORT EXCEL
-    // ==========================
     public function exportExcel(Request $request)
     {
         return Excel::download(

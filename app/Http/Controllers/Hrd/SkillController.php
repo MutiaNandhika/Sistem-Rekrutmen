@@ -37,7 +37,6 @@ class SkillController extends Controller
 
     public function destroy(Skill $skill)
     {
-        // ❌ tidak boleh hapus jika sudah dipakai
         if (
             $skill->pelamarSkills()->exists() ||
             $skill->lowongans()->exists()

@@ -38,9 +38,6 @@ class HrdReportExport implements FromArray, WithHeadings
 
     public function array(): array
     {
-        // ==========================
-        // QUERY
-        // ==========================
         $query = Application::whereHas('lowongan', function ($q) {
             $q->where('hrd_id', $this->hrdId);
         });
@@ -58,9 +55,6 @@ class HrdReportExport implements FromArray, WithHeadings
 
         $apps = $query->get();
 
-        // ==========================
-        // HITUNG (PASTI INTEGER)
-        // ==========================
         $totalPelamar = (int) $apps->count();
         $screening    = (int) $apps->where('status', 'screening')->count();
         $seleksi      = (int) $apps->where('status', 'seleksi')->count();
@@ -73,9 +67,6 @@ class HrdReportExport implements FromArray, WithHeadings
             ? round(($diterima / $totalPelamar) * 100, 2)
             : 0;
 
-        // ==========================
-        // PERIODE
-        // ==========================
         $periode = ($this->from && $this->to)
             ? "{$this->from} s/d {$this->to}"
             : 'Semua Periode';

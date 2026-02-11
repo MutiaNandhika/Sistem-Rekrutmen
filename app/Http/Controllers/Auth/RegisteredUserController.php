@@ -28,30 +28,30 @@ class RegisteredUserController extends Controller
      * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request): RedirectResponse
-{
-    $request->validate([
-        'name' => ['required', 'string', 'max:255'],
-        'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-        'password' => ['required', 'confirmed', 'min:8'],
-    ]);
+    {
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'confirmed', 'min:8'],
+        ]);
 
-    $user = User::create([
-        'name' => $request->name,
-        'email' => $request->email,
-        'password' => bcrypt($request->password),
-        'role' => 'pelamar', // DEFAULT ROLE
-    ]);
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+            'role' => 'pelamar', // DEFAULT ROLE
+        ]);
 
-    event(new Registered($user));
+        event(new Registered($user));
 
-    Auth::login($user);
+        Auth::login($user);
 
-    session()->flash('success', 'Registrasi berhasil! Selamat datang');
+        session()->flash('success', 'Registrasi berhasil! Selamat datang');
 
-    return match ($user->role) {
-            'admin' => redirect('/admin/dashboard'),
-            'hrd' => redirect('/hrd/dashboard'),
-            default => redirect('/pelamar/profile'),
-        };
+        return match ($user->role) {
+                'admin' => redirect('/admin/dashboard'),
+                'hrd' => redirect('/hrd/dashboard'),
+                default => redirect('/pelamar/profile'),
+            };
     }
 }

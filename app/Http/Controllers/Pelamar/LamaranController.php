@@ -38,7 +38,6 @@ class LamaranController extends Controller
                 ->with('error', 'Lengkapi profil terlebih dahulu');
         }
 
-        // ✅ CEGAH LAMARAN GANDA (SELAMA MASIH AKTIF)
         $existing = Application::where('user_id', $user->id)
             ->whereIn('status', [
                 'diproses',
@@ -65,11 +64,6 @@ class LamaranController extends Controller
         return back()->with('success', 'Lamaran berhasil dikirim.');
     }
 
-    /**
-     * ===============================
-     * TERIMA / TOLAK OFFER
-     * ===============================
-     */
     public function offerResponse(Request $request, Application $application)
     {
         abort_if($application->user_id !== auth()->id(), 403);

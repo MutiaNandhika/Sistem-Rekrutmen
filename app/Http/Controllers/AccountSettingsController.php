@@ -22,17 +22,14 @@ class AccountSettingsController extends Controller
 
         $user = Auth::user();
 
-        // ❌ PASSWORD LAMA SALAH
         if (!Hash::check($request->current_password, $user->password)) {
             return back()->with('error', 'Kata sandi lama tidak sesuai.');
         }
 
-        // 🚫 PASSWORD BARU SAMA DENGAN LAMA
         if (Hash::check($request->password, $user->password)) {
             return back()->with('error', 'Kata sandi baru tidak boleh sama dengan kata sandi lama.');
         }
 
-        // ✅ UPDATE PASSWORD
         $user->password = Hash::make($request->password);
         $user->save();
 

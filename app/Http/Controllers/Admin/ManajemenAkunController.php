@@ -10,15 +10,15 @@ use Illuminate\Support\Facades\Hash;
 class ManajemenAkunController extends Controller
 {
     public function index(Request $request)
-{
-    $users = User::when($request->role, function ($q) use ($request) {
-        $q->where('role', $request->role);
-    })
-    ->orderBy('name')
-    ->get();
+    {
+        $users = User::when($request->role, function ($q) use ($request) {
+            $q->where('role', $request->role);
+        })
+        ->orderBy('name')
+        ->get();
 
-    return view('admin.manajemen-akun', compact('users'));
-}
+        return view('admin.manajemen-akun', compact('users'));
+    }
 
     public function store(Request $request)
     {

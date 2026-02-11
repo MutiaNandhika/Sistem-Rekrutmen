@@ -19,9 +19,6 @@ class MonitoringController extends Controller
         $tahun = $request->get('tahun', now()->year);
         $bulan = $request->get('bulan', now()->month);
 
-        /* =============================
-           STAT CARD (FIXED)
-        ============================= */
         $totalLowonganAktif = Lowongan::where('status', 'aktif')
             ->whereYear('created_at', $tahun)
             ->whereMonth('created_at', $bulan)
@@ -31,9 +28,6 @@ class MonitoringController extends Controller
             ->whereMonth('created_at', $bulan)
             ->count();
 
-        /* =============================
-           LOWONGAN PER BULAN
-        ============================= */
         $rawLowongan = Lowongan::whereYear('created_at', $tahun)
             ->selectRaw('MONTH(created_at) bulan, COUNT(*) total')
             ->groupBy('bulan')
@@ -44,18 +38,12 @@ class MonitoringController extends Controller
             $lowonganPerBulan[] = $rawLowongan[$i] ?? 0;
         }
 
-        /* =============================
-           FUNNEL
-        ============================= */
         $rawFunnel = Application::whereYear('created_at', $tahun)
             ->whereMonth('created_at', $bulan)
             ->selectRaw('status, COUNT(*) total')
             ->groupBy('status')
             ->pluck('total', 'status');
 
-        /* =============================
-           OFFER
-        ============================= */
         $rawOffer = Application::whereYear('created_at', $tahun)
             ->whereMonth('created_at', $bulan)
             ->selectRaw('offer_response, COUNT(*) total')

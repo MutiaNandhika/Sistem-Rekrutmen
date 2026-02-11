@@ -36,7 +36,6 @@ class StatusLamaranMail extends Mailable implements ShouldQueue
         ]);
     }
 
-    // default (status lain)
     return $this->subject(
         'Update Status Lamaran – ' . $this->application->lowongan->nama_lowongan
     )

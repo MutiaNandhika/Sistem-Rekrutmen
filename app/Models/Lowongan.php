@@ -44,26 +44,26 @@ class Lowongan extends Model
     }
 
     public function hrd()
-{
-    return $this->belongsTo(User::class, 'hrd_id');
-}
-    
-public function bidangKerja()
-{
-    return $this->belongsTo(BidangKerja::class);
-}
+    {
+        return $this->belongsTo(User::class, 'hrd_id');
+    }
+        
+    public function bidangKerja()
+    {
+        return $this->belongsTo(BidangKerja::class);
+    }
 
+    public function isExpired()
+    {
+        if (!$this->tanggal_selesai) return false;
 
-public function isExpired()
-{
-    if (!$this->tanggal_selesai) return false;
+        return Carbon::today()->gt(
+            Carbon::parse($this->tanggal_selesai)
+        );
+    }
 
-    return Carbon::today()->gt(
-        Carbon::parse($this->tanggal_selesai)
-    );
-}
-public function applications()
-{
-    return $this->hasMany(\App\Models\Application::class);
-}
+    public function applications()
+    {
+        return $this->hasMany(\App\Models\Application::class);
+    }
 }

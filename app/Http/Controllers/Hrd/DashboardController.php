@@ -19,9 +19,6 @@ class DashboardController extends Controller
         $tahun = request('tahun', now()->year);
         $bulan = request('bulan', now()->month);
 
-        /* =============================
-           STAT CARD (FIXED)
-        ============================= */
         $lowonganAktif = Lowongan::where('hrd_id', $hrdId)
             ->where('status', 'aktif')
             ->whereYear('created_at', $tahun)
@@ -35,9 +32,6 @@ class DashboardController extends Controller
             ->whereMonth('created_at', $bulan)
             ->count();
 
-        /* =============================
-           LOWONGAN PER BULAN
-        ============================= */
         $rawLowongan = Lowongan::where('hrd_id', $hrdId)
             ->whereYear('created_at', $tahun)
             ->selectRaw('MONTH(created_at) bulan, COUNT(*) total')
@@ -49,9 +43,6 @@ class DashboardController extends Controller
             $lowongan[] = $rawLowongan[$i] ?? 0;
         }
 
-        /* =============================
-           FUNNEL
-        ============================= */
         $rawFunnel = Application::whereHas('lowongan', fn ($q) =>
                 $q->where('hrd_id', $hrdId)
             )
@@ -61,9 +52,6 @@ class DashboardController extends Controller
             ->groupBy('status')
             ->pluck('total', 'status');
 
-        /* =============================
-           OFFER
-        ============================= */
         $rawOffer = Application::whereHas('lowongan', fn ($q) =>
                 $q->where('hrd_id', $hrdId)
             )

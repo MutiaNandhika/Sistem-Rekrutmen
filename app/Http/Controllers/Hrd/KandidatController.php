@@ -11,11 +11,6 @@ use Illuminate\Support\Facades\Mail;
 
 class KandidatController extends Controller
 {
-    /**
-     * =====================================================
-     * LIST KANDIDAT PER LOWONGAN + FILTER STATUS
-     * =====================================================
-     */
     public function index(Request $request, Lowongan $lowongan)
     {
         $isOwner = $lowongan->hrd_id === auth()->id();
@@ -51,11 +46,6 @@ class KandidatController extends Controller
         ]);
     }
 
-    /**
-     * =====================================================
-     * DETAIL KANDIDAT
-     * =====================================================
-     */
     public function show(Lowongan $lowongan, Application $application)
     {
         $isOwner = $lowongan->hrd_id === auth()->id();
@@ -79,11 +69,6 @@ class KandidatController extends Controller
         ]);
     }
 
-    /**
-     * =====================================================
-     * UPDATE STATUS
-     * =====================================================
-     */
     public function updateStatus(Request $request, Lowongan $lowongan, Application $application)
     {
         abort_if($lowongan->hrd_id !== auth()->id(), 403);
@@ -117,11 +102,6 @@ class KandidatController extends Controller
         return back()->with('success', 'Status lamaran diperbarui & email terkirim.');
     }
 
-    /**
-     * =====================================================
-     * SET INTERVIEW
-     * =====================================================
-     */
     public function setInterview(Request $request, Lowongan $lowongan, Application $application)
     {
         abort_if($lowongan->hrd_id !== auth()->id(), 403);
@@ -142,11 +122,6 @@ class KandidatController extends Controller
         return back()->with('success', 'Jadwal interview berhasil disimpan');
     }
 
-    /**
-     * =====================================================
-     * DELETE INTERVIEW
-     * =====================================================
-     */
     public function deleteInterview(Lowongan $lowongan, Application $application)
     {
         abort_if($lowongan->hrd_id !== auth()->id(), 403);
@@ -161,11 +136,6 @@ class KandidatController extends Controller
         return back()->with('success', 'Jadwal interview berhasil dihapus');
     }
 
-    /**
-     * =====================================================
-     * UPLOAD OFFER
-     * =====================================================
-     */
     public function uploadOffer(Request $request, Lowongan $lowongan, Application $application)
     {
         abort_if($lowongan->hrd_id !== auth()->id(), 403);
@@ -190,11 +160,6 @@ class KandidatController extends Controller
         return back()->with('success', 'Offer berhasil dikirim ke pelamar');
     }
 
-    /**
-     * =====================================================
-     * LOLOS ADMINISTRASI
-     * =====================================================
-     */
     public function lolosAdministrasi(Lowongan $lowongan, Application $application)
     {
         abort_if($lowongan->hrd_id !== auth()->id(), 403);
@@ -211,11 +176,6 @@ class KandidatController extends Controller
         return back()->with('success', 'Kandidat berhasil lolos administrasi.');
     }
 
-    /**
-     * =====================================================
-     * TOLAK ADMINISTRASI
-     * =====================================================
-     */
     public function tolakAdministrasi(Lowongan $lowongan, Application $application)
     {
         abort_if($lowongan->hrd_id !== auth()->id(), 403);

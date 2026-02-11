@@ -9,9 +9,6 @@ use App\Models\Lowongan;
 
 class BidangKerjaController extends Controller
 {
-    /* ===============================
-       STORE
-    =============================== */
     public function store(Request $request)
     {
         $request->validate([
@@ -25,9 +22,6 @@ class BidangKerjaController extends Controller
         return response()->json($bidang);
     }
 
-    /* ===============================
-       UPDATE
-    =============================== */
     public function update(Request $request, BidangKerja $bidangKerja)
     {
         $request->validate([
@@ -41,12 +35,8 @@ class BidangKerjaController extends Controller
         return response()->json($bidangKerja);
     }
 
-    /* ===============================
-       DELETE
-    =============================== */
     public function destroy(BidangKerja $bidangKerja)
     {
-        // ❗ Cegah hapus jika dipakai lowongan
         if (Lowongan::where('bidang_kerja_id', $bidangKerja->id)->exists()) {
             return response()->json([
                 'message' => 'Bidang kerja masih digunakan lowongan'

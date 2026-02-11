@@ -10,46 +10,36 @@ use Illuminate\Support\Facades\Auth;
 
 class JobController extends Controller
 {
-    /**
-     * LIST + SEARCH
-     */
     public function index(Request $request)
     {
-        // 🔥 QUERY DASAR (AKTIF & BELUM EXPIRED)
         $query = Lowongan::where('status', 'aktif')
             ->where(function ($q) {
                 $q->whereNull('tanggal_selesai')
                   ->orWhereDate('tanggal_selesai', '>=', now());
             });
             
-        // 🔍 FILTER POSISI
         if ($request->filled('posisi')) {
             $query->where('nama_lowongan', 'like', '%' . $request->posisi . '%');
         }
 
-        // 🔍 FILTER LOKASI
         if ($request->filled('lokasi')) {
             $query->where('lokasi', 'like', '%' . $request->lokasi . '%');
         }
 
-        // 🔍 FILTER PENEMPATAN
         if ($request->filled('penempatan')) {
             $query->where('penempatan', 'like', '%' . $request->penempatan . '%');
         }
 
-        // 🔍 FILTER TIPE KERJA
         if ($request->filled('tipe_kerja')) {
             $query->where('tipe_kerja', $request->tipe_kerja);
         }
 
-        // 🔍 FILTER SISTEM KERJA
         if ($request->filled('sistem_kerja')) {
             $query->where('sistem_kerja', $request->sistem_kerja);
         }
 
         $lowongans = $query->latest()->get();
 
-        // 🔥 CEK: PELAMAR SUDAH MELAMAR / STATUS APA
         $application = null;
 
         if (Auth::check() && Auth::user()->role === 'pelamar') {
@@ -61,24 +51,21 @@ class JobController extends Controller
         return view('public.jobs.index', compact('lowongans', 'application'));
     }
 
-    /**
-     * DETAIL
-     */
     public function show(Lowongan $lowongan)
-{
-    abort_if($lowongan->status !== 'aktif', 404);
+    {
+        abort_if($lowongan->status !== 'aktif', 404);
 
-    $lowongan->load('skills');
+        $lowongan->load('skills');
 
-    $application = null;
+        $application = null;
 
-    if (auth()->check() && auth()->user()->role === 'pelamar') {
-        $application = \App\Models\Application::where('user_id', auth()->id())
-            ->latest()
-            ->first();
+        if (auth()->check() && auth()->user()->role === 'pelamar') {
+            $application = \App\Models\Application::where('user_id', auth()->id())
+                ->latest()
+                ->first();
+        }
+
+        return view('public.jobs.show', compact('lowongan', 'application'));
     }
-
-    return view('public.jobs.show', compact('lowongan', 'application'));
-}
 
 }
