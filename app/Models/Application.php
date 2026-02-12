@@ -26,11 +26,43 @@ class Application extends Model
         'offer_file',
         'offer_response',
         'saw_score',
-        'saw_rank'
+        'saw_rank',
+
+        // SNAP IDENTITAS
+        'snap_name',
+        'snap_email',
+        'snap_phone',
+        'snap_location',
+        'snap_age',
+        'snap_gender',
+        'snap_last_education',
+        'snap_photo',
+        'snap_about',
+
+        // SNAP SAW
+        'snap_pendidikan_nilai',
+        'snap_pengalaman_tahun',
+        'snap_total_skill',
+
+        // SNAP DETAIL
+        'snap_experiences',
+        'snap_educations',
+        'snap_skills',
+        'snap_certificates',
+        'snap_organizations',
+        'snap_achievements',
+        'snap_resume',
     ];
 
     protected $casts = [
         'interview_at' => 'datetime',
+        'snap_experiences'   => 'array',
+        'snap_educations'    => 'array',
+        'snap_skills'        => 'array',
+        'snap_certificates'  => 'array',
+        'snap_organizations' => 'array',
+        'snap_achievements'  => 'array',
+        'snap_resume'        => 'array',
     ];
 
     public function user()

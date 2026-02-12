@@ -21,9 +21,6 @@
         return Carbon::create()->month((int)$angka)->translatedFormat('F');
     }
 
-    $user    = $application->user;
-    $profile = $user->pelamarProfile;
-
     $label = match($application->status) {
         'diproses' => 'Diproses',
         'screening' => 'Screening Administrasi',
@@ -60,9 +57,9 @@
 <div class="col-lg-7">
     <div class="card shadow-sm mb-4">
         <div class="card-body d-flex gap-4">
-            @if($profile?->photo)
+            @if($application->snap_photo)
                 <img
-                    src="{{ asset('storage/'.$profile->photo) }}"
+                    src="{{ asset('storage/'.$application->snap_photo) }}"
                     alt="Foto Kandidat"
                     class="rounded-circle border"
                     width="72"
@@ -80,17 +77,17 @@
             <div class="flex-grow-1">
 
                 <h5 class="fw-bold mb-2 d-flex align-items-center gap-2">
-                    {{ $user->name }}
+                    {{ $application->snap_name }}
                     <span class="badge {{ $badgeClass }}">{{ $label }}</span>
                 </h5>
 
                 <div class="row small text-muted">
-                    <div class="col-6 mb-2"><strong>WhatsApp</strong><br>{{ $profile->phone ?? '-' }}</div>
-                    <div class="col-6 mb-2"><strong>Email</strong><br>{{ $user->email }}</div>
-                    <div class="col-6 mb-2"><strong>Lokasi</strong><br>{{ $profile->location ?? '-' }}</div>
-                    <div class="col-6 mb-2"><strong>Usia</strong><br>{{ $profile->age ?? '-' }} tahun</div>
-                    <div class="col-6 mb-2"><strong>Pendidikan Terakhir</strong><br>{{ $profile->last_education ?? '-' }}</div>
-                    <div class="col-6 mb-2"><strong>Jenis Kelamin</strong><br>{{ $profile->gender ?? '-' }}</div>
+                    <div class="col-6 mb-2"><strong>WhatsApp</strong><br>{{ $application->snap_phone ?? '-' }}</div>
+                    <div class="col-6 mb-2"><strong>Email</strong><br>{{ $application->snap_email }}</div>
+                    <div class="col-6 mb-2"><strong>Lokasi</strong><br>{{ $application->snap_location ?? '-' }}</div>
+                    <div class="col-6 mb-2"><strong>Usia</strong><br>{{ $application->snap_age ?? '-' }} tahun</div>
+                    <div class="col-6 mb-2"><strong>Pendidikan Terakhir</strong><br>{{ $application->snap_last_education ?? '-' }}</div>
+                    <div class="col-6 mb-2"><strong>Jenis Kelamin</strong><br>{{ $application->snap_gender ?? '-' }}</div>
                 </div>
             </div>
         </div>
@@ -100,7 +97,7 @@
     <div class="mb-4">
         <h6 class="fw-bold text-uppercase small">Tentang Saya</h6>
         <hr class="my-2">
-        <p class="text-muted">{{ $profile->tentang_saya ?? '-' }}</p>
+        <p class="text-muted">{{ $application->snap_about ?? '-' }}</p>
     </div>
 
     {{-- Pengalaman Kerja --}}
@@ -108,24 +105,24 @@
         <h6 class="fw-bold text-uppercase small">Pengalaman Kerja</h6>
         <hr class="my-2">
 
-        @forelse ($user->pelamarExperiences as $exp)
+        @forelse ($application->snap_experiences ?? [] as $exp)
             <div class="mb-3">
-                <strong>{{ $exp->posisi }}</strong> – {{ $exp->perusahaan }}<br>
+                <strong>{{ $exp['posisi'] ?? '-' }}</strong> – {{ $exp['perusahaan'] ?? '-' }}<br>
 
                 <span class="text-muted small">
-                    {{ Carbon::parse($exp->tanggal_mulai)->translatedFormat('F Y') }} –
-                    {{ $exp->masih_bekerja
+                    {{ $exp['tanggal_mulai'] ?? '-' }} –
+                    {{ !empty($exp['masih_bekerja'])
                         ? 'Sekarang'
-                        : Carbon::parse($exp->tanggal_selesai)->translatedFormat('F Y') }}
+                        : ($exp['tanggal_selesai'] ?? '-') }}
                 </span>
 
-                @if($exp->deskripsi)
-                    <p class="text-muted mt-1">{{ $exp->deskripsi }}</p>
+                @if(!empty($exp['deskripsi']))
+                    <p class="text-muted mt-1">{{ $exp['deskripsi'] }}</p>
                 @endif
 
-                @if($exp->file_bukti)
+                @if(!empty($exp['file_bukti']))
                     <div class="mt-2">
-                        <a href="{{ asset('storage/'.$exp->file_bukti) }}"
+                        <a href="{{ asset('storage/'.$exp['file_bukti']) }}"
                         target="_blank"
                         class="btn btn-outline-primary btn-sm">
                             <i class="bi bi-paperclip"></i> Lihat File
@@ -138,32 +135,30 @@
         @endforelse
     </div>
 
-
     {{-- Pendidikan --}}
     <div class="mb-4">
         <h6 class="fw-bold text-uppercase small">Pendidikan</h6>
         <hr class="my-2">
 
-        @forelse ($user->pelamarEducations as $edu)
+        @forelse ($application->snap_educations ?? [] as $edu)
             <div class="mb-3">
-                <strong>{{ $edu->nama_sekolah }}</strong><br>
+                <strong>{{ $edu['nama_sekolah'] ?? '-' }}</strong><br>
 
                 <span class="text-muted">
-                    {{ $edu->tingkat }} – {{ $edu->bidang_studi }}
+                    {{ $edu['tingkat'] ?? '-' }} – {{ $edu['bidang_studi'] ?? '-' }}
                 </span><br>
 
                 <span class="text-muted small">
-                    {{ bulan($edu->mulai_bulan) }} {{ $edu->mulai_tahun }} –
-                    {{ bulan($edu->selesai_bulan) }} {{ $edu->selesai_tahun }}
+                    {{ $edu['periode'] ?? '-' }}
                 </span>
 
-                @if($edu->informasi_tambahan)
-                    <p class="text-muted mt-1">{{ $edu->informasi_tambahan }}</p>
+                @if(!empty($edu['informasi_tambahan']))
+                    <p class="text-muted mt-1">{{ $edu['informasi_tambahan'] }}</p>
                 @endif
 
-                @if($edu->file_bukti)
+                @if(!empty($edu['file_bukti']))
                     <div class="mt-2">
-                        <a href="{{ asset('storage/'.$edu->file_bukti) }}"
+                        <a href="{{ asset('storage/'.$edu['file_bukti']) }}"
                         target="_blank"
                         class="btn btn-outline-primary btn-sm">
                             <i class="bi bi-file-earmark-text"></i> Lihat File
@@ -181,14 +176,12 @@
         <h6 class="fw-bold text-uppercase small">Skills</h6>
         <hr class="my-2">
 
-        @if($user->pelamarSkills->count())
+        @if(!empty($application->snap_skills) && count($application->snap_skills))
             <div class="d-flex flex-wrap gap-2">
-                @foreach ($user->pelamarSkills as $ps)
-                    @if($ps->skill)
-                        <span class="badge bg-light text-dark border">
-                            {{ $ps->skill->nama_skill }}
-                        </span>
-                    @endif
+                @foreach ($application->snap_skills as $skill)
+                    <span class="badge bg-light text-dark border">
+                        {{ $skill }}
+                    </span>
                 @endforeach
             </div>
         @else
@@ -201,15 +194,21 @@
         <h6 class="fw-bold text-uppercase small">Resume</h6>
         <hr class="my-2">
 
-        @if($user->pelamarResume)
-            <a href="{{ asset('storage/'.$user->pelamarResume->file_path) }}"
-            target="_blank"
-            class="btn btn-outline-primary btn-sm">
-                <i class="bi bi-file-earmark-text"></i> Lihat Resume
-            </a>
-        @else
-            <p class="text-muted">Resume belum diunggah.</p>
-        @endif
+    @if(!empty($application->snap_resume['file_path']))
+        <a href="{{ asset('storage/'.$application->snap_resume['file_path']) }}"
+        target="_blank"
+        class="btn btn-outline-primary btn-sm">
+            <i class="bi bi-file-earmark-text"></i>
+            Lihat Resume
+        </a>
+
+        <div class="small text-muted mt-1">
+            {{ $application->snap_resume['file_name'] ?? '' }}
+        </div>
+    @else
+        <p class="text-muted">Resume belum diunggah.</p>
+    @endif
+
     </div>
 
     {{-- Penghargaan --}}
@@ -217,17 +216,19 @@
         <h6 class="fw-bold text-uppercase small">Penghargaan</h6>
         <hr class="my-2">
 
-        @forelse ($user->pelamarAchievements as $ach)
+        @forelse ($application->snap_achievements ?? [] as $ach)
             <div class="mb-3">
-                <strong>{{ $ach->judul }}</strong> – {{ $ach->tahun }}
+                <strong>{{ $ach['judul'] ?? '' }}</strong> – {{ $ach['tahun'] ?? '' }}
 
-                @if($ach->deskripsi)
-                    <p class="text-muted small mt-1">{{ $ach->deskripsi }}</p>
+                @if(!empty($ach['deskripsi']))
+                    <p class="text-muted small mt-1">
+                        {{ $ach['deskripsi'] }}
+                    </p>
                 @endif
 
-                @if($ach->file_bukti)
+                @if(!empty($ach['file_bukti']))
                     <div class="mt-2">
-                        <a href="{{ asset('storage/'.$ach->file_bukti) }}"
+                        <a href="{{ asset('storage/'.$ach['file_bukti']) }}"
                         target="_blank"
                         class="btn btn-outline-primary btn-sm">
                             <i class="bi bi-award"></i> Lihat File
@@ -245,25 +246,24 @@
         <h6 class="fw-bold text-uppercase small">Sertifikat</h6>
         <hr class="my-2">
 
-        @forelse ($user->pelamarCertificates as $cert)
+        @forelse ($application->snap_certificates ?? [] as $cert)
             <div class="mb-3">
-                <strong>{{ $cert->nama_sertifikat }}</strong><br>
+                <strong>{{ $cert['nama_sertifikat'] ?? '' }}</strong><br>
 
                 <span class="text-muted small">
-                    Terbit: {{ bulan($cert->bulan_terbit) }} {{ $cert->tahun_terbit }} ·
-                    Berlaku:
-                    {{ $cert->tanpa_expired
-                        ? 'Tidak ada batas waktu'
-                        : bulan($cert->bulan_expired).' '.$cert->tahun_expired }}
+                    Terbit: {{ $cert['terbit'] ?? '-' }} ·
+                    Berlaku: {{ $cert['expired'] ?? 'Tidak ada batas waktu' }}
                 </span>
 
-                @if($cert->informasi_tambahan)
-                    <p class="text-muted mt-1">{{ $cert->informasi_tambahan }}</p>
+                @if(!empty($cert['informasi_tambahan']))
+                    <p class="text-muted mt-1">
+                        {{ $cert['informasi_tambahan'] }}
+                    </p>
                 @endif
 
-                @if($cert->file_bukti)
+                @if(!empty($cert['file_bukti']))
                     <div class="mt-2">
-                        <a href="{{ asset('storage/'.$cert->file_bukti) }}"
+                        <a href="{{ asset('storage/'.$cert['file_bukti']) }}"
                         target="_blank"
                         class="btn btn-outline-primary btn-sm">
                             <i class="bi bi-patch-check"></i> Lihat File
@@ -281,24 +281,24 @@
         <h6 class="fw-bold text-uppercase small">Organisasi & Relawan</h6>
         <hr class="my-2">
 
-        @forelse ($user->pelamarOrganizations as $org)
+        @forelse ($application->snap_organizations ?? [] as $org)
             <div class="mb-3">
-                <strong>{{ $org->nama_organisasi }}</strong> – {{ $org->posisi ?? '-' }}<br>
+                <strong>{{ $org['nama_organisasi'] ?? '' }}</strong>
+                – {{ $org['posisi'] ?? '-' }}<br>
 
                 <span class="text-muted small">
-                    {{ bulan($org->mulai_bulan) }} {{ $org->mulai_tahun }} –
-                    {{ $org->masih_aktif
-                        ? 'Sekarang'
-                        : bulan($org->selesai_bulan).' '.$org->selesai_tahun }}
+                    {{ $org['periode'] ?? '-' }}
                 </span>
 
-                @if($org->informasi_tambahan)
-                    <p class="text-muted mt-1">{{ $org->informasi_tambahan }}</p>
+                @if(!empty($org['informasi_tambahan']))
+                    <p class="text-muted mt-1">
+                        {{ $org['informasi_tambahan'] }}
+                    </p>
                 @endif
 
-                @if($org->file_bukti)
+                @if(!empty($org['file_bukti']))
                     <div class="mt-2">
-                        <a href="{{ asset('storage/'.$org->file_bukti) }}"
+                        <a href="{{ asset('storage/'.$org['file_bukti']) }}"
                         target="_blank"
                         class="btn btn-outline-primary btn-sm">
                             <i class="bi bi-paperclip"></i> Lihat File
@@ -514,8 +514,6 @@
 
                         </div>
                     @endif
-
-
     @endif
 </div>
             {{-- 5. Offer --}}
@@ -659,23 +657,18 @@
 </div>
 
 {{-- Modal Avatar Preview --}}
-@if($profile?->photo)
+@if(!empty($application->snap_photo))
 <div class="modal fade" id="modalAvatarPreview" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-md">
-        <div class="modal-content">
+        <div class="modal-content bg-transparent border-0 shadow-none">
+            <div class="modal-body text-center p-0">
 
-            <div class="modal-header">
-                <h5 class="modal-title">Foto Kandidat</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-
-            <div class="modal-body text-center">
                 <img
-                    src="{{ asset('storage/'.$profile->photo) }}"
+                    src="{{ asset('storage/'.$application->snap_photo) }}"
                     class="img-fluid rounded shadow"
-                    alt="Foto Kandidat">
-            </div>
+                    alt="Preview Foto">
 
+            </div>
         </div>
     </div>
 </div>

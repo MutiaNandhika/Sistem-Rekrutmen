@@ -19,12 +19,6 @@ class DashboardController extends Controller
         $tahun = request('tahun', now()->year);
         $bulan = request('bulan', now()->month);
 
-        $lowonganAktif = Lowongan::where('hrd_id', $hrdId)
-            ->where('status', 'aktif')
-            ->whereYear('created_at', $tahun)
-            ->whereMonth('created_at', $bulan)
-            ->count();
-
         $totalPelamar = Application::whereHas('lowongan', fn ($q) =>
                 $q->where('hrd_id', $hrdId)
             )
@@ -73,7 +67,6 @@ class DashboardController extends Controller
 
         return response()->json([
             'stat' => [
-                'lowongan_aktif' => $lowonganAktif,
                 'total_pelamar'  => $totalPelamar,
             ],
             'lowongan' => $lowongan,

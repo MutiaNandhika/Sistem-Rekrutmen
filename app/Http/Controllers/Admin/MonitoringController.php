@@ -19,11 +19,6 @@ class MonitoringController extends Controller
         $tahun = $request->get('tahun', now()->year);
         $bulan = $request->get('bulan', now()->month);
 
-        $totalLowonganAktif = Lowongan::where('status', 'aktif')
-            ->whereYear('created_at', $tahun)
-            ->whereMonth('created_at', $bulan)
-            ->count();
-
         $totalPelamar = Application::whereYear('created_at', $tahun)
             ->whereMonth('created_at', $bulan)
             ->count();
@@ -59,7 +54,6 @@ class MonitoringController extends Controller
 
         return response()->json([
             'stat' => [
-                'lowongan_aktif' => $totalLowonganAktif,
                 'total_pelamar'  => $totalPelamar,
             ],
             'lowongan' => $lowonganPerBulan,

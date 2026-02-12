@@ -33,13 +33,6 @@
 <div class="row g-4 mb-4">
     <div class="col-md-3">
         <div class="dashboard-stat-card">
-            <div class="stat-title">Lowongan Dibuat</div>
-            <div class="stat-value" id="statLowongan">0</div>
-        </div>
-    </div>
-
-    <div class="col-md-3">
-        <div class="dashboard-stat-card">
             <div class="stat-title">Total Pelamar</div>
             <div class="stat-value" id="statPelamar">0</div>
         </div>
@@ -99,7 +92,6 @@ function loadAdminDashboard() {
 }
 
 function renderCharts(data) {
-    document.getElementById('statLowongan').textContent = data.stat.lowongan_aktif;
     document.getElementById('statPelamar').textContent  = data.stat.total_pelamar;
 
     chartLowongan?.destroy();

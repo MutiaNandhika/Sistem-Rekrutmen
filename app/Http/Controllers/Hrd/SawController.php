@@ -17,11 +17,7 @@ class SawController extends Controller
     {
         abort_if($lowongan->hrd_id !== auth()->id(), 403);
 
-        $apps = Application::with([
-                'user.pelamarEducations',
-                'user.pelamarExperiences',
-                'user.pelamarSkills',
-            ])
+        $apps = Application::with('user')
             ->where('lowongan_id', $lowongan->id)
             ->whereIn('status', [
                 'seleksi',
@@ -56,11 +52,8 @@ class SawController extends Controller
     if ($cek) {
         return back()->with('error', 'SAW sudah pernah dihitung. Silakan reset jika ingin mengulang.');
     }
-        $applications = Application::with([
-                'user.pelamarEducations',
-                'user.pelamarExperiences',
-                'user.pelamarSkills',
-            ])
+
+        $applications = Application::with('user')
             ->where('lowongan_id', $lowongan->id)
             ->where('status', 'seleksi')
             ->get();
@@ -80,9 +73,9 @@ class SawController extends Controller
             $user = $app->user;
 
             $data[$app->id] = [
-                'pendidikan' => $user->nilaiPendidikanTerakhir(),
-                'pengalaman' => $user->totalPengalamanTahun(),
-                'skill'      => $user->pelamarSkills->count(),
+                'pendidikan' => $app->snap_pendidikan_nilai ?? 0,
+                'pengalaman' => $app->snap_pengalaman_tahun ?? 0,
+                'skill'      => $app->snap_total_skill ?? 0,
             ];
         }
 
@@ -143,7 +136,7 @@ class SawController extends Controller
 
         foreach ($skorAkhir as $appId => $score) {
 
-        $application = Application::with(['user', 'lowongan'])->find($appId);
+        $application = Application::with('user')->find($appId);
 
         if (!$application) {
             $rank++;
@@ -186,16 +179,12 @@ class SawController extends Controller
     {
         abort_if($lowongan->hrd_id !== auth()->id(), 403);
 
-        $apps = Application::with([
-        'user.pelamarEducations',
-        'user.pelamarExperiences',
-        'user.pelamarSkills',
-        ])
-        ->where('lowongan_id', $lowongan->id)
-        ->whereNotNull('saw_score')
-        ->whereIn('status', ['interview', 'tidak_lolos_saw'])
-        ->orderBy('saw_rank')
-        ->get();
+        $apps = Application::with('user')
+            ->where('lowongan_id', $lowongan->id)
+            ->whereNotNull('saw_score')
+            ->whereIn('status', ['interview', 'tidak_lolos_saw'])
+            ->orderBy('saw_rank')
+            ->get();
 
         if ($apps->isEmpty()) {
         return view('hrd.laporan.index', [
@@ -215,13 +204,12 @@ class SawController extends Controller
         $matrix = [];
 
         foreach ($apps as $app) {
-            $user = $app->user;
 
             $matrix[$app->id] = [
-                'nama'       => $user->name,
-                'pendidikan' => $user->nilaiPendidikanTerakhir(),
-                'pengalaman' => $user->totalPengalamanTahun(),
-                'skill'      => $user->pelamarSkills->count(),
+                'nama'       => $app->snap_name,
+                'pendidikan' => $app->snap_pendidikan_nilai,
+                'pengalaman' => $app->snap_pengalaman_tahun,
+                'skill'      => $app->snap_total_skill,
             ];
         }
 
@@ -261,28 +249,23 @@ class SawController extends Controller
     {
         abort_if($lowongan->hrd_id !== auth()->id(), 403);
 
-        $apps = Application::with([
-                'user.pelamarEducations',
-                'user.pelamarExperiences',
-                'user.pelamarSkills',
-            ])
+        $apps = Application::with('user')
             ->where('lowongan_id', $lowongan->id)
             ->whereNotNull('saw_score')
-            ->whereIn('status', ['interview', 'tidak_lolos_saw'])
             ->orderBy('saw_rank')
             ->get();
 
         // MATRIX DATA
-        $matrix = [];
 
+        $matrix = [];
+        
         foreach ($apps as $app) {
-            $user = $app->user;
 
             $matrix[$app->id] = [
-                'nama'       => $user->name,
-                'pendidikan' => $user->nilaiPendidikanTerakhir(),
-                'pengalaman' => $user->totalPengalamanTahun(),
-                'skill'      => $user->pelamarSkills->count(),
+                'nama'       => $app->snap_name,
+                'pendidikan' => $app->snap_pendidikan_nilai,
+                'pengalaman' => $app->snap_pengalaman_tahun,
+                'skill'      => $app->snap_total_skill,
             ];
         }
 
