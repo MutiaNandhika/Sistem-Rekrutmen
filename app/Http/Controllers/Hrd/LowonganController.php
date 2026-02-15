@@ -13,30 +13,42 @@ class LowonganController extends Controller
 {
     public function index(Request $request)
     {
-        // AUTO CLOSE
-    Lowongan::where('status', 'aktif')
-        ->whereNotNull('tanggal_selesai')
-        ->whereDate('tanggal_selesai', '<', now())
-        ->update(['status' => 'nonaktif']);
+        Lowongan::where('status', 'aktif')
+            ->whereNotNull('tanggal_selesai')
+            ->whereDate('tanggal_selesai', '<', now())
+            ->update(['status' => 'nonaktif']);
 
-        $userId = auth()->id();
+        $userId = auth()->id(); 
 
-        $hrds = User::where('role', 'hrd')
-            ->orderBy('name')
-            ->get();
+        $query = Lowongan::with(['hrd','bidangKerja']);
 
-        $lowongans = Lowongan::with(['hrd', 'bidangKerja'])
-            ->when($request->pic, function ($q) use ($request) {
-                $q->where('hrd_id', $request->pic);
-            })
-            ->orderBy('created_at', 'desc')
-            ->get();
+        if ($request->pic) {
+            $query->where('hrd_id', $request->pic);
+        }
 
-        return view('hrd.lowongan.index', [
-            'lowongans' => $lowongans,
-            'hrds'      => $hrds,
-            'userId'    => $userId,
-        ]);
+        if ($request->search) {
+            $search = $request->search;
+
+            $query->where(function($q) use ($search){
+                $q->where('nama_lowongan','like',"%$search%")
+                ->orWhere('lokasi','like',"%$search%")
+                ->orWhereHas('hrd', function($q2) use ($search){
+                        $q2->where('name','like',"%$search%");
+                });
+            });
+        }
+
+        $lowongans = $query
+        ->orderBy('created_at','desc')
+        ->paginate(6);
+
+        $hrds = User::where('role','hrd')->orderBy('name')->get();
+
+        if ($request->ajax()) {
+            return view('hrd.lowongan.partials.list', compact('lowongans','userId'))->render();
+            }
+
+        return view('hrd.lowongan.index', compact('lowongans','hrds','userId'));
     }
 
     // create step 1
@@ -141,10 +153,18 @@ class LowonganController extends Controller
     {
         $this->authorizeLowongan($lowongan);
 
+        if ($lowongan->applications()->exists()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Lowongan tidak dapat dihapus karena sudah memiliki pelamar.'
+            ], 422);
+        }
+
         $lowongan->skills()->detach();
         $lowongan->delete();
 
         return response()->json([
+            'success' => true,
             'message' => 'Lowongan berhasil dihapus'
         ]);
     }
@@ -227,4 +247,5 @@ class LowonganController extends Controller
             abort(403);
         }
     }
+
 }
