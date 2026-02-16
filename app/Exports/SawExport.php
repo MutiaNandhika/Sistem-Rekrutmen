@@ -18,18 +18,13 @@ class SawExport implements FromCollection, WithHeadings, WithMapping
 
     public function collection()
     {
-        return Application::with([
-                'user.pelamarEducations',
-                'user.pelamarExperiences',
-                'user.pelamarSkills',
-            ])
+        return Application::query()
             ->where('lowongan_id', $this->lowonganId)
             ->whereNotNull('saw_score')
             ->whereIn('status', ['interview', 'tidak_lolos_saw'])
             ->orderBy('saw_rank')
             ->get();
     }
-
 
     public function headings(): array
     {
@@ -47,11 +42,11 @@ class SawExport implements FromCollection, WithHeadings, WithMapping
     {
         return [
             $app->saw_rank,
-            $app->user->name,
-            $app->user->nilaiPendidikanTerakhir(),
-            $app->user->totalPengalamanTahun(),
-            $app->user->pelamarSkills->count(),
-            $app->saw_score,
+            $app->snap_name,
+            $app->snap_pendidikan_nilai,
+            $app->snap_pengalaman_tahun,
+            $app->snap_total_skill,
+            round($app->saw_score, 3),
         ];
     }
 }

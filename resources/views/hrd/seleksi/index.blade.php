@@ -65,16 +65,31 @@
                     <th>Status</th>
                 </tr>
                 </thead>
-
                 <tbody>
                 @foreach ($apps as $app)
                     <tr>
-                        <td>{{ $app->user->name }}</td>
-                        <td>{{ $app->user->nilaiPendidikanTerakhir() }}</td>
-                        <td>{{ $app->user->totalPengalamanTahun() }}</td>
-                        <td>{{ $app->user->pelamarSkills->count() }}</td>
-                        <td>{{ $app->saw_score ?? '-' }}</td>
-                        <td>{{ $app->saw_rank ?? '-' }}</td>
+                        <td>{{ $app->snap_name ?? $app->user->name }}</td>
+
+                        <td>
+                            {{ $app->snap_pendidikan_nilai ?? '-' }}
+                        </td>
+
+                        <td>
+                            {{ $app->snap_pengalaman_tahun ?? 0 }}
+                        </td>
+
+                        <td>
+                            {{ $app->snap_total_skill ?? 0 }}
+                        </td>
+
+                        <td>
+                            {{ $app->saw_score !== null ? number_format($app->saw_score, 3) : '-' }}
+                        </td>
+
+                        <td>
+                            {{ $app->saw_rank ?? '-' }}
+                        </td>
+
                         <td>
                             @if ($app->status === 'seleksi')
                                 <span class="badge bg-secondary">Menunggu SAW</span>
@@ -87,7 +102,6 @@
                     </tr>
                 @endforeach
                 </tbody>
-
             </table>
         </div>
 
