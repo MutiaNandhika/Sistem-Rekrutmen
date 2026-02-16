@@ -15,6 +15,7 @@ class ReportController extends Controller
     public function index(Request $request)
     {
         $hrdId = auth()->id();
+        $namaHrd = auth()->user()->name;
 
         $from       = $request->from;
         $to         = $request->to;
@@ -35,25 +36,26 @@ class ReportController extends Controller
 
         if ($lowonganId) {
             $query->where('lowongan_id', $lowonganId);
+            $namaLowongan = Lowongan::find($lowonganId)?->nama_lowongan ?? '-';
+        } else {
+            $namaLowongan = 'Semua Lowongan';
         }
 
         $apps = $query->get();
 
-        $totalPelamar = $apps->count();
-
-        $screening = $apps->where('status', 'screening')->count();
-
-        // sebelum dihitung SAW
-        $seleksiSaw = $apps->where('status', 'seleksi')->count();
-
-        $interview = $apps->where('status', 'interview')->count();
-
-        $offer = $apps->where('status', 'offer')->count();
+        $totalPelamar       = $apps->count();
+        $diproses           = $apps->where('status', 'diproses')->count();
+        $screening          = $apps->where('status', 'screening')->count();
+        $seleksiSaw         = $apps->where('status', 'seleksi')->count();
+        $tidakLolosSaw      = $apps->where('status', 'tidak_lolos_saw')->count();
+        $interview          = $apps->where('status', 'interview')->count();
+        $offer              = $apps->where('status', 'offer')->count();
+        $offerDitolak       = $apps->where('status', 'offer_ditolak')->count();
+        $ditolakAdministrasi= $apps->where('status', 'ditolak_administrasi')->count();
 
         $diterima = $apps->where('offer_response', 'diterima')->count();
         $ditolak  = $apps->where('offer_response', 'ditolak')->count();
 
-        // Presentase lolos
         $persenLolos = $totalPelamar > 0
             ? round(($diterima / $totalPelamar) * 100, 2)
             : 0;
@@ -63,11 +65,17 @@ class ReportController extends Controller
             'to',
             'lowonganId',
             'lowongans',
+            'namaLowongan',
+            'namaHrd',
             'totalPelamar',
+            'diproses',
             'screening',
             'seleksiSaw',
+            'tidakLolosSaw',
             'interview',
             'offer',
+            'offerDitolak',
+            'ditolakAdministrasi',
             'diterima',
             'ditolak',
             'persenLolos'

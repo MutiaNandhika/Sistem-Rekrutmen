@@ -31,24 +31,25 @@ class ReportController extends Controller
 
         if ($lowonganId) {
             $query->where('lowongan_id', $lowonganId);
+            $namaLowongan = Lowongan::find($lowonganId)?->nama_lowongan ?? '-';
+        } else {
+            $namaLowongan = 'Semua Lowongan';
         }
 
         $apps = $query->get();
 
-        $totalPelamar = $apps->count();
+        $totalPelamar        = $apps->count();
+        $diproses            = $apps->where('status', 'diproses')->count();
+        $screening           = $apps->where('status', 'screening')->count();
+        $seleksi             = $apps->where('status', 'seleksi')->count();
+        $tidakLolosSaw       = $apps->where('status', 'tidak_lolos_saw')->count();
+        $interview           = $apps->where('status', 'interview')->count();
+        $offer               = $apps->where('status', 'offer')->count();
+        $offerDitolak        = $apps->where('status', 'offer_ditolak')->count();
+        $ditolakAdministrasi = $apps->where('status', 'ditolak_administrasi')->count();
 
-        $screening = $apps->where('status', 'screening')->count();
-
-        $seleksi = $apps->where('status', 'seleksi')->count();
-
-        $interview = $apps->where('status', 'interview')->count();
-
-        $offer = $apps->where('status', 'offer')->count();
-
-        // FINAL DITERIMA (offer_response)
         $diterima = $apps->where('offer_response', 'diterima')->count();
-
-        $ditolak = $apps->where('offer_response', 'ditolak')->count();
+        $ditolak  = $apps->where('offer_response', 'ditolak')->count();
 
         $persenLolos = $totalPelamar > 0
             ? round(($diterima / $totalPelamar) * 100, 2)
@@ -59,11 +60,16 @@ class ReportController extends Controller
             'from',
             'to',
             'lowonganId',
+            'namaLowongan',
             'totalPelamar',
+            'diproses',
             'screening',
             'seleksi',
+            'tidakLolosSaw',
             'interview',
             'offer',
+            'offerDitolak',
+            'ditolakAdministrasi',
             'diterima',
             'ditolak',
             'persenLolos'
@@ -72,49 +78,11 @@ class ReportController extends Controller
 
     public function exportPdf(Request $request)
     {
-        $from       = $request->from;
-        $to         = $request->to;
-        $lowonganId = $request->lowongan_id;
+        $data = $this->index($request)->getData();
 
-        $query = Application::query();
-
-        if ($from && $to) {
-            $query->whereBetween('created_at', [
-                $from . ' 00:00:00',
-                $to   . ' 23:59:59'
-            ]);
-        }
-
-        if ($lowonganId) {
-            $query->where('lowongan_id', $lowonganId);
-        }
-
-        $apps = $query->get();
-
-        $totalPelamar = $apps->count();
-        $screening = $apps->where('status', 'screening')->count();
-        $seleksi = $apps->where('status', 'seleksi')->count();
-        $interview = $apps->where('status', 'interview')->count();
-        $offer = $apps->where('status', 'offer')->count();
-        $diterima = $apps->where('offer_response', 'diterima')->count();
-        $ditolak = $apps->where('offer_response', 'ditolak')->count();
-
-        $persenLolos = $totalPelamar > 0
-            ? round(($diterima / $totalPelamar) * 100, 2)
-            : 0;
-
-        return Pdf::loadView('admin.report.pdf', compact(
-            'totalPelamar',
-            'screening',
-            'seleksi',
-            'interview',
-            'offer',
-            'diterima',
-            'ditolak',
-            'persenLolos'
-        ))
-        ->setPaper('A4', 'portrait')
-        ->stream('laporan-rekrutmen-admin.pdf');
+        return Pdf::loadView('admin.report.pdf', (array) $data)
+            ->setPaper('A4', 'portrait')
+            ->stream('laporan-rekrutmen-admin.pdf');
     }
 
     public function exportExcel(Request $request)

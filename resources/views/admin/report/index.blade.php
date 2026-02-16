@@ -10,7 +10,6 @@
     berdasarkan periode dan lowongan yang dipilih.
 </p>
 
-{{-- Filter --}}
 <div class="card mb-4">
     <div class="card-body">
         <form method="GET" class="row g-3 align-items-end">
@@ -48,40 +47,43 @@
     </div>
 </div>
 
-{{-- Statistik --}}
 <div class="row g-3 mb-4">
 
-    @php
-        $stats = [
-            'Total Pelamar' => $totalPelamar,
-            'Screening' => $screening,
-            'Seleksi (SAW)' => $seleksi,
-            'Interview' => $interview,
-            'Offer' => $offer,
-            'Selesai - Diterima' => $diterima,
-            'Selesai - Ditolak' => $ditolak,
-        ];
-    @endphp
+@php
+$stats = [
+    ['Total Pelamar', $totalPelamar],
+    ['Diproses', $diproses],
+    ['Screening', $screening],
+    ['Seleksi (SAW)', $seleksi],
+    ['Tidak Lolos SAW', $tidakLolosSaw],
+    ['Interview', $interview],
+    ['Offer', $offer],
+    ['Offer Ditolak', $offerDitolak],
+    ['Ditolak Administrasi', $ditolakAdministrasi],
+    ['Selesai - Diterima', $diterima],
+    ['Selesai - Ditolak', $ditolak],
+];
+@endphp
 
-    @foreach ($stats as $label => $value)
-        <div class="col-md-3">
-            <div class="card text-center">
-                <div class="card-body">
-                    <div class="text-muted small">{{ $label }}</div>
-                    <h5 class="fw-bold">{{ $value }}</h5>
-                </div>
-            </div>
-        </div>
-    @endforeach
-
-    <div class="col-md-3">
-        <div class="card text-center border-success">
-            <div class="card-body">
-                <div class="text-muted small">Persentase Lolos</div>
-                <h5 class="fw-bold text-success">{{ $persenLolos }}%</h5>
-            </div>
+@foreach ($stats as [$label, $value])
+<div class="col-md-3">
+    <div class="card text-center">
+        <div class="card-body">
+            <div class="text-muted small">{{ $label }}</div>
+            <h5 class="fw-bold">{{ $value }}</h5>
         </div>
     </div>
+</div>
+@endforeach
+
+<div class="col-md-3">
+    <div class="card text-center border-success">
+        <div class="card-body">
+            <div class="text-muted small">Persentase Lolos</div>
+            <h5 class="fw-bold text-success">{{ $persenLolos }}%</h5>
+        </div>
+    </div>
+</div>
 
 </div>
 

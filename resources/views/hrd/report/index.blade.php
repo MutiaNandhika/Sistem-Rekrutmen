@@ -31,7 +31,7 @@
                     <option value="">Semua Lowongan</option>
                     @foreach ($lowongans as $l)
                         <option value="{{ $l->id }}"
-                            {{ request('lowongan_id') == $l->id ? 'selected' : '' }}>
+                            {{ $lowonganId == $l->id ? 'selected' : '' }}>
                             {{ $l->nama_lowongan }}
                         </option>
                     @endforeach
@@ -53,17 +53,21 @@
 
     @php
         $stats = [
-            ['Total Pelamar', $totalPelamar],
-            ['Screening', $screening],
-            ['Seleksi (SAW)', $seleksiSaw],
-            ['Interview', $interview],
-            ['Offer', $offer],
-            ['Selesai - Diterima', $diterima],
-            ['Selesai - Ditolak', $ditolak],
+            'Total Pelamar' => $totalPelamar,
+            'Diproses' => $diproses,
+            'Screening' => $screening,
+            'Seleksi (SAW)' => $seleksiSaw,
+            'Tidak Lolos SAW' => $tidakLolosSaw,
+            'Interview' => $interview,
+            'Offer' => $offer,
+            'Offer Ditolak' => $offerDitolak,
+            'Ditolak Administrasi' => $ditolakAdministrasi,
+            'Selesai - Diterima' => $diterima,
+            'Selesai - Ditolak' => $ditolak,
         ];
     @endphp
 
-    @foreach ($stats as [$label, $value])
+    @foreach ($stats as $label => $value)
         <div class="col-md-3">
             <div class="card text-center">
                 <div class="card-body">

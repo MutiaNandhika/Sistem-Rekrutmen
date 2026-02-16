@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\Application;
+use App\Models\Lowongan;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 
@@ -25,13 +26,18 @@ class HrdReportExport implements FromArray, WithHeadings
     {
         return [
             'Periode',
+            'Lowongan',
             'Total Pelamar',
+            'Diproses',
             'Screening',
             'Seleksi (SAW)',
+            'Tidak Lolos SAW',
             'Interview',
             'Offer',
+            'Offer Ditolak',
             'Selesai - Diterima',
             'Selesai - Ditolak',
+            'Ditolak Administrasi',
             'Persentase Lolos (%)',
         ];
     }
@@ -55,13 +61,17 @@ class HrdReportExport implements FromArray, WithHeadings
 
         $apps = $query->get();
 
-        $totalPelamar = (int) $apps->count();
-        $screening    = (int) $apps->where('status', 'screening')->count();
-        $seleksi      = (int) $apps->where('status', 'seleksi')->count();
-        $interview    = (int) $apps->where('status', 'interview')->count();
-        $offer        = (int) $apps->where('status', 'offer')->count();
-        $diterima     = (int) $apps->where('offer_response', 'diterima')->count();
-        $ditolak      = (int) $apps->where('offer_response', 'ditolak')->count();
+        $totalPelamar = $apps->count();
+        $diproses     = $apps->where('status', 'diproses')->count();
+        $screening    = $apps->where('status', 'screening')->count();
+        $seleksi      = $apps->where('status', 'seleksi')->count();
+        $tidakLolos   = $apps->where('status', 'tidak_lolos_saw')->count();
+        $interview    = $apps->where('status', 'interview')->count();
+        $offer        = $apps->where('status', 'offer')->count();
+        $offerDitolak = $apps->where('status', 'offer_ditolak')->count();
+        $diterima     = $apps->where('offer_response', 'diterima')->count();
+        $ditolak      = $apps->where('offer_response', 'ditolak')->count();
+        $ditolakAdm   = $apps->where('status', 'ditolak_administrasi')->count();
 
         $persenLolos = $totalPelamar > 0
             ? round(($diterima / $totalPelamar) * 100, 2)
@@ -71,17 +81,25 @@ class HrdReportExport implements FromArray, WithHeadings
             ? "{$this->from} s/d {$this->to}"
             : 'Semua Periode';
 
-        return [[
-        $periode,
-        (string) $totalPelamar,
-        (string) $screening,
-        (string) $seleksi,
-        (string) $interview,
-        (string) $offer,
-        (string) $diterima,
-        (string) $ditolak,
-        (string) $persenLolos,
-    ]];
+        $namaLowongan = $this->lowonganId
+            ? optional(Lowongan::find($this->lowonganId))->nama_lowongan
+            : 'Semua Lowongan';
 
+        return [[
+            $periode,
+            $namaLowongan,
+            (string) ($totalPelamar ?? 0),
+            (string) ($diproses ?? 0),
+            (string) ($screening ?? 0),
+            (string) ($seleksi ?? 0),
+            (string) ($tidakLolos ?? 0),
+            (string) ($interview ?? 0),
+            (string) ($offer ?? 0),
+            (string) ($offerDitolak ?? 0),
+            (string) ($diterima ?? 0),
+            (string) ($ditolak ?? 0),
+            (string) ($ditolakAdm ?? 0),
+            (string) ($persenLolos ?? 0),
+        ]];
     }
 }
