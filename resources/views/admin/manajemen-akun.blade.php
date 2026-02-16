@@ -67,10 +67,8 @@
 {{-- Table --}}
 <div class="card shadow-sm">
     <div class="card-body">
-
         <div class="table-responsive">
             <table class="table table-hover align-middle" id="tableAkun">
-
                 <thead class="table-light">
                 <tr>
                     <th>Nama</th>
@@ -184,6 +182,7 @@
 </div>
 
 {{-- Script --}}
+@push('scripts')
 <script>
 function openEdit(user){
     document.getElementById('editName').value  = user.name;
@@ -236,8 +235,8 @@ $(document).ready(function () {
             info: "Menampilkan _START_–_END_ dari _TOTAL_ data",
             zeroRecords: "Data tidak ditemukan",
             paginate: {
-                previous: "Sebelumnya",
-                next: "Berikutnya"
+            previous: "‹",
+            next: "›"
             }
         },
         columnDefs: [
@@ -246,5 +245,5 @@ $(document).ready(function () {
     });
 });
 </script>
-
+@endpush
 @endsection

@@ -60,7 +60,9 @@ class JobController extends Controller
         $application = null;
 
         if (auth()->check() && auth()->user()->role === 'pelamar') {
-            $application = \App\Models\Application::where('user_id', auth()->id())
+
+            $application = Application::where('user_id', auth()->id())
+                ->where('lowongan_id', $lowongan->id)
                 ->latest()
                 ->first();
         }

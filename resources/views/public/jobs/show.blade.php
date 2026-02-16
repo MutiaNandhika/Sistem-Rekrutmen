@@ -64,29 +64,64 @@
                             Login untuk Melamar
                         </a>
                     @else
+
+                        {{-- Bukan pelamar --}}
                         @if(auth()->user()->role !== 'pelamar')
                             <button class="btn btn-secondary" disabled>
                                 Hanya Pelamar yang Bisa Melamar
                             </button>
 
+                        {{-- Profil belum lengkap --}}
                         @elseif(!auth()->user()->isProfileComplete())
                             <button class="btn btn-warning" disabled
                                 title="Lengkapi Data Diri, Tentang Saya, Pendidikan, Skills, dan Resume">
                                 Lengkapi Profil
                             </button>
 
-                        @elseif($application && $application->status === 'diterima')
+                        {{-- SUDAH DITERIMA (tidak boleh melamar lagi kemanapun) --}}
+                        @elseif(
+                            \App\Models\Application::where('user_id', auth()->id())
+                                ->where('status', 'diterima')
+                                ->exists()
+                        )
                             <button class="btn btn-success" disabled>
                                 Anda Sudah Diterima
                             </button>
 
-                        @elseif($application && $application->status !== 'ditolak')
-                            <button class="btn btn-secondary" disabled>
-                                Lamaran Sedang Diproses
-                            </button>
+                        {{-- SUDAH PERNAH MELAMAR LOWONGAN INI --}}
+                        @elseif($application)
 
+                            {{-- Sedang proses --}}
+                            @if(in_array($application->status, [
+                                'diproses',
+                                'screening',
+                                'seleksi',
+                                'interview',
+                                'offer'
+                            ]))
+                                <button class="btn btn-secondary" disabled>
+                                    Lamaran Sedang Diproses
+                                </button>
+
+                            {{-- Ditolak → STRICT MODEL → tidak boleh apply lagi --}}
+                            @elseif(in_array($application->status, [
+                                'ditolak',
+                                'ditolak_administrasi',
+                                'tidak_lolos_saw',
+                                'offer_ditolak'
+                            ]))
+                                <button class="btn btn-danger" disabled>
+                                    Anda Sudah Pernah Melamar (Ditolak)
+                                </button>
+
+                            @else
+                                <button class="btn btn-secondary" disabled>
+                                    Tidak Dapat Melamar
+                                </button>
+                            @endif
+
+                        {{-- BELUM PERNAH MELAMAR LOWONGAN INI --}}
                         @else
-                            {{-- BOLEH MELAMAR --}}
                             <form method="POST"
                                 action="{{ route('pelamar.lamar.store', $lowongan->id) }}"
                                 id="applyForm">
@@ -101,7 +136,7 @@
                         @endif
 
                     @endguest
-                </div>
+                    </div>
 
                 </div>
             </div>

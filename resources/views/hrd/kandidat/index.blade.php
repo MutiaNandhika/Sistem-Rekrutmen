@@ -138,6 +138,7 @@ $(document).ready(function () {
         language: {
             search: "Cari:",
             lengthMenu: "Tampilkan _MENU_ data",
+            info: "Menampilkan _START_ - _END_ dari _TOTAL_ kandidat",
             paginate: {
                 previous: "‹",
                 next: "›"

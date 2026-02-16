@@ -41,14 +41,10 @@
 {{-- Table --}}
 <div class="card shadow-sm">
     <div class="card-body">
-
         <div class="table-responsive">
-            <table id="lowonganTable"
-                   class="table table-hover align-middle w-100">
-
+            <table class="table table-hover align-middle" id="lowonganTable">
                 <thead class="table-light">
                     <tr>
-                        <th>#</th>
                         <th>Nama Lowongan</th>
                         <th>Bidang Kerja</th>
                         <th>HRD / PIC</th>
@@ -63,8 +59,6 @@
                 <tbody>
                     @foreach ($lowongans as $lowongan)
                         <tr>
-                            <td></td>
-
                             <td>
                                 <strong>{{ $lowongan->nama_lowongan }}</strong><br>
                                 <small class="text-muted">
@@ -146,41 +140,33 @@
 @push('scripts')
 <script>
 $(document).ready(function () {
-
     const table = $('#lowonganTable').DataTable({
+        pageLength: 5,
+        lengthMenu: [5, 10, 25, 50],
         ordering: true,
-        pageLength: 10,
-        lengthChange: true,
-        searching: true,
-        autoWidth: false,
-        columnDefs: [
-            {
-                targets: 0,
-                orderable: false,
-                searchable: false,
-            },
-            {
-                targets: 7,
-                orderable: false,
-                searchable: false,
+        responsive: true,
+        language: {
+            search: "Cari:",
+            lengthMenu: "Tampilkan _MENU_ data",
+            info: "Menampilkan _START_–_END_ dari _TOTAL_ data",
+            zeroRecords: "Data tidak ditemukan",
+            paginate: {
+                previous: "‹",
+                next: "›"
             }
-        ],
-        order: [[6, 'desc']],
-        drawCallback: function (settings) {
-            const api = this.api();
-            api.column(0, { search: 'applied', order: 'applied' })
-               .nodes()
-               .each(function (cell, i) {
-                   cell.innerHTML = i + 1;
-               });
-        }
+        },
+        columnDefs: [
+            { orderable: false, targets: 7 } 
+        ]
     });
 
+    // FILTER HRD
     $('#filterHrd').on('change', function () {
         const value = $(this).val();
-        table.column(3).search(value).draw();
+        table.column(2).search(value).draw();
     });
 
 });
 </script>
 @endpush
+

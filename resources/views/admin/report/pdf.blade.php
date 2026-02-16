@@ -47,7 +47,8 @@
             <th>Screening</th>
             <th>Seleksi (SAW)</th>
             <th>Interview</th>
-            <th>Hired</th>
+            <th>Offer</th>
+            <th>Diterima</th>
             <th>Lolos (%)</th>
         </tr>
     </thead>
@@ -57,7 +58,8 @@
             <td>{{ $screening }}</td>
             <td>{{ $seleksi }}</td>
             <td>{{ $interview }}</td>
-            <td>{{ $hired }}</td>
+            <td>{{ $offer }}</td>
+            <td>{{ $diterima }}</td>
             <td>{{ $persenLolos }}%</td>
         </tr>
     </tbody>

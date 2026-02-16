@@ -1,100 +1,82 @@
-.page-manajemen-akun .dataTables_wrapper {
-    font-size: 14px;
+.page-manajemen-akun .table {
     width: 100%;
-    overflow-x: auto;
+    border-collapse: collapse;
 }
 
-.page-manajemen-akun table.dataTable {
-    width: 100% !important;
-    min-width: 600px;
-}
-
-.page-manajemen-akun table.dataTable thead th {
-    background: #0f172a;
+.page-manajemen-akun .table thead th {
+    background: #111827;
     color: #ffffff;
     font-weight: 600;
-    padding: 12px 14px;
-    border-bottom: none;
+    padding: 14px;
+    font-size: 14px;
     white-space: nowrap;
-}
-
-.page-manajemen-akun table.dataTable thead th.sorting::after,
-.page-manajemen-akun table.dataTable thead th.sorting_asc::after,
-.page-manajemen-akun table.dataTable thead th.sorting_desc::after {
-    color: #94a3b8;
-    opacity: 1;
-}
-
-.page-manajemen-akun table.dataTable tbody td {
-    padding: 12px 14px;
-    vertical-align: middle;
-    white-space: nowrap;
-}
-
-.page-manajemen-akun table.dataTable tbody tr {
     border-bottom: 1px solid #e5e7eb;
+}
+
+.page-manajemen-akun .table tbody tr {
+    background: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.page-manajemen-akun .table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.page-manajemen-akun .table tbody td {
+    padding: 14px;
+    font-size: 14px;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+/* DataTables */
+
+.page-manajemen-akun .dataTables_wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.page-manajemen-akun .dataTables_filter {
+    margin-bottom: 16px;
+}
+
+.page-manajemen-akun .dataTables_filter input {
+    margin-left: 8px;
+    border-radius: 8px;
+    padding: 6px 10px;
+    border: 1px solid #d1d5db;
 }
 
 .page-manajemen-akun .dataTables_paginate .paginate_button {
     border-radius: 6px !important;
-    padding: 4px 10px !important;
 }
 
 .page-manajemen-akun .dataTables_paginate .paginate_button.current {
     background: #2563eb !important;
-    color: #fff !important;
+    color: #ffffff !important;
     border: none !important;
 }
 
-.page-manajemen-akun .dataTables_info {
-    font-size: 13px;
-    color: #374151;
-}
-
-.page-manajemen-akun .dataTables_filter {
-    margin-bottom: 12px;
-}
-
-.page-manajemen-akun .dataTables_filter input {
-    border-radius: 6px;
-    border: 1px solid #d1d5db;
-    padding: 6px 10px;
-}
-
-.page-manajemen-akun .badge {
-    font-size: 12px;
-    padding: 4px 10px;
-    border-radius: 999px;
-    font-weight: 600;
-}
+/* Responsive */
 
 @media (max-width: 768px) {
 
-    .page-manajemen-akun .dataTables_wrapper {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
+    .page-manajemen-akun .table {
+        min-width: 900px;
     }
 
-    .page-manajemen-akun table.dataTable {
-        min-width: 720px;
-    }
-
-    .page-manajemen-akun table.dataTable thead th {
+    .page-manajemen-akun .table thead th {
         font-size: 13px;
         padding: 10px 12px;
     }
 
-    .page-manajemen-akun table.dataTable tbody td {
+    .page-manajemen-akun .table tbody td {
         font-size: 13px;
         padding: 10px 12px;
     }
 
-    .page-manajemen-akun table.dataTable tbody td:last-child {
+    .page-manajemen-akun .table tbody td:last-child {
         text-align: center;
-    }
-
-    .page-manajemen-akun table.dataTable tbody td:last-child .btn {
-        padding: 4px 8px;
-        font-size: 12px;
     }
 }
