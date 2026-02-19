@@ -28,9 +28,7 @@
     </main>
 
     {{-- Auth Footer --}}
-    <footer class="auth-footer">
-        © 2025 MDA Partner. All rights reserved.
-    </footer>
+    @include('partials.footer-auth')
 
     {{-- Scripts --}}
     <script>
