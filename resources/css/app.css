@@ -4,11 +4,6 @@
 @import './dashboard/dashboard.css';
 @import './public/public.css';
 
-/* Tailwind*/
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 /* Global Custom */
 body {
     font-family: var(--font-main);
