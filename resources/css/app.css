@@ -1,6 +1,8 @@
 /* Imports */
-@import "./base/variables.css";
-@import "./dashboard/dashboard.css";
+@import './auth/login.css';
+@import './auth/forgot-password.css';
+@import './dashboard/dashboard.css';
+@import './public/public.css';
 
 /* Tailwind*/
 @tailwind base;
