@@ -13,7 +13,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
     {{-- Dashboard Styles --}}
-    @vite(['resources/css/dashboard/dashboard.css'])
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     {{-- Page Styles --}}
     @stack('styles')

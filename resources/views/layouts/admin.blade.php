@@ -14,7 +14,7 @@
     <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
 
     {{-- Dashboard Style --}}
-    @vite(['resources/css/dashboard/dashboard.css'])
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     @stack('styles')
 </head>

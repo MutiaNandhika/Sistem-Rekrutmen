@@ -14,7 +14,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
     {{-- Public Styles --}}
-    @vite(['resources/css/public/public.css'])
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
 </head>
 
 <body>

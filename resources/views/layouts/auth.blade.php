@@ -14,10 +14,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
     {{-- App Base --}}
-    @vite(['resources/css/app.css'])
-
-    {{-- Auth Styles --}}
-    @vite(['resources/css/auth/login.css'])
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     {{-- Auth CSS --}}
     @stack('auth-css')
