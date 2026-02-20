@@ -13,9 +13,15 @@ class LowonganController extends Controller
 {
     public function index(Request $request)
     {
+        $today = now()->toDateString();
+
         Lowongan::where('status', 'aktif')
             ->whereNotNull('tanggal_selesai')
-            ->whereDate('tanggal_selesai', '<', now())
+            ->whereDate('tanggal_selesai', '<', $today)
+            ->update(['status' => 'nonaktif']);
+
+        Lowongan::where('status', 'aktif')
+            ->whereDate('tanggal_mulai', '>', $today)
             ->update(['status' => 'nonaktif']);
 
         $userId = auth()->id(); 
@@ -39,14 +45,14 @@ class LowonganController extends Controller
         }
 
         $lowongans = $query
-        ->orderBy('created_at','desc')
-        ->paginate(6);
+            ->orderBy('created_at','desc')
+            ->paginate(6);
 
         $hrds = User::where('role','hrd')->orderBy('name')->get();
 
         if ($request->ajax()) {
             return view('hrd.lowongan.partials.list', compact('lowongans','userId'))->render();
-            }
+        }
 
         return view('hrd.lowongan.index', compact('lowongans','hrds','userId'));
     }
