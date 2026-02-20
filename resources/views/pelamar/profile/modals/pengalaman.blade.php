@@ -14,7 +14,9 @@
                 <input type="hidden" id="experienceEditId">
 
                 <div class="mb-3">
-                    <label class="form-label fw-semibold">Posisi / Jabatan</label>
+                    <label class="form-label fw-semibold">
+                        Posisi / Jabatan <span class="text-danger">*</span>
+                    </label>
                     <input
                         type="text"
                         class="form-control"
@@ -22,7 +24,9 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label fw-semibold">Nama Perusahaan</label>
+                    <label class="form-label fw-semibold">
+                        Nama Perusahaan <span class="text-danger">*</span>
+                    </label>
                     <input
                         type="text"
                         class="form-control"
@@ -31,7 +35,9 @@
 
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <label class="form-label fw-semibold">Mulai</label>
+                        <label class="form-label fw-semibold">
+                            Mulai <span class="text-danger">*</span>
+                        </label>
                         <input
                             type="month"
                             class="form-control"
