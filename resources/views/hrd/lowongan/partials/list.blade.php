@@ -115,6 +115,8 @@
     </div>
     @endforelse
 
-<div class="mt-4">
-    {{ $lowongans->links() }}
-</div>
+@if ($lowongans->hasPages())
+    <div class="mt-4">
+        {{ $lowongans->withQueryString()->links() }}
+    </div>
+@endif
