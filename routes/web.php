@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Models\Application;
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AccountSettingsController;
@@ -270,3 +271,31 @@ Route::get('/log-test', function () {
     Log::info('INI LOG TEST BARU DARI /log-test');
     return 'OK';
 });
+
+Route::middleware(['auth', 'role:hrd'])
+    ->prefix('hrd')
+    ->name('hrd.')
+    ->group(function () {
+
+        Route::get('/status-lamaran', function () {
+            $applications = Application::with(['user','lowongan'])
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+            return view('hrd.status-lamaran', compact('applications'));
+        })->name('status.lamaran');
+
+        Route::put('/status-lamaran/{application}', function (Request $request, Application $application) {
+
+            $request->validate([
+                'status' => 'required|string'
+            ]);
+
+            $application->update([
+                'status' => $request->status
+            ]);
+
+            return back()->with('success', 'Status berhasil diubah.');
+        })->name('status.update');
+
+    });
