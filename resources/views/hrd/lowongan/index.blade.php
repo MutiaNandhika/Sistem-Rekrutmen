@@ -161,23 +161,45 @@ function loadLowongan(url = null) {
         }
     })
     .then(res => {
-        if (!res.ok) throw new Error('Gagal fetch');
+        if (!res.ok) {
+            console.error("HTTP ERROR:", res.status, res.statusText);
+            throw new Error('Gagal fetch');
+        }
         return res.text();
     })
     .then(html => {
 
-        document.querySelector('.lowongan-list').innerHTML = html;
+        console.log("HTML loaded:", html);
+
+        const container = document.querySelector('.lowongan-list');
+
+        if (!container) {
+            throw new Error("Container .lowongan-list tidak ditemukan");
+        }
+
+        container.innerHTML = html;
 
         document.querySelectorAll('.lowongan-card')
-            .forEach(card => renderDropdown(card));
+            .forEach(card => {
+                try {
+                    renderDropdown(card);
+                } catch (e) {
+                    console.error("Dropdown error:", e);
+                }
+            });
 
-        updateCounters();
+        try {
+            updateCounters();
+        } catch (e) {
+            console.error("Counter error:", e);
+        }
 
-        // update URL tanpa reload
-        window.history.pushState({}, '', fetchUrl);
+        // sementara comment pushState untuk debugging
+        // window.history.pushState({}, '', fetchUrl);
+
     })
     .catch(err => {
-        console.error(err);
+        console.error("ERROR DETAIL:", err);
         alert('Gagal memuat data');
     });
 }

@@ -2,7 +2,7 @@
     <div class="lowongan-card {{ $lowongan->status === 'aktif' ? 'active' : '' }}"
      data-id="{{ $lowongan->id }}"
      data-status="{{ $lowongan->status }}"
-     data-updated="{{ $lowongan->updated_at }}"
+     data-updated="{{ optional($lowongan->updated_at)->format('c') }}"
      data-expired="{{ $lowongan->isExpired() ? 'true' : 'false' }}">
 
         {{-- HEADER --}}
