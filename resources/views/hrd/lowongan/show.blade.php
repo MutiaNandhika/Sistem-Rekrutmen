@@ -30,7 +30,7 @@
 
         <div class="row mb-3">
             <div class="col-md-4 text-muted">Bidang Kerja</div>
-            <div class="col-md-8">{{ $lowongan->bidang_kerja }}</div>
+            <div class="col-md-8">{{ $lowongan->bidangKerja->nama ?? '-' }}</div>
         </div>
 
         <div class="row mb-3">
