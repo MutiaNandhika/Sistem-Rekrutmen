@@ -139,6 +139,7 @@
 
 document.addEventListener('DOMContentLoaded', function () {
 
+let controller = null;
 const searchInput = document.querySelector('input[name="search"]');
 const picSelect = document.querySelector('select[name="pic"]');
 let debounceTimer;
@@ -153,9 +154,16 @@ function loadLowongan(url = null) {
         ? url
         : `/hrd/lowongan?search=${encodeURIComponent(search)}&pic=${encodeURIComponent(pic)}`;
 
+    if (controller) {
+        controller.abort();
+    }
+
+    controller = new AbortController();
+
     fetch(fetchUrl, {
         headers: { 'X-Requested-With': 'XMLHttpRequest' },
-        cache: "no-store"
+        cache: "no-store",
+        signal: controller.signal
     })
     .then(res => res.text())
     .then(html => {
@@ -166,22 +174,16 @@ function loadLowongan(url = null) {
         container.innerHTML = html;
 
         container.querySelectorAll('.lowongan-card')
-            .forEach(card => {
-                try {
-                    renderDropdown(card);
-                } catch(e) {
-                    console.error("Dropdown error:", e);
-                }
-            });
+            .forEach(card => renderDropdown(card));
 
-        try {
-            updateCounters();
-        } catch(e) {
-            console.error("Counter error:", e);
-        }
-
+        updateCounters();
     })
     .catch(err => {
+        if (err.name === 'AbortError') {
+            // Request dibatalkan → normal
+            return;
+        }
+
         console.error("ERROR DETAIL:", err);
         alert('Gagal memuat data');
     });
