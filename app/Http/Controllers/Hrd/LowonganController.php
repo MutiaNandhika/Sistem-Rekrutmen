@@ -51,7 +51,10 @@ class LowonganController extends Controller
         $hrds = User::where('role','hrd')->orderBy('name')->get();
 
         if ($request->ajax()) {
-            return view('hrd.lowongan.partials.list', compact('lowongans','userId'))->render();
+            return view('hrd.lowongan.partials.list', [
+                'lowongans' => $lowongans,
+                'userId' => auth()->id(),
+            ])->render();
         }
 
         return view('hrd.lowongan.index', compact('lowongans','hrds','userId'));

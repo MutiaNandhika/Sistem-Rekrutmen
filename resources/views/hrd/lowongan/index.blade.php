@@ -342,11 +342,17 @@ function updateCounters() {
         if (status === 'arsip') arsip++;
     });
 
-    document.querySelector('[data-count="total"]').textContent = total;
-    document.querySelector('[data-count="aktif"]').textContent = aktif;
-    document.querySelector('[data-count="nonaktif"]').textContent = nonaktif;
-    document.querySelector('[data-count="draft"]').textContent = draft;
-    document.querySelector('[data-count="arsip"]').textContent = arsip;
+    const totalEl = document.querySelector('[data-count="total"]');
+    const aktifEl = document.querySelector('[data-count="aktif"]');
+    const nonaktifEl = document.querySelector('[data-count="nonaktif"]');
+    const draftEl = document.querySelector('[data-count="draft"]');
+    const arsipEl = document.querySelector('[data-count="arsip"]');
+
+    if (totalEl) totalEl.textContent = total;
+    if (aktifEl) aktifEl.textContent = aktif;
+    if (nonaktifEl) nonaktifEl.textContent = nonaktif;
+    if (draftEl) draftEl.textContent = draft;
+    if (arsipEl) arsipEl.textContent = arsip;
 }
 
 /* ================= DROPDOWN ACTION ================= */
@@ -510,6 +516,7 @@ function updateStatus(card, status) {
         body: JSON.stringify({ status })
     })
     .then(res => {
+        console.log("STATUS:", res.status);
         if (!res.ok) throw new Error('Gagal update status');
         return res.json();
     })
