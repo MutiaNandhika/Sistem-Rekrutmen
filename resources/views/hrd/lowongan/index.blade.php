@@ -147,32 +147,36 @@ function loadLowongan(url = null) {
     const search = searchInput?.value || '';
     const pic = picSelect?.value || '';
 
-    let fetchUrl;
-
-    if (url) {
-        fetchUrl = url;
-    } else {
-        fetchUrl = `/hrd/lowongan?search=${encodeURIComponent(search)}&pic=${encodeURIComponent(pic)}`;
-    }
+    let fetchUrl = url
+        ? url
+        : `/hrd/lowongan?search=${encodeURIComponent(search)}&pic=${encodeURIComponent(pic)}`;
 
     fetch(fetchUrl, {
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest'
-        },
-        cache: "no-store" // penting supaya tidak 304
+        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+        cache: "no-store"
     })
     .then(res => res.text())
     .then(html => {
 
-        console.log("HTML loaded:", html);
-
         const container = document.querySelector('.lowongan-list');
+        if (!container) return;
+
         container.innerHTML = html;
 
-        document.querySelectorAll('.lowongan-card')
-            .forEach(card => renderDropdown(card));
+        container.querySelectorAll('.lowongan-card')
+            .forEach(card => {
+                try {
+                    renderDropdown(card);
+                } catch(e) {
+                    console.error("Dropdown error:", e);
+                }
+            });
 
-        updateCounters();
+        try {
+            updateCounters();
+        } catch(e) {
+            console.error("Counter error:", e);
+        }
 
     })
     .catch(err => {
@@ -296,20 +300,27 @@ document.querySelectorAll('.lowongan-tabs .nav-link').forEach(tab => {
 });
 
 /* ================= SORT ================= */
-document.getElementById('sortButton').addEventListener('click', function () {
-    const list = document.querySelector('.lowongan-list');
-    const cards = [...list.children];
-    const order = this.dataset.order;
+const sortBtn = document.getElementById('sortButton');
 
-    cards.sort((a,b) =>
-        order === 'desc'
-            ? new Date(b.dataset.updated) - new Date(a.dataset.updated)
-            : new Date(a.dataset.updated) - new Date(b.dataset.updated)
-    );
+if (sortBtn) {
+    sortBtn.addEventListener('click', function () {
 
-    cards.forEach(card => list.appendChild(card));
-    this.dataset.order = order === 'desc' ? 'asc' : 'desc';
-});
+        const list = document.querySelector('.lowongan-list');
+        if (!list) return;
+
+        const cards = [...list.querySelectorAll('.lowongan-card')];
+        const order = this.dataset.order;
+
+        cards.sort((a,b) =>
+            order === 'desc'
+                ? new Date(b.dataset.updated) - new Date(a.dataset.updated)
+                : new Date(a.dataset.updated) - new Date(b.dataset.updated)
+        );
+
+        cards.forEach(card => list.appendChild(card));
+        this.dataset.order = order === 'desc' ? 'asc' : 'desc';
+    });
+}
 
 /* ================= COUNTER ================= */
 function updateCounters() {
