@@ -137,6 +137,8 @@
 @push('scripts')
 <script>
 
+document.addEventListener('DOMContentLoaded', function () {
+
 const searchInput = document.querySelector('input[name="search"]');
 const picSelect = document.querySelector('select[name="pic"]');
 let debounceTimer;
@@ -559,5 +561,7 @@ function updateStatus(card, status) {
 document.querySelectorAll('.lowongan-card').forEach(card => {
     renderDropdown(card);
 });
+
+})
 </script>
 @endpush
