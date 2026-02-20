@@ -158,44 +158,21 @@ function loadLowongan(url = null) {
     fetch(fetchUrl, {
         headers: {
             'X-Requested-With': 'XMLHttpRequest'
-        }
+        },
+        cache: "no-store" // penting supaya tidak 304
     })
-    .then(res => {
-        if (!res.ok) {
-            console.error("HTTP ERROR:", res.status, res.statusText);
-            throw new Error('Gagal fetch');
-        }
-        return res.text();
-    })
+    .then(res => res.text())
     .then(html => {
 
         console.log("HTML loaded:", html);
 
         const container = document.querySelector('.lowongan-list');
-
-        if (!container) {
-            throw new Error("Container .lowongan-list tidak ditemukan");
-        }
-
         container.innerHTML = html;
 
         document.querySelectorAll('.lowongan-card')
-            .forEach(card => {
-                try {
-                    renderDropdown(card);
-                } catch (e) {
-                    console.error("Dropdown error:", e);
-                }
-            });
+            .forEach(card => renderDropdown(card));
 
-        try {
-            updateCounters();
-        } catch (e) {
-            console.error("Counter error:", e);
-        }
-
-        // sementara comment pushState untuk debugging
-        // window.history.pushState({}, '', fetchUrl);
+        updateCounters();
 
     })
     .catch(err => {
