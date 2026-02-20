@@ -1,5 +1,4 @@
 import './bootstrap';
-import './profile/index';
 
 // Bootstrap CSS
 import 'bootstrap/dist/css/bootstrap.min.css';
