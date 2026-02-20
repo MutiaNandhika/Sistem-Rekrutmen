@@ -41,7 +41,7 @@
             <i class="bi bi-calendar-x"></i>
             Ditutup pada:
             <strong>
-                {{ \Carbon\Carbon::parse($lowongan->tanggal_selesai)->translatedFormat('d M Y') }}
+                {{ $lowongan->tanggal_selesai?->translatedFormat('d M Y') ?? '-' }}
             </strong>
         </small>
 
@@ -51,7 +51,9 @@
             <span class="badge 
                     {{ $lowongan->
                 hrd_id === $userId ? 'bg-success' : 'bg-secondary' }}">
-                    {{ $lowongan->hrd_id === $userId ? 'Saya' : $lowongan->hrd->name }}
+                    {{ $lowongan->hrd_id === $userId 
+                        ? 'Saya' 
+                        : optional($lowongan->hrd)->name ?? '-' }}
             </span>
         </small>
 
