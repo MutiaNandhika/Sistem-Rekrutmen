@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Carbon\Carbon;
 
 class Lowongan extends Model
 {
@@ -33,6 +32,12 @@ class Lowongan extends Model
         'jumlah_diterima',
     ];
 
+    protected $casts = [
+        'tanggal_mulai'   => 'date',
+        'tanggal_selesai' => 'date',
+        'tanpa_batas_usia' => 'boolean',
+    ];
+
     public function skills()
     {
         return $this->belongsToMany(
@@ -53,17 +58,15 @@ class Lowongan extends Model
         return $this->belongsTo(BidangKerja::class);
     }
 
+    public function applications()
+    {
+        return $this->hasMany(\App\Models\Application::class);
+    }
+
     public function isExpired()
     {
         if (!$this->tanggal_selesai) return false;
 
-        return Carbon::today()->gt(
-            Carbon::parse($this->tanggal_selesai)
-        );
-    }
-
-    public function applications()
-    {
-        return $this->hasMany(\App\Models\Application::class);
+        return $this->tanggal_selesai->isPast();
     }
 }
