@@ -227,13 +227,25 @@ class LowonganController extends Controller
             'status' => 'required|in:draft,aktif,nonaktif,arsip'
         ]);
 
+        $today = now()->toDateString();
+
         if (
             $request->status === 'aktif' &&
-            $lowongan->isExpired()
+            $lowongan->tanggal_mulai > $today
         ) {
             return response()->json([
                 'success' => false,
-                'message' => 'Lowongan sudah melewati batas pendaftaran. Silakan perpanjang tanggal terlebih dahulu.'
+                'message' => 'Lowongan belum memasuki periode pendaftaran.'
+            ], 422);
+        }
+
+        if (
+            $request->status === 'aktif' &&
+            $lowongan->tanggal_selesai < $today
+        ) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Lowongan sudah melewati batas pendaftaran.'
             ], 422);
         }
 
