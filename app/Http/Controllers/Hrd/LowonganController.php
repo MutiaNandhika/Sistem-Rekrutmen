@@ -70,10 +70,12 @@ class LowonganController extends Controller
     {
         $skills = Skill::orderBy('nama_skill')->get();
         $bidangKerja = BidangKerja::orderBy('nama')->get();
+        $lowongan = null;
 
         return view('hrd.lowongan.create', compact(
             'skills',
-            'bidangKerja'
+            'bidangKerja',
+            'lowongan'
         ));
     }
 
