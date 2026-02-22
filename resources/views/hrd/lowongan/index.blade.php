@@ -571,6 +571,14 @@ document.querySelectorAll('.lowongan-card').forEach(card => {
     renderDropdown(card);
 });
 
+/* ================= GLOBAL EXPORT ================= */
+window.deleteLowongan = deleteLowongan;
+window.publishLowongan = publishLowongan;
+window.deactivateLowongan = deactivateLowongan;
+window.activateLowongan = activateLowongan;
+window.archiveLowongan = archiveLowongan;
+window.restoreLowongan = restoreLowongan;
+
 })
 </script>
 @endpush

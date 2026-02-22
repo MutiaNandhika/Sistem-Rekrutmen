@@ -24,6 +24,11 @@ class LowonganController extends Controller
             ->whereDate('tanggal_mulai', '>', $today)
             ->update(['status' => 'nonaktif']);
 
+        Lowongan::where('status', 'nonaktif')
+            ->whereDate('tanggal_mulai', '<=', $today)
+            ->whereDate('tanggal_selesai', '>=', $today)
+            ->update(['status' => 'aktif']);
+
         $userId = auth()->id(); 
 
         $query = Lowongan::with(['hrd','bidangKerja']);
