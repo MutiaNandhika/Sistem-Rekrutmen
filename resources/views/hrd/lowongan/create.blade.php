@@ -128,7 +128,7 @@
                         type="date"
                         name="tanggal_mulai"
                         class="form-control"
-                        value="{{ old('tanggal_mulai', $lowongan->tanggal_mulai ?? '') }}"
+                        value="{{ old('tanggal_mulai', $lowongan->tanggal_mulai?->format('Y-m-d')) }}"
                         required>
                 </div>
 
@@ -140,7 +140,7 @@
                         type="date"
                         name="tanggal_selesai"
                         class="form-control"
-                        value="{{ old('tanggal_selesai', $lowongan->tanggal_selesai ?? '') }}"
+                        value="{{ old('tanggal_selesai', $lowongan->tanggal_selesai?->format('Y-m-d')) }}"
                         required>
                 </div>
             </div>
