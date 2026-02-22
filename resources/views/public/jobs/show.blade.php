@@ -151,7 +151,9 @@
                 <ul class="job-list">
                     <li>{{ ucfirst($lowongan->sistem_kerja) }}</li>
                     <li>{{ $lowongan->pendidikan_minimal }}</li>
-                    @if(!$lowongan->tanpa_batas_usia)
+                    @if($lowongan->tanpa_batas_usia)
+                        <li>Tidak ada batas usia</li>
+                    @else
                         <li>Usia {{ $lowongan->usia_min }} – {{ $lowongan->usia_max }} tahun</li>
                     @endif
                     <li>
