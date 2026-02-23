@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\Application;
 
+use Illuminate\Support\Facades\Storage;
+
 use Illuminate\Support\Facades\Response;
 
 use App\Http\Controllers\ProfileController;
@@ -304,11 +306,10 @@ Route::middleware(['auth', 'role:hrd'])
 
 Route::get('/avatar/{filename}', function ($filename) {
 
-    $path = storage_path('app/public/avatars/' . $filename);
-
-    if (!file_exists($path)) {
+    if (!Storage::disk('public')->exists('avatars/'.$filename)) {
         abort(404);
     }
 
-    return response()->file($path);
-});
+    return Storage::disk('public')->response('avatars/'.$filename);
+
+})->where('filename', '.*');
