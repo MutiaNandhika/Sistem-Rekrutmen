@@ -73,7 +73,10 @@
                         @if ($cert->file_bukti)
                             <div class="mt-1">
                                 <a
-                                    href="{{ Storage::url ($cert->file_bukti) }}"
+                                    href="{{ Storage::disk('s3')->temporaryUrl(
+                                        $cert->file_bukti,
+                                        now()->addMinutes(60)
+                                    ) }}"
                                     target="_blank"
                                     class="text-primary small fw-semibold">
                                     <i class="bi bi-paperclip me-1"></i>

@@ -23,7 +23,10 @@
 
     @if ($user->pelamarResume)
         <div class="d-flex align-items-center justify-content-between">
-            <a href="{{ Storage::url ($user->pelamarResume->file_path) }}"
+            <a href="{{ Storage::disk('s3')->temporaryUrl(
+                    $user->pelamarResume->file_path,
+                    now()->addMinutes(60)
+                ) }}"
             target="_blank"
             class="text-primary fw-semibold"
             id="resumeLink">

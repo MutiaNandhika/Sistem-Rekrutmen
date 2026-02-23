@@ -16,7 +16,7 @@
 @php
     use Illuminate\Support\Facades\Storage;
     use Carbon\Carbon;
-    
+
     function bulan($angka) {
         return Carbon::create()->month((int)$angka)->translatedFormat('F');
     }
@@ -59,7 +59,7 @@
         <div class="card-body d-flex gap-4">
             @if($application->snap_photo)
                 <img
-                    src="{{ Storage::url($application->snap_photo) }}"
+                    src="{{ Storage::disk('s3')->temporaryUrl($application->snap_photo, now()->addMinutes(60)) }}"
                     alt="Foto Kandidat"
                     class="rounded-circle border"
                     width="72"
@@ -122,7 +122,7 @@
 
                 @if(!empty($exp['file_bukti']))
                     <div class="mt-2">
-                        <a href="{{ Storage::url($exp['file_bukti']) }}"
+                        <a href="{{ Storage::disk('s3')->temporaryUrl($exp['file_bukti'], now()->addMinutes(60)) }}"
                         target="_blank"
                         class="btn btn-outline-primary btn-sm">
                             <i class="bi bi-paperclip"></i> Lihat File
@@ -158,7 +158,7 @@
 
                 @if(!empty($edu['file_bukti']))
                     <div class="mt-2">
-                        <a href="{{ Storage::url($edu['file_bukti']) }}"
+                        <a href="{{ Storage::disk('s3')->temporaryUrl($edu['file_bukti'], now()->addMinutes(60)) }}"
                         target="_blank"
                         class="btn btn-outline-primary btn-sm">
                             <i class="bi bi-file-earmark-text"></i> Lihat File
@@ -195,7 +195,7 @@
         <hr class="my-2">
 
     @if(!empty($application->snap_resume['file_path']))
-        <a href="{{ Storage::url($application->snap_resume['file_path']) }}"
+        <a href="{{ Storage::disk('s3')->temporaryUrl($application->snap_resume['file_path'], now()->addMinutes(60)) }}"
         target="_blank"
         class="btn btn-outline-primary btn-sm">
             <i class="bi bi-file-earmark-text"></i>
@@ -228,7 +228,7 @@
 
                 @if(!empty($ach['file_bukti']))
                     <div class="mt-2">
-                        <a href="{{ Storage::url($ach['file_bukti']) }}"
+                        <a href="{{ Storage::disk('s3')->temporaryUrl($ach['file_bukti'], now()->addMinutes(60)) }}"
                         target="_blank"
                         class="btn btn-outline-primary btn-sm">
                             <i class="bi bi-award"></i> Lihat File
@@ -263,7 +263,7 @@
 
                 @if(!empty($cert['file_bukti']))
                     <div class="mt-2">
-                        <a href="{{ Storage::url($cert['file_bukti']) }}"
+                        <a href="{{ Storage::disk('s3')->temporaryUrl($cert['file_bukti'], now()->addMinutes(60)) }}"
                         target="_blank"
                         class="btn btn-outline-primary btn-sm">
                             <i class="bi bi-patch-check"></i> Lihat File
@@ -298,7 +298,7 @@
 
                 @if(!empty($org['file_bukti']))
                     <div class="mt-2">
-                        <a href="{{ Storage::url($org['file_bukti']) }}"
+                        <a href="{{ Storage::disk('s3')->temporaryUrl($org['file_bukti'], now()->addMinutes(60)) }}"
                         target="_blank"
                         class="btn btn-outline-primary btn-sm">
                             <i class="bi bi-paperclip"></i> Lihat File
@@ -664,7 +664,7 @@
             <div class="modal-body text-center p-0">
 
                 <img
-                    src="{{ Storage::url($application->snap_photo) }}"
+                    src="{{ Storage::disk('s3')->temporaryUrl($application->snap_photo, now()->addMinutes(60)) }}"
                     class="img-fluid rounded shadow"
                     alt="Preview Foto">
 
