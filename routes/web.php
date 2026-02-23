@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\Application;
 
+use App\Http\Controllers\AvatarController;
 use Illuminate\Support\Facades\Storage;
 
 use Illuminate\Support\Facades\Response;
@@ -304,12 +305,5 @@ Route::middleware(['auth', 'role:hrd'])
 
     });
 
-Route::get('/avatar/{filename}', function ($filename) {
-
-    if (!Storage::disk('public')->exists('avatars/'.$filename)) {
-        abort(404);
-    }
-
-    return Storage::disk('public')->response('avatars/'.$filename);
-
-})->where('filename', '.*');
+Route::get('/avatar/{filename}', [AvatarController::class, 'show'])
+    ->where('filename', '.*');
