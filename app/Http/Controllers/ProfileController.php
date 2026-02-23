@@ -96,8 +96,8 @@ class ProfileController extends Controller
         return response()->json([
             'message'   => 'Data diri berhasil disimpan',
             'photo_url' => $photoPath
-                ? asset('storage/' . $photoPath)
-                : asset('images/default-avatar.png'),
+            ? url('/avatar/' . basename($photoPath))
+            : asset('images/default-avatar.png'),
         ]);
     }
 

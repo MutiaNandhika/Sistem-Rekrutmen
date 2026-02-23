@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\Application;
 
+use Illuminate\Support\Facades\Response;
+
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AccountSettingsController;
 use App\Http\Controllers\CvController;
@@ -299,3 +301,14 @@ Route::middleware(['auth', 'role:hrd'])
         })->name('status.update');
 
     });
+
+Route::get('/avatar/{filename}', function ($filename) {
+
+    $path = storage_path('app/public/avatars/' . $filename);
+
+    if (!file_exists($path)) {
+        abort(404);
+    }
+
+    return response()->file($path);
+});
