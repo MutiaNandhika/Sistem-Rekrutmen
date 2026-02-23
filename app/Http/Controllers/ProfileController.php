@@ -69,18 +69,19 @@ class ProfileController extends Controller
         $photoPath = $profile->photo;
 
         if ($request->remove_photo == 1) {
-            if ($photoPath && Storage::exists($photoPath)) {
-                Storage::delete($photoPath);
+            if ($photoPath && Storage::disk('public')->exists($photoPath)) {
+                Storage::disk('public')->delete($photoPath);
             }
             $photoPath = null;
         }
 
         if ($request->hasFile('photo')) {
+            if ($photoPath && Storage::disk('public')->exists($photoPath)) {
+                Storage::disk('public')->delete($photoPath);
+            }
 
             $photoPath = $request->file('photo')
-                ->storePublicly('avatars', 's3');
-
-            $profile->photo = $photoPath;
+                ->store('avatars', 'public');
         }
 
         $profile->update([
@@ -93,11 +94,11 @@ class ProfileController extends Controller
         ]);
 
         return response()->json([
-        'message'   => 'Data diri berhasil disimpan',
-        'photo_url' => $photoPath
-            ? file_url($photoPath)
-            : asset('images/default-avatar.png'),
-    ]);
+            'message'   => 'Data diri berhasil disimpan',
+            'photo_url' => $photoPath
+                ? asset('storage/' . $photoPath)
+                : asset('images/default-avatar.png'),
+        ]);
     }
 
     public function updateTentangSaya(Request $request)
@@ -143,7 +144,7 @@ class ProfileController extends Controller
         }
 
         $data['file_bukti'] = $request->file('file_bukti')
-            ->store('experience_files', 's3');
+            ->store('experience_files', 'public');
 
         PelamarExperience::create($data);
 
@@ -175,13 +176,12 @@ class ProfileController extends Controller
         }
 
         if ($request->hasFile('file_bukti')) {
-
-            if ($exp->file_bukti && Storage::disk('s3')->exists($exp->file_bukti)) {
-                Storage::disk('s3')->delete($exp->file_bukti);
+            if ($exp->file_bukti && Storage::disk('public')->exists($exp->file_bukti)) {
+                Storage::disk('public')->delete($exp->file_bukti);
             }
 
             $data['file_bukti'] = $request->file('file_bukti')
-                ->store('experience_files', 's3');
+                ->store('experience_files', 'public');
         }
 
         $exp->update($data);
@@ -197,8 +197,8 @@ class ProfileController extends Controller
             ->where('id', $id)
             ->firstOrFail();
 
-        if ($exp->file_bukti && Storage::disk('s3')->exists($exp->file_bukti)) {
-            Storage::disk('s3')->delete($exp->file_bukti);
+        if ($exp->file_bukti && Storage::disk('public')->exists($exp->file_bukti)) {
+            Storage::disk('public')->delete($exp->file_bukti);
         }
 
         $exp->delete();
@@ -226,7 +226,7 @@ class ProfileController extends Controller
 
         $data['user_id'] = Auth::id();
         $data['file_bukti'] = $request->file('file_bukti')
-            ->store('education_files', 's3');
+            ->store('education_files', 'public');
 
         PelamarEducation::create($data);
 
@@ -254,13 +254,12 @@ class ProfileController extends Controller
         ]);
 
         if ($request->hasFile('file_bukti')) {
-
-            if ($edu->file_bukti && Storage::disk('s3')->exists($edu->file_bukti)) {
-                Storage::disk('s3')->delete($edu->file_bukti);
+            if ($edu->file_bukti && Storage::disk('public')->exists($edu->file_bukti)) {
+                Storage::disk('public')->delete($edu->file_bukti);
             }
 
             $data['file_bukti'] = $request->file('file_bukti')
-                ->store('education_files', 's3');
+                ->store('education_files', 'public');
         }
 
         $edu->update($data);
@@ -276,8 +275,8 @@ class ProfileController extends Controller
             ->where('id', $id)
             ->firstOrFail();
 
-        if ($edu->file_bukti && Storage::disk('s3')->exists($edu->file_bukti)) {
-            Storage::disk('s3')->delete($edu->file_bukti);
+        if ($edu->file_bukti && Storage::disk('public')->exists($edu->file_bukti)) {
+            Storage::disk('public')->delete($edu->file_bukti);
         }
 
         $edu->delete();
@@ -342,11 +341,11 @@ class ProfileController extends Controller
 
         $old = PelamarResume::where('user_id', $userId)->first();
 
-        if ($old && $old->file_path && Storage::disk('s3')->exists($old->file_path)) {
-            Storage::disk('s3')->delete($old->file_path);
+        if ($old && $old->file_path && Storage::disk('public')->exists($old->file_path)) {
+            Storage::disk('public')->delete($old->file_path);
         }
 
-        $path = $file->store('resumes','s3');
+        $path = $file->store('resumes', 'public');
 
         $resume = PelamarResume::updateOrCreate(
             ['user_id' => $userId],
@@ -361,7 +360,7 @@ class ProfileController extends Controller
         return response()->json([
             'message'   => 'Resume berhasil diupload',
             'file_name' => $resume->file_name,
-            'url' => file_url($resume->file_path),
+            'url'       => asset('storage/' . $resume->file_path),
         ]);
     }
 
@@ -371,9 +370,9 @@ class ProfileController extends Controller
         $resume = PelamarResume::where('user_id', $userId)->first();
 
         if ($resume) {
-        if ($resume->file_path && Storage::disk('s3')->exists($resume->file_path)) {
-            Storage::disk('s3')->delete($resume->file_path);
-        }
+            if ($resume->file_path && Storage::disk('public')->exists($resume->file_path)) {
+                Storage::disk('public')->delete($resume->file_path);
+            }
 
             $resume->delete();
         }
@@ -397,7 +396,7 @@ class ProfileController extends Controller
 
         $data['user_id'] = Auth::id();
         $data['file_bukti'] = $request->file('file_bukti')
-            ->store('achievement_files','s3');
+            ->store('achievement_files', 'public');
 
         PelamarAchievement::create($data);
 
@@ -421,13 +420,12 @@ class ProfileController extends Controller
         ]);
 
         if ($request->hasFile('file_bukti')) {
-
-            if ($award->file_bukti && Storage::disk('s3')->exists($award->file_bukti)) {
-                Storage::disk('s3')->delete($award->file_bukti);
+            if ($award->file_bukti && Storage::disk('public')->exists($award->file_bukti)) {
+                Storage::disk('public')->delete($award->file_bukti);
             }
 
             $data['file_bukti'] = $request->file('file_bukti')
-                ->store('achievement_files', 's3');
+                ->store('achievement_files', 'public');
         }
 
         $award->update($data);
@@ -443,8 +441,8 @@ class ProfileController extends Controller
             ->where('id', $id)
             ->firstOrFail();
 
-        if ($award->file_bukti && Storage::disk('s3')->exists($award->file_bukti)) {
-            Storage::disk('s3')->delete($award->file_bukti);
+        if ($award->file_bukti && Storage::disk('public')->exists($award->file_bukti)) {
+            Storage::disk('public')->delete($award->file_bukti);
         }
 
         $award->delete();
@@ -479,7 +477,7 @@ class ProfileController extends Controller
         }
 
         $data['file_bukti'] = $request->file('file_bukti')
-            ->store('certificate_files','s3');
+            ->store('certificate_files', 'public');
 
         PelamarCertificate::create($data);
 
@@ -514,14 +512,14 @@ class ProfileController extends Controller
         }
 
         if ($request->hasFile('file_bukti')) {
-
-            if ($cert->file_bukti && Storage::disk('s3')->exists($cert->file_bukti)) {
-                Storage::disk('s3')->delete($cert->file_bukti);
+            if ($cert->file_bukti && Storage::disk('public')->exists($cert->file_bukti)) {
+                Storage::disk('public')->delete($cert->file_bukti);
             }
 
             $data['file_bukti'] = $request->file('file_bukti')
-                ->store('certificate_files', 's3');
+                ->store('certificate_files', 'public');
         }
+
         $cert->update($data);
 
         return response()->json([
@@ -569,7 +567,7 @@ class ProfileController extends Controller
         }
 
         $data['file_bukti'] = $request->file('file_bukti')
-            ->store('organization_files','s3');
+            ->store('organization_files', 'public');
 
         PelamarOrganization::create($data);
 
@@ -605,12 +603,12 @@ class ProfileController extends Controller
 
         if ($request->hasFile('file_bukti')) {
 
-            if ($org->file_bukti && Storage::disk('s3')->exists($org->file_bukti)) {
-                Storage::disk('s3')->delete($org->file_bukti);
+            if ($org->file_bukti && Storage::disk('public')->exists($org->file_bukti)) {
+                Storage::disk('public')->delete($org->file_bukti);
             }
 
             $data['file_bukti'] = $request->file('file_bukti')
-                ->store('organization_files', 's3');
+                ->store('organization_files', 'public');
         }
 
         $org->update($data);
@@ -626,8 +624,8 @@ class ProfileController extends Controller
             ->where('id', $id)
             ->firstOrFail();
 
-        if ($org->file_bukti && Storage::disk('s3')->exists($org->file_bukti)) {
-            Storage::disk('s3')->delete($org->file_bukti);
+        if ($org->file_bukti && Storage::disk('public')->exists($org->file_bukti)) {
+            Storage::disk('public')->delete($org->file_bukti);
         }
 
         $org->delete();

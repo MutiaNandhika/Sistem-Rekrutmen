@@ -1,5 +1,5 @@
-@php use Illuminate\Support\Facades\Storage; @endphp
 {{-- Profile Page --}}
+
 <div class="container py-5 profile-page">
 
     <div class="profile-card mb-5">
@@ -10,8 +10,8 @@
                 <img
                     id="profileAvatar"
                     src="{{ $user->pelamarProfile?->photo
-                    ? Storage::disk('s3')->url($user->pelamarProfile->photo)
-                    : asset('images/default-avatar.png') }}"
+                        ? asset('storage/'.$user->pelamarProfile->photo)
+                        : asset('images/default-avatar.png') }}"
                     class="rounded-circle"
                     width="96"
                     height="96"

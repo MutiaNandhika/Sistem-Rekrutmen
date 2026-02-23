@@ -7,9 +7,6 @@ use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\Application;
 
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Response;
-
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AccountSettingsController;
 use App\Http\Controllers\CvController;
@@ -302,15 +299,3 @@ Route::middleware(['auth', 'role:hrd'])
         })->name('status.update');
 
     });
-
-Route::get('/file/{path}', function ($path) {
-
-    $disk = Storage::disk('s3');
-
-    if (!$disk->exists($path)) {
-        abort(404);
-    }
-
-    return $disk->response($path);
-
-})->where('path', '.*');
