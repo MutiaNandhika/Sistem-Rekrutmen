@@ -1,7 +1,3 @@
-@php
-    use Illuminate\Support\Facades\Storage;
-@endphp
-
 {{-- Pendidikan --}}
 <div class="cv-section">
 
@@ -60,10 +56,7 @@
 
                         @if ($edu->file_bukti)
                             <a
-                                href="{{ Storage::disk('s3')->temporaryUrl(
-                                    $edu->file_bukti,
-                                    now()->addMinutes(60)
-                                ) }}"
+                                href="{{ file_url($edu->file_bukti) }}"
                                 target="_blank"
                                 class="small fw-semibold text-primary">
                                 <i class="bi bi-paperclip"></i> Lihat File

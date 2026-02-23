@@ -1,6 +1,3 @@
-@php
-    use Illuminate\Support\Facades\Storage;
-@endphp
 {{-- Resume --}}
 <div class="cv-section mb-5">
 
@@ -23,10 +20,7 @@
 
     @if ($user->pelamarResume)
         <div class="d-flex align-items-center justify-content-between">
-            <a href="{{ Storage::disk('s3')->temporaryUrl(
-                    $user->pelamarResume->file_path,
-                    now()->addMinutes(60)
-                ) }}"
+            <a href="{{ file_url($user->pelamarResume->file_path) }}"
             target="_blank"
             class="text-primary fw-semibold"
             id="resumeLink">

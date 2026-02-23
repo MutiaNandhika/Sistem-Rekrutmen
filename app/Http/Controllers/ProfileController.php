@@ -95,7 +95,7 @@ class ProfileController extends Controller
         return response()->json([
         'message'   => 'Data diri berhasil disimpan',
         'photo_url' => $photoPath
-            ? Storage::disk('s3')->temporaryUrl($photoPath, now()->addMinutes(60))
+            ? file_url($photoPath)
             : asset('images/default-avatar.png'),
     ]);
     }
@@ -359,10 +359,7 @@ class ProfileController extends Controller
         return response()->json([
             'message'   => 'Resume berhasil diupload',
             'file_name' => $resume->file_name,
-            'url' => Storage::disk('s3')->temporaryUrl(
-                $resume->file_path,
-                now()->addMinutes(60)
-            ),
+            'url' => file_url($resume->file_path),
         ]);
     }
 

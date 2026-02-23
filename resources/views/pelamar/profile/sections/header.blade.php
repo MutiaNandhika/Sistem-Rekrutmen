@@ -1,6 +1,3 @@
-@php
-    use Illuminate\Support\Facades\Storage;
-@endphp
 {{-- Profile Page --}}
 <div class="container py-5 profile-page">
 
@@ -12,10 +9,7 @@
                 <img
                     id="profileAvatar"
                     src="{{ $user->pelamarProfile?->photo
-                        ? Storage::disk('s3')->temporaryUrl(
-                            $user->pelamarProfile->photo,
-                            now()->addMinutes(60)
-                        )
+                        ? file_url($user->pelamarProfile->photo)
                         : asset('images/default-avatar.png') }}"
                     class="rounded-circle"
                     width="96"

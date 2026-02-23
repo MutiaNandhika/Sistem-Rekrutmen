@@ -20,10 +20,7 @@
                         <img
                             id="photoPreview"
                             src="{{ $user->pelamarProfile?->photo
-                                ? Storage::disk('s3')->temporaryUrl(
-                                    $user->pelamarProfile->photo,
-                                    now()->addMinutes(60)
-                                )
+                                ? file_url($user->pelamarProfile->photo)
                                 : asset('images/default-avatar.png') }}"
                             class="rounded-circle mb-2"
                             width="96"
