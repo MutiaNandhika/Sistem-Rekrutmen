@@ -76,14 +76,11 @@ class ProfileController extends Controller
         }
 
         if ($request->hasFile('photo')) {
-            if ($photoPath && Storage::exists($photoPath)) {
-                Storage::delete($photoPath);
-            }
 
             $photoPath = $request->file('photo')
-                ->store('avatars', 's3');
+                ->storePublicly('avatars', 's3');
 
-            Storage::disk('s3')->setVisibility($photoPath, 'public');
+            $profile->photo = $photoPath;
         }
 
         $profile->update([
