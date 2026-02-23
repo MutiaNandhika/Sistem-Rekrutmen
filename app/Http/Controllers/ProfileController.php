@@ -81,7 +81,9 @@ class ProfileController extends Controller
             }
 
             $photoPath = $request->file('photo')
-                ->store('avatars');
+                ->store('avatars', 's3');
+
+            Storage::disk('s3')->setVisibility($photoPath, 'public');
         }
 
         $profile->update([
