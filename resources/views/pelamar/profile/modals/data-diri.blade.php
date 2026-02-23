@@ -20,8 +20,8 @@
                         <img
                             id="photoPreview"
                             src="{{ $user->pelamarProfile?->photo
-                                ? file_url($user->pelamarProfile->photo)
-                                : asset('images/default-avatar.png') }}"
+                            ? Storage::disk('s3')->url($user->pelamarProfile->photo)
+                            : asset('images/default-avatar.png') }}"
                             class="rounded-circle mb-2"
                             width="96"
                             height="96"

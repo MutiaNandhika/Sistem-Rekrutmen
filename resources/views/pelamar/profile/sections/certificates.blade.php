@@ -1,3 +1,4 @@
+@php use Illuminate\Support\Facades\Storage; @endphp
 {{-- Sertifikat --}}
 <div class="cv-section mb-5">
 
@@ -69,7 +70,7 @@
                         @if ($cert->file_bukti)
                             <div class="mt-1">
                                 <a
-                                    href="{{ file_url($cert->file_bukti) }}"
+                                    href="{{ Storage::disk('s3')->url($cert->file_bukti) }}"
                                     target="_blank"
                                     class="text-primary small fw-semibold">
                                     <i class="bi bi-paperclip me-1"></i>
