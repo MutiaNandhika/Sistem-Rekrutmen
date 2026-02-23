@@ -1,3 +1,6 @@
+@php
+    use Illuminate\Support\Facades\Storage;
+@endphp
 <div class="modal fade" id="modalDataDiri" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content border-0 rounded-4">
@@ -17,7 +20,7 @@
                         <img
                             id="photoPreview"
                             src="{{ $user->pelamarProfile?->photo
-                                    ? asset('storage/'.$user->pelamarProfile->photo)
+                                    ? Storage::url($user->pelamarProfile->photo)
                                     : asset('images/default-avatar.png') }}"
                             class="rounded-circle mb-2"
                             width="96"

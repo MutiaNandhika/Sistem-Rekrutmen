@@ -1,3 +1,7 @@
+@php
+    use Illuminate\Support\Facades\Storage;
+@endphp
+
 {{-- Pendidikan --}}
 <div class="cv-section">
 
@@ -56,7 +60,7 @@
 
                         @if ($edu->file_bukti)
                             <a
-                                href="{{ asset('storage/'.$edu->file_bukti) }}"
+                                href="{{ Storage::url ($edu->file_bukti) }}"
                                 target="_blank"
                                 class="small fw-semibold text-primary">
                                 <i class="bi bi-paperclip"></i> Lihat File
