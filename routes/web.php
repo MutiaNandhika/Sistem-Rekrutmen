@@ -41,6 +41,9 @@ Route::get('/lowongan/{lowongan}', [JobController::class, 'show'])->name('jobs.s
 
 Route::get('/tentang-kami', fn () => view('public.about'))->name('about');
 
+/* ===== FILE UPLOAD ===== */
+Route::get('/file-upload', [App\Http\Controllers\UploadController::class, 'create'])->name('file-upload.create');
+Route::post('/file-upload', [App\Http\Controllers\UploadController::class, 'store'])->name('file-upload.store');
 /* ================= REDIRECT LOGIN ================= */
 
 Route::get('/redirect-after-login', function (Request $request) {
