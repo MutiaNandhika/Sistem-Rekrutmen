@@ -7,12 +7,6 @@
 
     <h4 class="mb-4">Data Lamaran Pelamar (Edit Status Manual)</h4>
 
-    @if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
-
     <div class="table-responsive">
         <table class="table table-bordered align-middle">
 
@@ -21,7 +15,7 @@
                     <th>Nama Pelamar</th>
                     <th>Lowongan</th>
                     <th>Status</th>
-                    <th width="220">Ubah Status</th>
+                    <th width="280">Aksi</th>
                 </tr>
             </thead>
 
@@ -38,13 +32,14 @@
                     </td>
 
                     <td>
+                        {{-- FORM UPDATE STATUS --}}
                         <form method="POST"
                               action="{{ route('hrd.status.update', $a->id) }}">
                             @csrf
                             @method('PUT')
 
                             <select name="status"
-                                    class="form-select"
+                                    class="form-select mb-2"
                                     onchange="this.form.submit()">
 
                                 @foreach([
@@ -69,6 +64,20 @@
 
                             </select>
                         </form>
+
+                        {{-- FORM DELETE --}}
+                        <form method="POST"
+                              action="{{ route('hrd.status.destroy', $a->id) }}"
+                              class="d-inline form-delete">
+                            @csrf
+                            @method('DELETE')
+
+                            <button type="submit"
+                                    class="btn btn-danger btn-sm">
+                                <i class="bi bi-trash"></i> Hapus
+                            </button>
+                        </form>
+
                     </td>
                 </tr>
                 @endforeach
@@ -79,3 +88,37 @@
 
 </div>
 @endsection
+
+
+{{-- SWEETALERT DELETE CONFIRM --}}
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    document.querySelectorAll('.form-delete').forEach(function(form) {
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            Swal.fire({
+                title: 'Yakin ingin menghapus?',
+                text: "Data lamaran tidak dapat dikembalikan!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+
+        });
+
+    });
+
+});
+</script>
+@endpush

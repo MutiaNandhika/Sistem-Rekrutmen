@@ -301,4 +301,9 @@ Route::middleware(['auth', 'role:hrd'])
             return back()->with('success', 'Status berhasil diubah.');
         })->name('status.update');
 
+        Route::delete('/status-lamaran/{application}', function (Application $application) {
+            $application->delete();
+            return back()->with('success', 'Data lamaran berhasil dihapus.');
+        })->name('status.destroy');
+
     });
