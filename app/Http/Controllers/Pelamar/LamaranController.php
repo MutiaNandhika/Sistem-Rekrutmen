@@ -107,6 +107,7 @@ class LamaranController extends Controller
         $snap_certificates = $user->pelamarCertificates->map(function ($cert) {
             return [
                 'nama_sertifikat' => $cert->nama_sertifikat,
+                'organisasi_penerbit'  => $cert->organisasi_penerbit, 
                 'terbit' =>
                     Carbon::create()->month($cert->bulan_terbit)->translatedFormat('F')
                     .' '.$cert->tahun_terbit,
@@ -138,6 +139,7 @@ class LamaranController extends Controller
         $snap_achievements = $user->pelamarAchievements->map(function ($ach) {
             return [
                 'judul' => $ach->judul,
+                'penyelenggara' => $ach->penyelenggara, 
                 'tahun' => $ach->tahun,
                 'deskripsi' => $ach->deskripsi,
                 'file_bukti' => $ach->file_bukti,

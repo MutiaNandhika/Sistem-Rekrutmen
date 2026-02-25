@@ -38,6 +38,9 @@
                         <h6 class="fw-bold mb-1">
                             {{ $cert->nama_sertifikat }}
                         </h6>
+                        <div class="text-muted small mb-1">
+                            {{ $cert->organisasi_penerbit }}
+                        </div>
 
                         {{-- ================= TANGGAL ================= --}}
                         <div class="text-muted small">

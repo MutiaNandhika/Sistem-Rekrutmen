@@ -218,7 +218,11 @@
 
         @forelse ($application->snap_achievements ?? [] as $ach)
             <div class="mb-3">
-                <strong>{{ $ach['judul'] ?? '' }}</strong> – {{ $ach['tahun'] ?? '' }}
+                <strong>{{ $ach['judul'] ?? '' }}</strong><br>
+
+                <span class="text-muted small">
+                    {{ $ach['penyelenggara'] ?? '-' }} • {{ $ach['tahun'] ?? '-' }}
+                </span>
 
                 @if(!empty($ach['deskripsi']))
                     <p class="text-muted small mt-1">
@@ -250,6 +254,12 @@
             <div class="mb-3">
                 <strong>{{ $cert['nama_sertifikat'] ?? '' }}</strong><br>
 
+                @if(!empty($cert['organisasi_penerbit']))
+                    <div class="text-muted small mb-1">
+                        {{ $cert['organisasi_penerbit'] }}
+                    </div>
+                @endif
+
                 <span class="text-muted small">
                     Terbit: {{ $cert['terbit'] ?? '-' }} ·
                     Berlaku: {{ $cert['expired'] ?? 'Tidak ada batas waktu' }}
@@ -275,7 +285,7 @@
             <p class="text-muted">Tidak ada sertifikat.</p>
         @endforelse
     </div>
-
+    
     {{-- Organisasi --}}
     <div class="mb-4">
         <h6 class="fw-bold text-uppercase small">Organisasi & Relawan</h6>
