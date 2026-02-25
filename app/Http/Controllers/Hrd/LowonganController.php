@@ -29,9 +29,9 @@ class LowonganController extends Controller
             ->whereDate('tanggal_selesai', '>=', $today)
             ->update(['status' => 'aktif']);
 
-        $userId = auth()->id(); 
+        $userId = auth()->id();
 
-        $query = Lowongan::with(['hrd','bidangKerja']);
+        $query = Lowongan::with(['hrd', 'bidangKerja']);
 
         if ($request->pic) {
             $query->where('hrd_id', $request->pic);
@@ -40,29 +40,52 @@ class LowonganController extends Controller
         if ($request->search) {
             $search = $request->search;
 
-            $query->where(function($q) use ($search){
-                $q->where('nama_lowongan','like',"%$search%")
-                ->orWhere('lokasi','like',"%$search%")
-                ->orWhereHas('hrd', function($q2) use ($search){
-                        $q2->where('name','like',"%$search%");
-                });
+            $query->where(function ($q) use ($search) {
+                $q->where('nama_lowongan', 'like', "%$search%")
+                    ->orWhere('lokasi', 'like', "%$search%")
+                    ->orWhereHas('hrd', function ($q2) use ($search) {
+                    $q2->where('name', 'like', "%$search%");
+                }
+                );
             });
         }
 
-        $lowongans = $query
-            ->orderBy('created_at','desc')
-            ->paginate(6);
+        // Calculate accurate tab counts from the filtered base query
+        $baseQuery = clone $query;
+        $tabCounts = [
+            'total' => (clone $baseQuery)->where('status', '!=', 'arsip')->count(),
+            'aktif' => (clone $baseQuery)->where('status', 'aktif')->count(),
+            'nonaktif' => (clone $baseQuery)->where('status', 'nonaktif')->count(),
+            'draft' => (clone $baseQuery)->where('status', 'draft')->count(),
+            'arsip' => (clone $baseQuery)->where('status', 'arsip')->count(),
+        ];
 
-        $hrds = User::where('role','hrd')->orderBy('name')->get();
-
-        if ($request->ajax()) {
-            return view('hrd.lowongan.partials.list', [
-                'lowongans' => $lowongans,
-                'userId' => auth()->id(),
-            ])->render();
+        // Apply tab status filtering
+        $statusFilter = $request->get('status', 'all');
+        if ($statusFilter !== 'all') {
+            $query->where('status', $statusFilter);
+        }
+        else {
+            $query->where('status', '!=', 'arsip');
         }
 
-        return view('hrd.lowongan.index', compact('lowongans','hrds','userId'));
+        $lowongans = $query
+            ->orderBy('created_at', 'desc')
+            ->paginate(6);
+
+        $hrds = User::where('role', 'hrd')->orderBy('name')->get();
+
+        if ($request->ajax()) {
+            return response()->json([
+                'html' => view('hrd.lowongan.partials.list', [
+                    'lowongans' => $lowongans,
+                    'userId' => auth()->id(),
+                ])->render(),
+                'counts' => $tabCounts
+            ]);
+        }
+
+        return view('hrd.lowongan.index', compact('lowongans', 'hrds', 'userId', 'tabCounts', 'statusFilter'));
     }
 
     // create step 1
@@ -82,29 +105,29 @@ class LowonganController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'nama_lowongan'      => 'required|string',
-            'bidang_kerja_id'    => 'required|exists:bidang_kerja,id',
-            'tipe_kerja'         => 'required|string',
-            'sistem_kerja'       => 'required|string',
-            'lokasi'             => 'required|string',
-            'penempatan'         => 'nullable|string',
-            'gaji_min'           => 'nullable|numeric',
-            'gaji_max'           => 'nullable|numeric',
-            'jenis_kelamin'      => 'nullable|in:laki-laki,perempuan,semua',
-            'usia_min'           => 'nullable|numeric',
-            'usia_max'           => 'nullable|numeric',
+            'nama_lowongan' => 'required|string',
+            'bidang_kerja_id' => 'required|exists:bidang_kerja,id',
+            'tipe_kerja' => 'required|string',
+            'sistem_kerja' => 'required|string',
+            'lokasi' => 'required|string',
+            'penempatan' => 'nullable|string',
+            'gaji_min' => 'nullable|numeric',
+            'gaji_max' => 'nullable|numeric',
+            'jenis_kelamin' => 'nullable|in:laki-laki,perempuan,semua',
+            'usia_min' => 'nullable|numeric',
+            'usia_max' => 'nullable|numeric',
             'pendidikan_minimal' => 'nullable|string',
-            'pengalaman_kerja'   => 'nullable|string',
-            'tanggal_mulai'      => 'required|date',
-            'tanggal_selesai'    => 'required|date|after_or_equal:tanggal_mulai',
-            'jumlah_diterima'    => 'required|integer|min:1',
+            'pengalaman_kerja' => 'nullable|string',
+            'tanggal_mulai' => 'required|date',
+            'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
+            'jumlah_diterima' => 'required|integer|min:1',
         ]);
 
         $lowongan = Lowongan::create([
             ...$data,
-            'hrd_id'           => auth()->id(),
+            'hrd_id' => auth()->id(),
             'tanpa_batas_usia' => $request->has('tanpa_batas_usia'),
-            'status'           => 'draft',
+            'status' => 'draft',
         ]);
 
         if ($request->filled('skills')) {
@@ -134,22 +157,22 @@ class LowonganController extends Controller
         $this->authorizeLowongan($lowongan);
 
         $data = $request->validate([
-            'nama_lowongan'      => 'required|string',
-            'bidang_kerja_id'    => 'required|exists:bidang_kerja,id',
-            'tipe_kerja'         => 'required|string',
-            'sistem_kerja'       => 'required|string',
-            'lokasi'             => 'required|string',
-            'penempatan'         => 'nullable|string',
-            'gaji_min'           => 'nullable|numeric',
-            'gaji_max'           => 'nullable|numeric',
-            'jenis_kelamin'      => 'nullable|in:laki-laki,perempuan,semua',
-            'usia_min'           => 'nullable|numeric',
-            'usia_max'           => 'nullable|numeric',
+            'nama_lowongan' => 'required|string',
+            'bidang_kerja_id' => 'required|exists:bidang_kerja,id',
+            'tipe_kerja' => 'required|string',
+            'sistem_kerja' => 'required|string',
+            'lokasi' => 'required|string',
+            'penempatan' => 'nullable|string',
+            'gaji_min' => 'nullable|numeric',
+            'gaji_max' => 'nullable|numeric',
+            'jenis_kelamin' => 'nullable|in:laki-laki,perempuan,semua',
+            'usia_min' => 'nullable|numeric',
+            'usia_max' => 'nullable|numeric',
             'pendidikan_minimal' => 'nullable|string',
-            'pengalaman_kerja'   => 'nullable|string',
-            'tanggal_mulai'      => 'required|date',
-            'tanggal_selesai'    => 'required|date|after_or_equal:tanggal_mulai',
-            'jumlah_diterima'    => 'required|integer|min:1',
+            'pengalaman_kerja' => 'nullable|string',
+            'tanggal_mulai' => 'required|date',
+            'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
+            'jumlah_diterima' => 'required|integer|min:1',
         ]);
 
         $lowongan->update([
@@ -212,8 +235,8 @@ class LowonganController extends Controller
 
         $lowongan->update([
             'status' => $request->action === 'publish'
-                ? 'aktif'
-                : 'draft'
+            ? 'aktif'
+            : 'draft'
         ]);
 
         return redirect()
@@ -229,26 +252,24 @@ class LowonganController extends Controller
             'status' => 'required|in:draft,aktif,nonaktif,arsip'
         ]);
 
-        $today = now()->toDateString();
+        $today = now()->timezone('Asia/Jakarta')->format('Y-m-d');
+        $startDate = \Carbon\Carbon::parse($lowongan->tanggal_mulai)->format('Y-m-d');
+        $endDate = \Carbon\Carbon::parse($lowongan->tanggal_selesai)->format('Y-m-d');
 
-        if (
-            $request->status === 'aktif' &&
-            $lowongan->tanggal_mulai > $today
-        ) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Lowongan belum memasuki periode pendaftaran.'
-            ], 422);
-        }
+        if ($request->status === 'aktif') {
+            if ($startDate > $today) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Lowongan belum memasuki periode pendaftaran.'
+                ], 422);
+            }
 
-        if (
-            $request->status === 'aktif' &&
-            $lowongan->tanggal_selesai < $today
-        ) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Lowongan sudah melewati batas pendaftaran.'
-            ], 422);
+            if ($endDate < $today) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Lowongan sudah melewati batas pendaftaran.'
+                ], 422);
+            }
         }
 
         $lowongan->update([
@@ -257,7 +278,7 @@ class LowonganController extends Controller
 
         return response()->json([
             'success' => true,
-            'status'  => $lowongan->status
+            'status' => $lowongan->status
         ]);
     }
 
@@ -265,7 +286,7 @@ class LowonganController extends Controller
     {
         return view('hrd.lowongan.show', [
             'lowongan' => $lowongan,
-            'isOwner'  => $lowongan->hrd_id === auth()->id()
+            'isOwner' => $lowongan->hrd_id === auth()->id()
         ]);
     }
 

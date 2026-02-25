@@ -376,7 +376,7 @@
             </div>
 
             <div class="modal-footer">
-                <button class="btn btn-primary" onclick="saveSkill()">
+                <button class="btn btn-primary" onclick="saveHrdSkill()">
                     Simpan
                 </button>
             </div>
@@ -400,8 +400,8 @@
             </div>
 
             <div class="modal-footer d-flex justify-content-between">
-                <button class="btn btn-danger" onclick="deleteSkill()">Hapus</button>
-                <button class="btn btn-primary" onclick="updateSkill()">Simpan</button>
+                <button class="btn btn-danger" onclick="deleteHrdSkill()">Hapus</button>
+                <button class="btn btn-primary" onclick="updateHrdSkill()">Simpan</button>
             </div>
 
         </div>
@@ -479,7 +479,7 @@ $(function () {
 
 
 /* Create Skill */
-function saveSkill() {
+function saveHrdSkill() {
     const name = document.getElementById('skillName').value.trim();
 
     if (!name) {
@@ -531,7 +531,7 @@ $('.select-skill').on('select2:select', function (e) {
 
 
 /* Update Skill */
-function updateSkill() {
+function updateHrdSkill() {
     const id   = document.getElementById('editSkillId').value;
     const name = document.getElementById('editSkillName').value.trim();
 
@@ -556,15 +556,22 @@ function updateSkill() {
             nama_skill: name
         })
     })
-    .then(res => {
-        if (!res.ok) throw new Error('Gagal update skill');
+    .then(async res => {
+        if (!res.ok) {
+            const data = await res.json();
+            throw new Error(data.message || 'Gagal update skill');
+        }
         return res.json();
     })
     .then(skill => {
-        const option = $('.select-skill option[value="' + skill.id + '"]');
-        option.text(skill.nama_skill);
+        const oldOption = $('.select-skill option[value="' + skill.id + '"]');
+        const isSelected = oldOption.is(':selected');
+        
+        // Buat option baru untuk me-reset cache internal Select2
+        const newOption = new Option(skill.nama_skill, skill.id, isSelected, isSelected);
+        oldOption.replaceWith(newOption);
 
-        $('.select-skill').trigger('change.select2');
+        $('.select-skill').trigger('change');
 
         bootstrap.Modal
             .getInstance(document.getElementById('modalEditSkill'))
@@ -589,7 +596,7 @@ function updateSkill() {
 
 
 /* Delete Skill */
-function deleteSkill() {
+function deleteHrdSkill() {
     const id = document.getElementById('editSkillId').value;
 
     Swal.fire({
@@ -605,11 +612,15 @@ function deleteSkill() {
         fetch(`/hrd/skills/${id}`, {
             method: 'DELETE',
             headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Accept': 'application/json'
             }
         })
-        .then(res => {
-            if (!res.ok) throw new Error('Skill masih digunakan');
+        .then(async res => {
+            if (!res.ok) {
+                const data = await res.json();
+                throw new Error(data.message || 'Skill masih digunakan');
+            }
             return res.json();
         })
         .then(() => {

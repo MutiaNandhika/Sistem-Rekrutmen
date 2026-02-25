@@ -2,14 +2,6 @@
 
 @section('title', 'Daftar Lowongan Kerja')
 
-@php
-    $total = $lowongans->where('status', '!=', 'arsip')->count();
-    $aktif = $lowongans->where('status', 'aktif')->count();
-    $nonaktif = $lowongans->where('status', 'nonaktif')->count();
-    $draft = $lowongans->where('status', 'draft')->count();
-    $arsip = $lowongans->where('status', 'arsip')->count();
-@endphp
-
 @section('content')
 
 {{-- HEADER --}}
@@ -30,42 +22,42 @@
     <div class="card-body d-flex justify-content-between align-items-center">
         <ul class="nav nav-tabs lowongan-tabs">
             <li class="nav-item">
-                <a class="nav-link active" href="#" data-filter="all">
+                <a class="nav-link {{ $statusFilter === 'all' ? 'active' : '' }}" href="#" data-filter="all">
                     Semua Loker
                     <span class="badge" data-count="total">
-                        {{ $total }}
+                        {{ $tabCounts['total'] ?? 0 }}
                     </span>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#" data-filter="aktif">
+                <a class="nav-link {{ $statusFilter === 'aktif' ? 'active' : '' }}" href="#" data-filter="aktif">
                     Aktif
                     <span class="badge" data-count="aktif">
-                        {{ $aktif }}
+                        {{ $tabCounts['aktif'] ?? 0 }}
                     </span>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#" data-filter="nonaktif">
+                <a class="nav-link {{ $statusFilter === 'nonaktif' ? 'active' : '' }}" href="#" data-filter="nonaktif">
                     Nonaktif
                     <span class="badge" data-count="nonaktif">
-                        {{ $nonaktif }}
+                        {{ $tabCounts['nonaktif'] ?? 0 }}
                     </span>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#" data-filter="arsip">
+                <a class="nav-link {{ $statusFilter === 'arsip' ? 'active' : '' }}" href="#" data-filter="arsip">
                     Arsip
                     <span class="badge" data-count="arsip">
-                        {{ $arsip }}
+                        {{ $tabCounts['arsip'] ?? 0 }}
                     </span>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#" data-filter="draft">
+                <a class="nav-link {{ $statusFilter === 'draft' ? 'active' : '' }}" href="#" data-filter="draft">
                     Draft
                     <span class="badge" data-count="draft">
-                        {{ $draft }}
+                        {{ $tabCounts['draft'] ?? 0 }}
                     </span>
                 </a>
             </li>
@@ -149,10 +141,12 @@ function loadLowongan(url = null) {
 
     const search = searchInput?.value || '';
     const pic = picSelect?.value || '';
+    const activeTab = document.querySelector('.lowongan-tabs .nav-link.active');
+    const status = activeTab ? activeTab.dataset.filter : 'all';
 
     let fetchUrl = url
         ? url
-        : `/hrd/lowongan?search=${encodeURIComponent(search)}&pic=${encodeURIComponent(pic)}`;
+        : `/hrd/lowongan?search=${encodeURIComponent(search)}&pic=${encodeURIComponent(pic)}&status=${encodeURIComponent(status)}`;
 
     if (controller) {
         controller.abort();
@@ -165,28 +159,42 @@ function loadLowongan(url = null) {
         cache: "no-store",
         signal: controller.signal
     })
-    .then(res => res.text())
-    .then(html => {
+    .then(res => res.json())
+    .then(data => {
 
         const container = document.querySelector('.lowongan-list');
         if (!container) return;
 
-        container.innerHTML = html;
+        // Render HTML content
+        container.innerHTML = data.html;
 
         container.querySelectorAll('.lowongan-card')
             .forEach(card => renderDropdown(card));
 
-        updateCounters();
+        // Update accurate tab badges from complete server totals
+        if (data.counts) {
+            updateTabBadges(data.counts);
+        }
     })
     .catch(err => {
-        if (err.name === 'AbortError') {
-            // Request dibatalkan → normal
-            return;
-        }
-
+        if (err.name === 'AbortError') return;
         console.error("ERROR DETAIL:", err);
         alert('Gagal memuat data');
     });
+}
+
+function updateTabBadges(counts) {
+    const totalEl = document.querySelector('[data-count="total"]');
+    const aktifEl = document.querySelector('[data-count="aktif"]');
+    const nonaktifEl = document.querySelector('[data-count="nonaktif"]');
+    const draftEl = document.querySelector('[data-count="draft"]');
+    const arsipEl = document.querySelector('[data-count="arsip"]');
+
+    if (totalEl) totalEl.textContent = counts.total;
+    if (aktifEl) aktifEl.textContent = counts.aktif;
+    if (nonaktifEl) nonaktifEl.textContent = counts.nonaktif;
+    if (draftEl) draftEl.textContent = counts.draft;
+    if (arsipEl) arsipEl.textContent = counts.arsip;
 }
 
 /* ================= SEARCH DEBOUNCE ================= */
@@ -283,23 +291,13 @@ document.querySelectorAll('.lowongan-tabs .nav-link').forEach(tab => {
     tab.addEventListener('click', e => {
         e.preventDefault();
 
-        const filter = tab.dataset.filter;
-
+        // 1. Update Active State UI
         document.querySelectorAll('.lowongan-tabs .nav-link')
             .forEach(t => t.classList.remove('active'));
         tab.classList.add('active');
 
-        document.querySelectorAll('.lowongan-card').forEach(card => {
-            card.style.display =
-            filter === 'all'
-                ? card.dataset.status !== 'arsip'
-                    ? 'block'
-                    : 'none'
-                : card.dataset.status === filter
-                    ? 'block'
-                    : 'none';
-
-                });
+        // 2. Fetch data from server based on the active tab's status
+        loadLowongan();
     });
 });
 
@@ -327,34 +325,10 @@ if (sortBtn) {
 }
 
 /* ================= COUNTER ================= */
+// Deprecated. We now use updateTabBadges(counts) from Backend API response.
 function updateCounters() {
-    const cards = document.querySelectorAll('.lowongan-card');
-
-    let total = 0;
-    let aktif = 0, nonaktif = 0, draft = 0, arsip = 0;
-
-    cards.forEach(card => {
-        const status = card.dataset.status;
-
-        if (status !== 'arsip') total++;
-
-        if (status === 'aktif') aktif++;
-        if (status === 'nonaktif') nonaktif++;
-        if (status === 'draft') draft++;
-        if (status === 'arsip') arsip++;
-    });
-
-    const totalEl = document.querySelector('[data-count="total"]');
-    const aktifEl = document.querySelector('[data-count="aktif"]');
-    const nonaktifEl = document.querySelector('[data-count="nonaktif"]');
-    const draftEl = document.querySelector('[data-count="draft"]');
-    const arsipEl = document.querySelector('[data-count="arsip"]');
-
-    if (totalEl) totalEl.textContent = total;
-    if (aktifEl) aktifEl.textContent = aktif;
-    if (nonaktifEl) nonaktifEl.textContent = nonaktif;
-    if (draftEl) draftEl.textContent = draft;
-    if (arsipEl) arsipEl.textContent = arsip;
+    // Left empty specifically because we don't want to count only visible DOM elements anymore.
+    // The server returns absolute counts, which is handled in loadLowongan's updateTabBadges().
 }
 
 /* ================= DROPDOWN ACTION ================= */
