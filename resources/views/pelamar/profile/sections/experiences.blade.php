@@ -40,7 +40,7 @@
 
                             @if ($exp->file_bukti)
                                 <a
-                                    href="{{ asset('storage/'.$exp->file_bukti) }}"
+                                    href="{{ Storage::disk('s3')->url($exp->file_bukti) }}"
                                     target="_blank"
                                     class="small text-primary fw-semibold">
                                     <i class="bi bi-paperclip"></i> Lihat File

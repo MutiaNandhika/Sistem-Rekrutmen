@@ -59,7 +59,7 @@
         <div class="card-body d-flex gap-4">
             @if($application->snap_photo)
                 <img
-                    src="{{ asset('storage/'.$application->snap_photo) }}"
+                    src="{{ Storage::disk('s3')->url($application->snap_photo) }}"
                     alt="Foto Kandidat"
                     class="rounded-circle border"
                     width="72"
@@ -122,7 +122,7 @@
 
                 @if(!empty($exp['file_bukti']))
                     <div class="mt-2">
-                        <a href="{{ asset('storage/'.$exp['file_bukti']) }}"
+                        <a href="{{ Storage::disk('s3')->url($exp['file_bukti']) }}"
                         target="_blank"
                         class="btn btn-outline-primary btn-sm">
                             <i class="bi bi-paperclip"></i> Lihat File
@@ -158,7 +158,7 @@
 
                 @if(!empty($edu['file_bukti']))
                     <div class="mt-2">
-                        <a href="{{ asset('storage/'.$edu['file_bukti']) }}"
+                        <a href="{{ Storage::disk('s3')->url($edu['file_bukti']) }}"
                         target="_blank"
                         class="btn btn-outline-primary btn-sm">
                             <i class="bi bi-file-earmark-text"></i> Lihat File
@@ -195,7 +195,7 @@
         <hr class="my-2">
 
     @if(!empty($application->snap_resume['file_path']))
-        <a href="{{ asset('storage/'.$application->snap_resume['file_path']) }}"
+        <a href="{{ Storage::disk('s3')->url($application->snap_resume['file_path']) }}"
         target="_blank"
         class="btn btn-outline-primary btn-sm">
             <i class="bi bi-file-earmark-text"></i>
@@ -228,7 +228,7 @@
 
                 @if(!empty($ach['file_bukti']))
                     <div class="mt-2">
-                        <a href="{{ asset('storage/'.$ach['file_bukti']) }}"
+                        <a href="{{ Storage::disk('s3')->url($ach['file_bukti']) }}"
                         target="_blank"
                         class="btn btn-outline-primary btn-sm">
                             <i class="bi bi-award"></i> Lihat File
@@ -263,7 +263,7 @@
 
                 @if(!empty($cert['file_bukti']))
                     <div class="mt-2">
-                        <a href="{{ asset('storage/'.$cert['file_bukti']) }}"
+                        <a href="{{ Storage::disk('s3')->url($cert['file_bukti']) }}"
                         target="_blank"
                         class="btn btn-outline-primary btn-sm">
                             <i class="bi bi-patch-check"></i> Lihat File
@@ -298,7 +298,7 @@
 
                 @if(!empty($org['file_bukti']))
                     <div class="mt-2">
-                        <a href="{{ asset('storage/'.$org['file_bukti']) }}"
+                        <a href="{{ Storage::disk('s3')->url($org['file_bukti']) }}"
                         target="_blank"
                         class="btn btn-outline-primary btn-sm">
                             <i class="bi bi-paperclip"></i> Lihat File
@@ -664,7 +664,7 @@
             <div class="modal-body text-center p-0">
 
                 <img
-                    src="{{ asset('storage/'.$application->snap_photo) }}"
+                    src="{{ Storage::disk('s3')->url($application->snap_photo) }}"
                     class="img-fluid rounded shadow"
                     alt="Preview Foto">
 

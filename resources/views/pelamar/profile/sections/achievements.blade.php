@@ -34,7 +34,7 @@
 
                         @if ($award->file_bukti)
                             <a
-                                href="{{ asset('storage/'.$award->file_bukti) }}"
+                                href="{{ Storage::disk('s3')->url($award->file_bukti) }}"
                                 target="_blank"
                                 class="small fw-semibold text-primary">
                                 <i class="bi bi-paperclip"></i> Lihat File

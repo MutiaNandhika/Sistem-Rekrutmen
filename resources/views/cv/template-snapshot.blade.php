@@ -18,7 +18,7 @@
         <td width="22%" valign="top">
             @if(!empty($application->snap_photo))
                 <img
-                    src="{{ public_path('storage/'.$application->snap_photo) }}"
+                    src="{{ Storage::disk('s3')->url($application->snap_photo) }}"
                     class="cv-avatar"
                     alt="Foto {{ $application->snap_name }}">
             @endif

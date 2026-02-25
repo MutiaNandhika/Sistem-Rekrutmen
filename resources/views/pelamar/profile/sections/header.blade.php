@@ -10,7 +10,7 @@
                 <img
                     id="profileAvatar"
                     src="{{ $user->pelamarProfile?->photo
-                        ? asset('storage/'.$user->pelamarProfile->photo)
+                        ? Storage::disk('s3')->url($user->pelamarProfile->photo)
                         : asset('images/default-avatar.png') }}"
                     class="rounded-circle"
                     width="96"

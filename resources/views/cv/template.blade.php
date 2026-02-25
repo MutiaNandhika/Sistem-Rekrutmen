@@ -30,7 +30,7 @@
         <td width="22%" valign="top">
             @if($profile && $profile->photo)
                 <img
-                    src="{{ public_path('storage/'.$profile->photo) }}"
+                    src="{{ Storage::disk('s3')->url($profile->photo) }}"
                     class="cv-avatar"
                     alt="Foto {{ $user->name }}">
             @endif
