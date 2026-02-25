@@ -126,3 +126,26 @@
         </div>
     </div>
 </div>
+
+@php
+    $organizationsData = $user->pelamarOrganizations->map(function($org) {
+        return [
+            'id' => $org->id,
+            'nama_organisasi' => $org->nama_organisasi,
+            'posisi' => $org->posisi,
+            'mulai_bulan' => $org->mulai_bulan,
+            'mulai_tahun' => $org->mulai_tahun,
+            'selesai_bulan' => $org->selesai_bulan,
+            'selesai_tahun' => $org->selesai_tahun,
+            'masih_aktif' => $org->masih_aktif,
+            'informasi_tambahan' => $org->informasi_tambahan,
+            'file_url' => $org->file_bukti
+                ? \Storage::disk('s3')->url($org->file_bukti)
+                : null,
+        ];
+    });
+@endphp
+
+<script>
+    const organizations = @json($organizationsData);
+</script>

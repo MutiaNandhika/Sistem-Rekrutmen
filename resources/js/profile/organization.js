@@ -140,29 +140,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     /* ================= EDIT ================= */
-    window.editOrganization = function (id, org) {
+    window.editOrganization = function (id) {
 
-        editIdInput.value = id;
+        const org = organizations.find(o => o.id === id);
+        if (!org) return;
 
-        orgName.value       = org.nama_organisasi;
-        orgRole.value       = org.posisi;
-        orgDesc.value       = org.informasi_tambahan ?? '';
-        orgStartMonth.value = org.mulai_bulan;
-        orgStartYear.value  = org.mulai_tahun;
-        orgOngoing.checked  = !!org.masih_aktif;
+        document.getElementById('orgEditId').value = id;
 
-        orgEndMonth.value = org.masih_aktif ? '' : (org.selesai_bulan ?? '');
-        orgEndYear.value  = org.masih_aktif ? '' : (org.selesai_tahun ?? '');
+        document.getElementById('orgName').value = org.nama_organisasi ?? '';
+        document.getElementById('orgRole').value = org.posisi ?? '';
+        document.getElementById('orgDesc').value = org.informasi_tambahan ?? '';
+        document.getElementById('orgStartMonth').value = org.mulai_bulan ?? '';
+        document.getElementById('orgStartYear').value = org.mulai_tahun ?? '';
+        document.getElementById('orgOngoing').checked = !!org.masih_aktif;
 
-        if (org.file_bukti) {
-            previewBox.classList.remove('d-none');
-            previewLink.href = `/storage/${org.file_bukti}`;
+        document.getElementById('orgEndMonth').value =
+            org.masih_aktif ? '' : (org.selesai_bulan ?? '');
+
+        document.getElementById('orgEndYear').value =
+            org.masih_aktif ? '' : (org.selesai_tahun ?? '');
+
+        const preview = document.getElementById('orgFilePreview');
+        const link = document.getElementById('orgFileLink');
+
+        if (org.file_url) {
+            preview.classList.remove('d-none');
+            link.href = org.file_url;
         } else {
-            previewBox.classList.add('d-none');
-            previewLink.href = '#';
+            preview.classList.add('d-none');
+            link.href = '#';
         }
 
-        orgFile.value = '';
+        document.getElementById('orgFile').value = '';
     };
 
 

@@ -117,3 +117,23 @@
     </div>
 
 </div>
+
+@php
+    $experiencesData = $user->pelamarExperiences->map(function($exp) {
+        return [
+            'id' => $exp->id,
+            'posisi' => $exp->posisi,
+            'perusahaan' => $exp->perusahaan,
+            'tanggal_mulai' => $exp->tanggal_mulai,
+            'tanggal_selesai' => $exp->tanggal_selesai,
+            'deskripsi' => $exp->deskripsi,
+            'file_url' => $exp->file_bukti
+                ? \Storage::disk('s3')->url($exp->file_bukti)
+                : null,
+        ];
+    });
+@endphp
+
+<script>
+    const experiences = @json($experiencesData);
+</script>

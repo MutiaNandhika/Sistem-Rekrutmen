@@ -154,3 +154,26 @@
         </div>
     </div>
 </div>
+
+@php
+    $educationsData = $user->pelamarEducations->map(function($edu) {
+        return [
+            'id' => $edu->id,
+            'tingkat' => $edu->tingkat,
+            'nama_sekolah' => $edu->nama_sekolah,
+            'bidang_studi' => $edu->bidang_studi,
+            'mulai_bulan' => $edu->mulai_bulan,
+            'mulai_tahun' => $edu->mulai_tahun,
+            'selesai_bulan' => $edu->selesai_bulan,
+            'selesai_tahun' => $edu->selesai_tahun,
+            'informasi_tambahan' => $edu->informasi_tambahan,
+            'file_url' => $edu->file_bukti
+                ? \Storage::disk('s3')->url($edu->file_bukti)
+                : null,
+        ];
+    });
+@endphp
+
+<script>
+    const educations = @json($educationsData);
+</script>

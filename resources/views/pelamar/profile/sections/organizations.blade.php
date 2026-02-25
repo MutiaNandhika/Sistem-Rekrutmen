@@ -93,7 +93,7 @@
                         <ul class="dropdown-menu">
                             <li>
                                 <button class="dropdown-item"
-                                        onclick="editOrganization({{ $org->id }}, @js($org))"
+                                        onclick="editOrganization({{ $org->id }})"
                                         data-bs-toggle="modal"
                                         data-bs-target="#modalOrganisasi">
                                     <i class="bi bi-pencil me-2"></i>Edit

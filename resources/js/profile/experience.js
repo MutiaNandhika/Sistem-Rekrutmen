@@ -98,8 +98,9 @@ window.addExperience = function () {
 };
 
 /* ================= EDIT ================= */
-window.editExperience = function (id, exp) {
+window.editExperience = function (id) {
 
+    const exp = experiences.find(e => e.id === id);
     if (!exp) return;
 
     document.getElementById('experienceEditId').value = id;
@@ -118,9 +119,9 @@ window.editExperience = function (id, exp) {
     const preview = document.getElementById('expFilePreview');
     const link = document.getElementById('expFileLink');
 
-    if (exp.file_bukti) {
+    if (exp.file_url) {
         preview.classList.remove('d-none');
-        link.href = `/storage/${exp.file_bukti}`;
+        link.href = exp.file_url;
     } else {
         preview.classList.add('d-none');
         link.href = '#';

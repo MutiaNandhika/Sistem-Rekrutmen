@@ -82,3 +82,22 @@
         </div>
     </div>
 </div>
+
+@php
+    $achievementsData = $user->pelamarAchievements->map(function($award) {
+        return [
+            'id' => $award->id,
+            'judul' => $award->judul,
+            'penyelenggara' => $award->penyelenggara,
+            'tahun' => $award->tahun,
+            'deskripsi' => $award->deskripsi,
+            'file_url' => $award->file_bukti
+                ? \Storage::disk('s3')->url($award->file_bukti)
+                : null,
+        ];
+    });
+@endphp
+
+<script>
+    const achievements = @json($achievementsData);
+</script>

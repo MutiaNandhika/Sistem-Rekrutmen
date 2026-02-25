@@ -93,21 +93,24 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     /* ================= EDIT ================= */
-    window.editAchievement = function (id, award) {
+    window.editAchievement = function (id) {
 
-        editIdInput.value = id;
+        const award = achievements.find(a => a.id === id);
+        if (!award) return;
 
-        awardJudul.value = award.judul ?? '';
-        awardPenyelenggara.value = award.penyelenggara ?? '';
-        awardTahun.value = award.tahun ?? '';
-        awardDeskripsi.value = award.deskripsi ?? '';
+        document.getElementById('achievementEditId').value = id;
+
+        document.getElementById('awardJudul').value = award.judul ?? '';
+        document.getElementById('awardPenyelenggara').value = award.penyelenggara ?? '';
+        document.getElementById('awardTahun').value = award.tahun ?? '';
+        document.getElementById('awardDeskripsi').value = award.deskripsi ?? '';
 
         const preview = document.getElementById('awardFilePreview');
         const link = document.getElementById('awardFileLink');
 
-        if (award.file_bukti) {
+        if (award.file_url) {
             preview.classList.remove('d-none');
-            link.href = `/storage/${award.file_bukti}`;
+            link.href = award.file_url;
         } else {
             preview.classList.add('d-none');
             link.href = '#';

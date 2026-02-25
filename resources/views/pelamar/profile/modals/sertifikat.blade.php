@@ -156,3 +156,26 @@
         </div>
     </div>
 </div>
+
+@php
+    $certificatesData = $user->pelamarCertificates->map(function($cert) {
+        return [
+            'id' => $cert->id,
+            'nama_sertifikat' => $cert->nama_sertifikat,
+            'organisasi_penerbit' => $cert->organisasi_penerbit,
+            'bulan_terbit' => $cert->bulan_terbit,
+            'tahun_terbit' => $cert->tahun_terbit,
+            'tanpa_expired' => $cert->tanpa_expired,
+            'bulan_expired' => $cert->bulan_expired,
+            'tahun_expired' => $cert->tahun_expired,
+            'informasi_tambahan' => $cert->informasi_tambahan,
+            'file_url' => $cert->file_bukti
+                ? \Storage::disk('s3')->url($cert->file_bukti)
+                : null,
+        ];
+    });
+@endphp
+
+<script>
+    const certificates = @json($certificatesData);
+</script>

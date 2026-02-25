@@ -94,7 +94,7 @@
                             <li>
                                 <button
                                     class="dropdown-item"
-                                    onclick="editCertificate({{ $cert->id }}, @js($cert))"
+                                    onclick="editCertificate({{ $cert->id }})"
                                     data-bs-toggle="modal"
                                     data-bs-target="#modalSertifikat">
                                     <i class="bi bi-pencil me-2"></i>Edit

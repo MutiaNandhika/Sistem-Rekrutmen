@@ -125,16 +125,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-
     /* ================= EDIT ================= */
-    window.editCertificate = function (id, cert) {
+    window.editCertificate = function (id) {
 
-        editIdInput.value = id;
+        const cert = certificates.find(c => c.id === id);
+        if (!cert) return;
 
-        document.getElementById('certName').value = cert.nama_sertifikat;
-        document.getElementById('certIssuer').value = cert.organisasi_penerbit;
-        document.getElementById('certIssueMonth').value = cert.bulan_terbit;
-        document.getElementById('certIssueYear').value = cert.tahun_terbit;
+        document.getElementById('certificateEditId').value = id;
+
+        document.getElementById('certName').value = cert.nama_sertifikat ?? '';
+        document.getElementById('certIssuer').value = cert.organisasi_penerbit ?? '';
+        document.getElementById('certIssueMonth').value = cert.bulan_terbit ?? '';
+        document.getElementById('certIssueYear').value = cert.tahun_terbit ?? '';
         document.getElementById('certNoExpire').checked = !!cert.tanpa_expired;
 
         document.getElementById('certExpireMonth').value =
@@ -149,9 +151,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const preview = document.getElementById('certFilePreview');
         const link = document.getElementById('certFileLink');
 
-        if (cert.file_bukti) {
+        if (cert.file_url) {
             preview.classList.remove('d-none');
-            link.href = `/storage/${cert.file_bukti}`;
+            link.href = cert.file_url;
         } else {
             preview.classList.add('d-none');
             link.href = '#';
@@ -159,7 +161,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         document.getElementById('certFile').value = '';
     };
-
 
     /* ================= DELETE ================= */
     window.deleteCertificate = function (id) {

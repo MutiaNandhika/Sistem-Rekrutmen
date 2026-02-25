@@ -53,7 +53,7 @@
                             <li>
                                 <button
                                     class="dropdown-item"
-                                    onclick="editAchievement({{ $award->id }}, @js($award))"
+                                    onclick="editAchievement({{ $award->id }})"
                                     data-bs-toggle="modal"
                                     data-bs-target="#modalPenghargaan">
                                     <i class="bi bi-pencil me-2"></i>Edit

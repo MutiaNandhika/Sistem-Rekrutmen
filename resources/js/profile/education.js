@@ -94,25 +94,28 @@ window.addEducation = function () {
 };
 
 /* ================= EDIT ================= */
-window.editEducation = function (id, edu) {
+window.editEducation = function (id) {
+
+    const edu = educations.find(e => e.id === id);
+    if (!edu) return;
 
     document.getElementById('educationEditId').value = id;
 
-    eduTingkat.value = edu.tingkat ?? '';
-    eduSchool.value = edu.nama_sekolah ?? '';
-    eduMajor.value = edu.bidang_studi ?? '';
-    eduStartMonth.value = edu.mulai_bulan ?? '';
-    eduStartYear.value = edu.mulai_tahun ?? '';
-    eduEndMonth.value = edu.selesai_bulan ?? '';
-    eduEndYear.value = edu.selesai_tahun ?? '';
-    eduInfo.value = edu.informasi_tambahan ?? '';
+    document.getElementById('eduTingkat').value = edu.tingkat ?? '';
+    document.getElementById('eduSchool').value = edu.nama_sekolah ?? '';
+    document.getElementById('eduMajor').value = edu.bidang_studi ?? '';
+    document.getElementById('eduStartMonth').value = edu.mulai_bulan ?? '';
+    document.getElementById('eduStartYear').value = edu.mulai_tahun ?? '';
+    document.getElementById('eduEndMonth').value = edu.selesai_bulan ?? '';
+    document.getElementById('eduEndYear').value = edu.selesai_tahun ?? '';
+    document.getElementById('eduInfo').value = edu.informasi_tambahan ?? '';
 
     const preview = document.getElementById('eduFilePreview');
     const link = document.getElementById('eduFileLink');
 
-    if (edu.file_bukti) {
+    if (edu.file_url) {
         preview.classList.remove('d-none');
-        link.href = `/storage/${edu.file_bukti}`;
+        link.href = edu.file_url;
     } else {
         preview.classList.add('d-none');
         link.href = '#';

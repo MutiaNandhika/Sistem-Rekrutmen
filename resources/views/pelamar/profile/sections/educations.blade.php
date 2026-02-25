@@ -75,7 +75,7 @@
                             <li>
                                 <button
                                     class="dropdown-item"
-                                    onclick="editEducation({{ $edu->id }}, @js($edu))"
+                                    onclick="editEducation({{ $edu->id }})"
                                     data-bs-toggle="modal"
                                     data-bs-target="#modalPendidikan">
                                     <i class="bi bi-pencil me-2"></i>Edit
