@@ -118,7 +118,12 @@ class KandidatController extends Controller
 
         $application->update($data);
 
-        return back()->with('success', 'Jadwal interview berhasil disimpan');
+        Mail::to($application->user->email)
+            ->queue(
+                (new StatusLamaranMail($application))
+            );
+
+        return back()->with('success', 'Jadwal interview berhasil disimpan & email terkirim.');
     }
 
     public function deleteInterview(Lowongan $lowongan, Application $application)
