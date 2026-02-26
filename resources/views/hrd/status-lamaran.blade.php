@@ -15,7 +15,6 @@
                     <th>Nama Pelamar</th>
                     <th>Lowongan</th>
                     <th>Status</th>
-                    <th>Offer Response</th>
                     <th width="280">Aksi</th>
                 </tr>
             </thead>
@@ -23,66 +22,24 @@
             <tbody>
                 @foreach($applications as $a)
                 <tr>
-
-                    {{-- Nama --}}
                     <td>{{ $a->user->name }}</td>
-
-                    {{-- Lowongan --}}
                     <td>{{ $a->lowongan->nama_lowongan }}</td>
 
-                    {{-- Status Badge --}}
                     <td>
                         <span class="badge bg-secondary">
                             {{ $a->status }}
                         </span>
                     </td>
 
-                    {{-- Offer Response --}}
                     <td>
+                        {{-- FORM UPDATE STATUS --}}
                         <form method="POST"
                               action="{{ route('hrd.status.update', $a->id) }}">
                             @csrf
                             @method('PUT')
 
-                            <input type="hidden" name="type" value="offer_response">
-
-                            <select name="offer_response"
-                                    class="form-select"
-                                    onchange="this.form.submit()"
-                                    @if(!in_array($a->status, ['offer','selesai_diterima','selesai_ditolak']))
-                                        disabled
-                                    @endif>
-
-                                <option value="">NULL</option>
-
-                                <option value="diterima"
-                                    @selected($a->offer_response == 'diterima')>
-                                    diterima
-                                </option>
-
-                                <option value="ditolak"
-                                    @selected($a->offer_response == 'ditolak')>
-                                    ditolak
-                                </option>
-
-                            </select>
-                        </form>
-                    </td>
-
-                    {{-- Aksi --}}
-                    <td>
-
-                        {{-- FORM UPDATE STATUS --}}
-                        <form method="POST"
-                              action="{{ route('hrd.status.update', $a->id) }}"
-                              class="mb-2">
-                            @csrf
-                            @method('PUT')
-
-                            <input type="hidden" name="type" value="status">
-
                             <select name="status"
-                                    class="form-select"
+                                    class="form-select mb-2"
                                     onchange="this.form.submit()">
 
                                 @foreach([
@@ -92,8 +49,9 @@
                                     'tidak_lolos_saw',
                                     'interview',
                                     'offer',
-                                    'selesai_diterima',
-                                    'selesai_ditolak',
+                                    'offer_ditolak',
+                                    'diterima',
+                                    'ditolak',
                                     'ditolak_administrasi'
                                 ] as $s)
 
@@ -121,7 +79,6 @@
                         </form>
 
                     </td>
-
                 </tr>
                 @endforeach
             </tbody>
