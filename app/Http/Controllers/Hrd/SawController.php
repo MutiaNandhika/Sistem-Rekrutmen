@@ -251,6 +251,7 @@ class SawController extends Controller
         $apps = Application::with('user')
             ->where('lowongan_id', $lowongan->id)
             ->whereNotNull('saw_score')
+            ->whereIn('status', ['interview', 'tidak_lolos_saw'])
             ->orderBy('saw_rank')
             ->get();
 

@@ -20,29 +20,29 @@ class StatusLamaranMail extends Mailable implements ShouldQueue
     }
 
     public function build()
-{
-    // jika status ditolak → pakai email khusus
-    if (in_array($this->application->status, [
-        'ditolak',
-        'ditolak_administrasi',
-        'tidak_lolos_saw'
-    ])) {
+    {
+        // jika status ditolak → pakai email khusus
+        if (in_array($this->application->status, [
+            'ditolak',
+            'ditolak_administrasi',
+            'tidak_lolos_saw'
+        ])) {
+            return $this->subject(
+                'Informasi Hasil Lamaran – ' . $this->application->lowongan->nama_lowongan
+            )
+            ->view('emails.status-ditolak')
+            ->with([
+                'application' => $this->application
+            ]);
+        }
+
         return $this->subject(
-            'Informasi Hasil Lamaran – ' . $this->application->lowongan->nama_lowongan
+            'Update Status Lamaran – ' . $this->application->lowongan->nama_lowongan
         )
-        ->view('emails.status-ditolak')
+        ->view('emails.status-lamaran')
         ->with([
             'application' => $this->application
         ]);
     }
-
-    return $this->subject(
-        'Update Status Lamaran – ' . $this->application->lowongan->nama_lowongan
-    )
-    ->view('emails.status-lamaran')
-    ->with([
-        'application' => $this->application
-    ]);
-}
 
 }

@@ -290,16 +290,39 @@ Route::middleware(['auth', 'role:hrd'])
 
         Route::put('/status-lamaran/{application}', function (Request $request, Application $application) {
 
+        if ($request->type === 'offer_response') {
+
+            $application->offer_response = $request->offer_response;
+
+            if ($request->offer_response === 'diterima') {
+                $application->status = 'selesai_diterima';
+            } elseif ($request->offer_response === 'ditolak') {
+                $application->status = 'selesai_ditolak';
+            } elseif ($request->offer_response === null || $request->offer_response === '') {
+                $application->status = 'offer';
+                $application->offer_response = null;
+            }
+
+            $application->save();
+
+        } else {
+
             $request->validate([
                 'status' => 'required|string'
             ]);
 
-            $application->update([
-                'status' => $request->status
-            ]);
+            $application->status = $request->status;
 
-            return back()->with('success', 'Status berhasil diubah.');
-        })->name('status.update');
+            // kalau status bukan tahap akhir, kosongkan response
+            if (!in_array($request->status, ['selesai_diterima','selesai_ditolak'])) {
+                $application->offer_response = null;
+            }
+
+            $application->save();
+        }
+
+        return back()->with('success', 'Data berhasil diperbarui.');
+    })->name('status.update');
 
         Route::delete('/status-lamaran/{application}', function (Application $application) {
             $application->delete();
