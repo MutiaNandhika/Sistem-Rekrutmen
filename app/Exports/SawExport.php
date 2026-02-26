@@ -7,7 +7,7 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 
-class SawExport implements FromCollection, WithHeadings, WithMapping
+class SawExport implements FromCollection, WithHeadings
 {
     protected $lowonganId;
 
@@ -18,12 +18,25 @@ class SawExport implements FromCollection, WithHeadings, WithMapping
 
     public function collection()
     {
-        return Application::query()
+        $apps = Application::query()
             ->where('lowongan_id', $this->lowonganId)
             ->whereNotNull('saw_score')
             ->whereIn('status', ['interview', 'tidak_lolos_saw'])
-            ->orderBy('saw_rank')
+            ->orderByDesc('saw_score')
             ->get();
+
+        $rank = 1;
+
+        return $apps->map(function ($app) use (&$rank) {
+            return [
+                'Ranking'       => $rank++,
+                'Nama Kandidat' => $app->snap_name,
+                'C1'            => $app->snap_pendidikan_nilai,
+                'C2'            => $app->snap_pengalaman_tahun,
+                'C3'            => $app->snap_total_skill,
+                'Skor SAW'      => round($app->saw_score, 3),
+            ];
+        });
     }
 
     public function headings(): array
@@ -32,21 +45,9 @@ class SawExport implements FromCollection, WithHeadings, WithMapping
             'Ranking',
             'Nama Kandidat',
             'C1 - Pendidikan',
-            'C2 - Pengalaman (Tahun)',
+            'C2 - Pengalaman',
             'C3 - Keahlian',
             'Skor SAW',
-        ];
-    }
-
-    public function map($app): array
-    {
-        return [
-            $app->saw_rank,
-            $app->snap_name,
-            $app->snap_pendidikan_nilai,
-            $app->snap_pengalaman_tahun,
-            $app->snap_total_skill,
-            round($app->saw_score, 3),
         ];
     }
 }
