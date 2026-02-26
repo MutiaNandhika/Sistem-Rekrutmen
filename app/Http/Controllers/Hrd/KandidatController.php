@@ -95,7 +95,6 @@ class KandidatController extends Controller
             Mail::to($application->user->email)
                 ->queue(
                     (new StatusLamaranMail($application))
-                        ->delay(now()->addSeconds(5))
                 );
         }
 
@@ -154,7 +153,6 @@ class KandidatController extends Controller
         Mail::to($application->user->email)
             ->queue(
                 (new StatusLamaranMail($application))
-                    ->delay(now()->addSeconds(5))
             );
 
         return back()->with('success', 'Offer berhasil dikirim ke pelamar');
@@ -179,7 +177,6 @@ class KandidatController extends Controller
             Mail::to($application->user->email)
                 ->queue(
                     (new StatusLamaranMail($application))
-                        ->delay(now()->addSeconds(5))
                 );
         }
 
@@ -205,7 +202,6 @@ class KandidatController extends Controller
         Mail::to($application->user->email)
             ->queue(
                 (new StatusLamaranMail($application))
-                    ->delay(now()->addSeconds(5))
             );
     }
 

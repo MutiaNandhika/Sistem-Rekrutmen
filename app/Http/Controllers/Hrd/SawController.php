@@ -160,7 +160,6 @@ class SawController extends Controller
             Mail::to($application->user->email)
             ->queue(
                 (new StatusLamaranMail($application))
-                    ->delay(now()->addSeconds(5))
             );
         }
 
