@@ -138,33 +138,67 @@ class User extends Authenticatable
             return 0;
         }
 
-        $totalBulan = 0;
+        $intervals = [];
 
         foreach ($this->pelamarExperiences as $exp) {
 
-            if (! $exp->tanggal_mulai) {
+            if (!$exp->tanggal_mulai) {
                 continue;
             }
 
             try {
-                $start = \Carbon\Carbon::parse($exp->tanggal_mulai);
+                $start = \Carbon\Carbon::parse($exp->tanggal_mulai)->startOfMonth();
 
                 if ($exp->masih_bekerja) {
-                    $end = now();
+                    $end = now()->endOfMonth();
                 } else {
-                    if (! $exp->tanggal_selesai) {
+                    if (!$exp->tanggal_selesai) {
                         continue;
                     }
-                    $end = \Carbon\Carbon::parse($exp->tanggal_selesai);
+                    $end = \Carbon\Carbon::parse($exp->tanggal_selesai)->endOfMonth();
                 }
 
                 if ($end->greaterThan($start)) {
-                    $totalBulan += $start->diffInMonths($end);
+                    $intervals[] = [$start, $end];
                 }
 
             } catch (\Exception $e) {
                 continue;
             }
+        }
+
+        if (empty($intervals)) {
+            return 0;
+        }
+
+        // STEP 1: Urutkan berdasarkan tanggal mulai
+        usort($intervals, function ($a, $b) {
+            return $a[0]->timestamp <=> $b[0]->timestamp;
+        });
+
+        // STEP 2: Merge interval overlap
+        $merged = [];
+        $current = $intervals[0];
+
+        for ($i = 1; $i < count($intervals); $i++) {
+            [$start, $end] = $intervals[$i];
+
+            // Kalau overlap atau nyambung
+            if ($start->lessThanOrEqualTo($current[1])) {
+                $current[1] = $current[1]->max($end);
+            } else {
+                $merged[] = $current;
+                $current = [$start, $end];
+            }
+        }
+
+        $merged[] = $current;
+
+        // STEP 3: Hitung total bulan unik
+        $totalBulan = 0;
+
+        foreach ($merged as [$start, $end]) {
+            $totalBulan += $start->diffInMonths($end);
         }
 
         return round($totalBulan / 12, 1);
