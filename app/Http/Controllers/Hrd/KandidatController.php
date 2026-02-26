@@ -169,9 +169,19 @@ class KandidatController extends Controller
             return back()->with('error', 'Kandidat tidak berada pada tahap screening.');
         }
 
+        $oldStatus = $application->status;
+
         $application->update([
             'status' => 'seleksi',
         ]);
+
+        if ($oldStatus !== 'seleksi') {
+            Mail::to($application->user->email)
+                ->queue(
+                    (new StatusLamaranMail($application))
+                        ->delay(now()->addSeconds(5))
+                );
+        }
 
         return back()->with('success', 'Kandidat berhasil lolos administrasi.');
     }
@@ -185,9 +195,19 @@ class KandidatController extends Controller
             return back()->with('error', 'Kandidat tidak berada pada tahap screening.');
         }
 
-        $application->update([
-            'status' => 'ditolak_administrasi',
-        ]);
+    $oldStatus = $application->status;
+
+    $application->update([
+        'status' => 'ditolak_administrasi',
+    ]);
+
+    if ($oldStatus !== 'ditolak_administrasi') {
+        Mail::to($application->user->email)
+            ->queue(
+                (new StatusLamaranMail($application))
+                    ->delay(now()->addSeconds(5))
+            );
+    }
 
         return back()->with('success', 'Kandidat ditolak pada tahap administrasi.');
     }
