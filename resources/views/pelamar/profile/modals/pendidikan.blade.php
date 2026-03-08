@@ -3,7 +3,9 @@
         <div class="modal-content border-0 rounded-4 shadow">
 
             <div class="modal-header border-0">
-                <h6 class="modal-title fw-bold">Tambah Pendidikan</h6>
+                <h6 class="modal-title fw-bold" id="educationModalTitle">
+                    Tambah Pendidikan
+                </h6>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
 

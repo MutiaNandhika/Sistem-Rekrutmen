@@ -3,9 +3,9 @@
         <div class="modal-content rounded-4">
 
             <div class="modal-header border-0">
-                <h6 class="modal-title fw-bold">
-                    Tambah Pengalaman Organisasi & Relawan
-                </h6>
+            <h6 class="modal-title fw-bold" id="organizationModalTitle">
+                Tambah Organisasi
+            </h6>
                 <button class="btn-close" data-bs-dismiss="modal"></button>
             </div>
 

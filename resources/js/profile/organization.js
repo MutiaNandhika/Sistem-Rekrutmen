@@ -146,7 +146,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!org) return;
 
         document.getElementById('orgEditId').value = id;
-
+        document.getElementById('organizationModalTitle').innerText =
+            'Edit Organisasi';
         document.getElementById('orgName').value = org.nama_organisasi ?? '';
         document.getElementById('orgRole').value = org.posisi ?? '';
         document.getElementById('orgDesc').value = org.informasi_tambahan ?? '';
@@ -232,7 +233,8 @@ document.addEventListener('DOMContentLoaded', () => {
     modal.addEventListener('hidden.bs.modal', () => {
 
         editIdInput.value = '';
-
+        document.getElementById('organizationModalTitle').innerText =
+        'Tambah Organisasi';
         document.querySelectorAll(
             '#modalOrganisasi input, #modalOrganisasi textarea, #modalOrganisasi select'
         ).forEach(el => {

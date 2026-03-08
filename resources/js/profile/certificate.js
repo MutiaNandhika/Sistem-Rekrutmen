@@ -132,7 +132,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!cert) return;
 
         document.getElementById('certificateEditId').value = id;
-
+        document.getElementById('certificateModalTitle').innerText =
+            'Edit Sertifikat';
         document.getElementById('certName').value = cert.nama_sertifikat ?? '';
         document.getElementById('certIssuer').value = cert.organisasi_penerbit ?? '';
         document.getElementById('certIssueMonth').value = cert.bulan_terbit ?? '';
@@ -219,7 +220,8 @@ document.addEventListener('DOMContentLoaded', () => {
     modal.addEventListener('hidden.bs.modal', () => {
 
         editIdInput.value = '';
-
+        document.getElementById('certificateModalTitle').innerText =
+            'Tambah Sertifikat';
         document.querySelectorAll(
             '#modalSertifikat input, #modalSertifikat textarea, #modalSertifikat select'
         ).forEach(el => {

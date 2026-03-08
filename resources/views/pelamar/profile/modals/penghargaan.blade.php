@@ -3,7 +3,9 @@
         <div class="modal-content border-0 rounded-4">
 
             <div class="modal-header border-0">
-                <h6 class="modal-title fw-bold">Tambah Penghargaan</h6>
+            <h6 class="modal-title fw-bold" id="achievementModalTitle">
+                Tambah Penghargaan
+            </h6>
                 <button class="btn-close" data-bs-dismiss="modal"></button>
             </div>
 

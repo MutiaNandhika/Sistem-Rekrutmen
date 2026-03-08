@@ -99,7 +99,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!award) return;
 
         document.getElementById('achievementEditId').value = id;
-
+        document.getElementById('achievementModalTitle').innerText =
+            'Edit Penghargaan';
         document.getElementById('awardJudul').value = award.judul ?? '';
         document.getElementById('awardPenyelenggara').value = award.penyelenggara ?? '';
         document.getElementById('awardTahun').value = award.tahun ?? '';
@@ -165,7 +166,8 @@ document.addEventListener('DOMContentLoaded', () => {
     modal.addEventListener('hidden.bs.modal', () => {
 
         editIdInput.value = '';
-
+        document.getElementById('achievementModalTitle').innerText =
+            'Tambah Penghargaan';
         document.getElementById('awardFilePreview').classList.add('d-none');
         document.getElementById('awardFileLink').href = '#';
         document.getElementById('awardFile').value = '';

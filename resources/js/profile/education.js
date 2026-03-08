@@ -100,7 +100,8 @@ window.editEducation = function (id) {
     if (!edu) return;
 
     document.getElementById('educationEditId').value = id;
-
+    document.getElementById('educationModalTitle').innerText =
+        'Edit Pendidikan';
     document.getElementById('eduTingkat').value = edu.tingkat ?? '';
     document.getElementById('eduSchool').value = edu.nama_sekolah ?? '';
     document.getElementById('eduMajor').value = edu.bidang_studi ?? '';
@@ -175,6 +176,8 @@ document.addEventListener('DOMContentLoaded', () => {
     modal.addEventListener('hidden.bs.modal', () => {
 
         document.getElementById('educationEditId').value = '';
+        document.getElementById('educationModalTitle').innerText =
+        'Tambah Pendidikan';
         document.getElementById('eduFilePreview').classList.add('d-none');
         document.getElementById('eduFileLink').href = '#';
         document.getElementById('eduFile').value = '';
