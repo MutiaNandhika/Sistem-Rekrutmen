@@ -213,12 +213,21 @@ function hapus(id) {
                 'Accept': 'application/json'
             }
         })
-        .then(() => {
-            document.getElementById(`row-${id}`)?.remove();
-            Swal.fire('Berhasil', 'Akun berhasil dihapus', 'success');
+        .then(async res => {
+            const data = await res.json();
+
+            if (!res.ok) {
+                throw data;
+            }
+
+            return data;
         })
-        .catch(() => {
-            Swal.fire('Gagal', 'Terjadi kesalahan', 'error');
+        .then(data => {
+            document.getElementById(`row-${id}`)?.remove();
+            Swal.fire('Berhasil', data.message, 'success');
+        })
+        .catch(err => {
+            Swal.fire('Gagal', err.message || 'Tidak dapat menghapus akun', 'error');
         });
     });
 }
