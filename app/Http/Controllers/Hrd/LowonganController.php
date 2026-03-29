@@ -257,7 +257,7 @@ class LowonganController extends Controller
         if ($request->status === 'nonaktif') {
             $lowongan->update([
                 'status' => 'nonaktif',
-                'tanggal_selesai' => $today 
+                'tanggal_selesai' => now()->subDay()
             ]);
 
             return response()->json([
