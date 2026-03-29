@@ -252,19 +252,29 @@ class LowonganController extends Controller
             'status' => 'required|in:draft,aktif,nonaktif,arsip'
         ]);
 
-        $today = now()->timezone('Asia/Jakarta')->format('Y-m-d');
-        $startDate = \Carbon\Carbon::parse($lowongan->tanggal_mulai)->format('Y-m-d');
-        $endDate = \Carbon\Carbon::parse($lowongan->tanggal_selesai)->format('Y-m-d');
+        $today = now()->timezone('Asia/Jakarta');
+
+        if ($request->status === 'nonaktif') {
+            $lowongan->update([
+                'status' => 'nonaktif',
+                'tanggal_selesai' => $today 
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'status' => $lowongan->status
+            ]);
+        }
 
         if ($request->status === 'aktif') {
-            if ($startDate > $today) {
+            if ($lowongan->tanggal_mulai > $today) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Lowongan belum memasuki periode pendaftaran.'
                 ], 422);
             }
 
-            if ($endDate < $today) {
+            if ($lowongan->tanggal_selesai < $today) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Lowongan sudah melewati batas pendaftaran.'
