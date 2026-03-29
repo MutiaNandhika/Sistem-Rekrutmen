@@ -62,10 +62,32 @@ class ManajemenAkunController extends Controller
 
     public function destroy(User $user)
     {
+        if ($user->id === auth()->id()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda tidak dapat menghapus akun sendiri.'
+            ], 422);
+        }
+
+        if ($user->role === 'hrd' && $user->lowongans()->exists()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Akun HRD tidak dapat dihapus karena sudah memiliki data lowongan.'
+            ], 422);
+        }
+
+        if ($user->role === 'pelamar' && $user->applications()->exists()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Akun pelamar tidak dapat dihapus karena sudah memiliki data lamaran.'
+            ], 422);
+        }
+
         $user->delete();
 
         return response()->json([
-            'success' => true
+            'success' => true,
+            'message' => 'Akun berhasil dihapus'
         ]);
     }
 }
