@@ -15,6 +15,7 @@ class LowonganController extends Controller
     {
         $today = now()->toDateString();
 
+        // Update otomatis status lowongan berdasarkan tanggal
         Lowongan::where('status', 'aktif')
             ->whereNotNull('tanggal_selesai')
             ->whereDate('tanggal_selesai', '<', $today)
@@ -102,6 +103,7 @@ class LowonganController extends Controller
         ));
     }
 
+    //Menyimpan data lowongan baru
     public function store(Request $request)
     {
         $data = $request->validate([
@@ -188,6 +190,7 @@ class LowonganController extends Controller
             ->route('hrd.lowongan.deskripsi.create', $lowongan->id);
     }
 
+    //Menghapus lowongan jika belum memiliki pelamar
     public function destroy(Lowongan $lowongan)
     {
         $this->authorizeLowongan($lowongan);
@@ -300,6 +303,7 @@ class LowonganController extends Controller
         ]);
     }
 
+    //Validasi bahwa lowongan milik HRD yang sedang login
     private function authorizeLowongan(Lowongan $lowongan)
     {
         if ($lowongan->hrd_id !== auth()->id()) {

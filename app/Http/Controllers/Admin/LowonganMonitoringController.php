@@ -10,6 +10,7 @@ class LowonganMonitoringController extends Controller
 {
     public function index()
     {
+        // Mengambil data lowongan beserta relasi
         $lowongans = Lowongan::with([
                 'hrd',
                 'bidangKerja'
@@ -28,6 +29,7 @@ class LowonganMonitoringController extends Controller
         ]);
     }
 
+    //Digunakan untuk menampilkan detail dari satu lowongan
     public function show(Lowongan $lowongan)
     {
         $lowongan->load(['hrd', 'bidangKerja']);

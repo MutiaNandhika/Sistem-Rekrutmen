@@ -20,6 +20,7 @@ class ManajemenAkunController extends Controller
         return view('admin.manajemen-akun', compact('users'));
     }
 
+    //Digunakan untuk menambahkan akun baru
     public function store(Request $request)
     {
         $data = $request->validate([

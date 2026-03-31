@@ -46,6 +46,7 @@ class KandidatController extends Controller
         ]);
     }
 
+    //Menampilkan detail kandidat pada suatu lowongan
     public function show(Lowongan $lowongan, Application $application)
     {
         $isOwner = $lowongan->hrd_id === auth()->id();
@@ -69,6 +70,7 @@ class KandidatController extends Controller
         ]);
     }
 
+    //Mengubah status lamaran kandidat dan mengirim email notifikasi
     public function updateStatus(Request $request, Lowongan $lowongan, Application $application)
     {
         abort_if($lowongan->hrd_id !== auth()->id(), 403);
@@ -101,6 +103,7 @@ class KandidatController extends Controller
         return back()->with('success', 'Status lamaran diperbarui & email terkirim.');
     }
 
+    //Menentukan jadwal interview kandidat
     public function setInterview(Request $request, Lowongan $lowongan, Application $application)
     {
         abort_if($lowongan->hrd_id !== auth()->id(), 403);
@@ -140,6 +143,7 @@ class KandidatController extends Controller
         return back()->with('success', 'Jadwal interview berhasil dihapus');
     }
 
+    //Mengirim offering ke kandidat
     public function uploadOffer(Request $request, Lowongan $lowongan, Application $application)
     {
         abort_if($lowongan->hrd_id !== auth()->id(), 403);
@@ -163,6 +167,7 @@ class KandidatController extends Controller
         return back()->with('success', 'Offer berhasil dikirim ke pelamar');
     }
 
+    //Menandai kandidat lolos tahap administrasi
     public function lolosAdministrasi(Lowongan $lowongan, Application $application)
     {
         abort_if($lowongan->hrd_id !== auth()->id(), 403);
@@ -188,6 +193,7 @@ class KandidatController extends Controller
         return back()->with('success', 'Kandidat berhasil lolos administrasi.');
     }
 
+    //Menandai kandidat ditolak pada tahap administrasi
     public function tolakAdministrasi(Lowongan $lowongan, Application $application)
     {
         abort_if($lowongan->hrd_id !== auth()->id(), 403);

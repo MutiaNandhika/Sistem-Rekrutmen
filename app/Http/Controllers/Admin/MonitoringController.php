@@ -14,6 +14,7 @@ class MonitoringController extends Controller
         return view('admin.monitoring');
     }
 
+    //Mengambil data statistik monitoring dalam bentuk JSON
     public function data(Request $request)
     {
         $tahun = $request->get('tahun', now()->year);

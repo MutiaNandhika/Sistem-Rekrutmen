@@ -20,6 +20,7 @@ class LamaranController extends Controller
         return view('pelamar.lamaran-index', compact('applications'));
     }
 
+    //Menampilkan detail lamaran tertentu
     public function show(Application $application)
     {
         abort_if($application->user_id !== auth()->id(), 403);
@@ -27,6 +28,7 @@ class LamaranController extends Controller
         return view('pelamar.lamaran', compact('application'));
     }
 
+    //Digunakan untuk melamar pekerjaan sekaligus menyimpan snapshot data pelamar
     public function store(Lowongan $lowongan)
     {
         $user = auth()->user();
@@ -68,6 +70,8 @@ class LamaranController extends Controller
         ]);
 
         $profile = $user->pelamarProfile;
+
+        //SNAPSHOT DATA PELAMAR Digunakan agar data tidak berubah saat proses seleksi
 
         $snap_experiences = $user->pelamarExperiences->map(function ($exp) {
             return [
@@ -188,6 +192,7 @@ class LamaranController extends Controller
         return back()->with('success', 'Lamaran berhasil dikirim.');
     }
 
+    //Digunakan untuk merespon offering (diterima / ditolak)
     public function offerResponse(Request $request, Application $application)
     {
         abort_if($application->user_id !== auth()->id(), 403);
