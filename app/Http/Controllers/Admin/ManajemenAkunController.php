@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
 
 class ManajemenAkunController extends Controller
 {
@@ -27,7 +28,15 @@ class ManajemenAkunController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'role' => 'required|in:admin,hrd,pelamar',
-            'password' => 'required|min:6',
+            'password' => [
+                'required',
+                Password::min(8)
+                    ->mixedCase()
+                    ->numbers()
+                    ->symbols()
+            ],[
+                'password.*' => 'Password minimal 8 karakter dan harus mengandung huruf besar, angka, dan simbol.',
+            ]
         ]);
 
         User::create([
@@ -46,7 +55,15 @@ class ManajemenAkunController extends Controller
             'name' => 'required',
             'email' => 'required|email|unique:users,email,' . $user->id,
             'role' => 'required|in:admin,hrd,pelamar',
-            'password' => 'nullable|min:6',
+            'password' => [
+                'required',
+                Password::min(8)
+                    ->mixedCase()
+                    ->numbers()
+                    ->symbols()
+            ],[
+                'password.*' => 'Password minimal 8 karakter dan harus mengandung huruf besar, angka, dan simbol.',
+            ]
         ]);
 
         $user->update([

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
 
 class AccountSettingsController extends Controller
 {
@@ -17,7 +18,16 @@ class AccountSettingsController extends Controller
     {
         $request->validate([
             'current_password' => ['required'],
-            'password' => ['required', 'confirmed', 'min:8'],
+            'password' => [
+                'required',
+                'confirmed',
+                Password::min(8)
+                    ->mixedCase()
+                    ->numbers()
+                    ->symbols()
+            ],[
+                'password.*' => 'Password minimal 8 karakter dan harus mengandung huruf besar, angka, dan simbol.',
+            ]
         ]);
 
         $user = Auth::user();
