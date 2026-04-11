@@ -26,6 +26,11 @@ class DashboardController extends Controller
             ->whereMonth('created_at', $bulan)
             ->count();
 
+        $totalLowongan = Lowongan::where('hrd_id', $hrdId)
+            ->whereYear('created_at', $tahun)
+            ->whereMonth('created_at', $bulan)
+            ->count();
+
         $rawLowongan = Lowongan::where('hrd_id', $hrdId)
             ->whereYear('created_at', $tahun)
             ->selectRaw('MONTH(created_at) bulan, COUNT(*) total')
@@ -46,6 +51,8 @@ class DashboardController extends Controller
             ->groupBy('status')
             ->pluck('total', 'status');
 
+        $totalFunnel = array_sum($rawFunnel->toArray());
+        
         $rawOffer = Application::whereHas('lowongan', fn ($q) =>
                 $q->where('hrd_id', $hrdId)
             )

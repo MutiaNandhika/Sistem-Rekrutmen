@@ -24,6 +24,10 @@ class MonitoringController extends Controller
             ->whereMonth('created_at', $bulan)
             ->count();
 
+        $totalLowongan = Lowongan::whereYear('created_at', $tahun)
+            ->whereMonth('created_at', $bulan)
+            ->count();
+
         $rawLowongan = Lowongan::whereYear('created_at', $tahun)
             ->selectRaw('MONTH(created_at) bulan, COUNT(*) total')
             ->groupBy('bulan')
@@ -45,6 +49,8 @@ class MonitoringController extends Controller
             ->selectRaw('offer_response, COUNT(*) total')
             ->groupBy('offer_response')
             ->pluck('total', 'offer_response');
+
+        $totalFunnel = array_sum($rawFunnel->toArray());
 
         $tidakRespon = Application::where('status', 'offer')
             ->whereNull('offer_response')

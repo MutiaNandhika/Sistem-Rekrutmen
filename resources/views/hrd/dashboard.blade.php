@@ -32,12 +32,28 @@
 
     {{-- Statistic Cards --}}
     <div class="row g-4 mb-4">
-        <div class="col-md-3">
+
+        <div class="col-md-4">
             <div class="dashboard-stat-card">
                 <div class="stat-title">Total Pelamar</div>
                 <div class="stat-value" id="statPelamar">0</div>
             </div>
         </div>
+
+        <div class="col-md-4">
+            <div class="dashboard-stat-card">
+                <div class="stat-title">Jumlah Lowongan</div>
+                <div class="stat-value" id="statLowongan">0</div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="dashboard-stat-card">
+                <div class="stat-title">Total Proses Rekrutmen</div>
+                <div class="stat-value" id="statFunnel">0</div>
+            </div>
+        </div>
+
     </div>
 
     {{-- Charts --}}
@@ -101,6 +117,8 @@ function loadDashboard() {
 function renderCharts(data) {
 
     document.getElementById('statPelamar').textContent  = data.stat.total_pelamar;
+    document.getElementById('statLowongan').textContent = data.stat.total_lowongan;
+    document.getElementById('statFunnel').textContent   = data.stat.total_funnel;
 
     chartLowongan?.destroy();
     chartFunnel?.destroy();
