@@ -75,6 +75,8 @@ class DashboardController extends Controller
         return response()->json([
             'stat' => [
                 'total_pelamar'  => $totalPelamar,
+                'total_lowongan' => $totalLowongan,
+                'total_funnel'   => $totalFunnel,
             ],
             'lowongan' => $lowongan,
             'funnel' => [
