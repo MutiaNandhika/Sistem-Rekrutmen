@@ -100,6 +100,10 @@
                                class="form-control"
                                placeholder="Masukkan kata sandi baru"
                                required>
+
+                        <small class="text-muted">
+                            Password minimal 8 karakter, mengandung huruf besar, angka, dan simbol.
+                        </small>
                     </div>
 
                     <div class="col-md-6">

@@ -45,6 +45,10 @@
                     </span>
                 </div>
 
+                <small class="text-muted d-block mb-2">
+                    Password minimal 8 karakter, mengandung huruf besar, angka, dan simbol.
+                </small>
+
                 <label>Konfirmasi Password</label>
                 <div class="password-wrapper">
                     <input type="password"
