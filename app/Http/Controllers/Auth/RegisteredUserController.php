@@ -9,9 +9,10 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules;
 use Illuminate\View\View;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\RegisterSuccessMail;
 
 class RegisteredUserController extends Controller
 {
@@ -51,6 +52,8 @@ class RegisteredUserController extends Controller
             'password' => bcrypt($request->password),
             'role' => 'pelamar', // DEFAULT ROLE
         ]);
+
+        Mail::to($user->email)->send(new RegisterSuccessMail($user));
 
         event(new Registered($user));
 
