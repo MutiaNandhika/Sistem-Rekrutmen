@@ -139,6 +139,9 @@
                     <option value="pelamar">Pelamar</option>
                 </select>
                 <input name="password" class="form-control" placeholder="Password" required>
+                <small class="text-muted d-block mb-2">
+                    Password minimal 8 karakter, mengandung huruf besar, angka, dan simbol.
+                </small>
             </div>
 
             <div class="modal-footer">
